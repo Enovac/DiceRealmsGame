@@ -1,7 +1,6 @@
 package main.java.game.realms;
 
 import main.java.game.creatures.*;
-import main.java.game.dice.Dice;
 
 public class MagentaRealm extends Realms{
     private Phoenix phoenix;
@@ -18,6 +17,8 @@ public class MagentaRealm extends Realms{
             phoenix.setHealth(diceValue);
             updateTotalRealmScore(diceValue);
             incrementTotalNumberOfAttacks();
+            if(isRealmDefeated())
+                closeRealm();
             //Give Rewards 
             return true;
         }

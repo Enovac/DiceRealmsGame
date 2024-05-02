@@ -1,6 +1,5 @@
 package main.java.game.realms;
 import main.java.game.creatures.*;
-import main.java.game.dice.*;
 public abstract class Realms {
     private final RealmColor REALM_COLOR;
     private boolean isAccessible;//Realm isnt accessible when all enemies are dead!!

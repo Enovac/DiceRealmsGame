@@ -10,7 +10,7 @@ public abstract class Creature {
     public abstract boolean checkPossibleAttack(int diceValue);
 //============================G&S====================================================
     
-    public RealmColor getCreaturColor(){
+    public RealmColor getCreatureColor(){
         return CREATURE_COLOR;
     }
 

@@ -1,7 +1,6 @@
 package main.java.game.realms;
 
 import main.java.game.creatures.*;
-import main.java.game.dice.*;
 
 public class YellowRealm extends Realms{
     private Lion lion;
@@ -19,7 +18,8 @@ public class YellowRealm extends Realms{
             incrementTotalNumberOfAttacks();
             if(isRealmDefeated())
                 closeRealm();
-           //Give Rewards     
+           //Give Rewards
+           return true;     
         }
         return false;
     }

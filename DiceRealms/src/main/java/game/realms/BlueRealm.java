@@ -1,7 +1,6 @@
 package main.java.game.realms;
 
 import main.java.game.creatures.*;
-import main.java.game.dice.Dice;
 
 public class BlueRealm extends Realms{
     private Hydra hydra;
@@ -18,11 +17,11 @@ public class BlueRealm extends Realms{
         if(hydra.checkPossibleAttack(diceValue)){
             if(hydra.killHead()&&!hydra.isRespawned())
                 hydra.respawnHydra();
-            if(isRealmDefeated())
-                closeRealm();
             totalDefeatedHeads++;
             incrementTotalNumberOfAttacks();
             updateTotalRealmScore(totalDefeatedHeads);
+            if(isRealmDefeated())
+                closeRealm();
             //Give user his rewards,Do I increment total attacks
             return true;
         }
@@ -31,7 +30,7 @@ public class BlueRealm extends Realms{
         }
     @Override
     public boolean isRealmDefeated() {
-        return hydra.isRespawned();
+        return getTotalNumberOfAttacks()==11;
     }    
     @Override    
     public void updateTotalRealmScore(int totalDefeatedHeads){

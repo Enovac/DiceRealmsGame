@@ -22,10 +22,11 @@ public class Hydra extends Creature{
     public void respawnHydra(){
         remainingHeads=6;
         totalHeads=6;
-        boolean isRespawned=true;
+         isRespawned=true;
         //Go Over hydraRewards and put in each one reards
     }
 //============================Methods================================================
+    @Override
     public boolean checkPossibleAttack(int diceValue){
         int minValue=(totalHeads-remainingHeads)+1;
         return diceValue>=minValue;

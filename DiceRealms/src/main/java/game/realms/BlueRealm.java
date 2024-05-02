@@ -9,25 +9,32 @@ public class BlueRealm extends Realms{
 //============================Constructor============================================
     public BlueRealm(){
          super(RealmColor.BLUE);
+         hydra=new Hydra();
+         hydra.spawnHydra();
     }
 //============================Methods================================================
-    public boolean attack(Dice dice,Creature creature){
-        int diceValue=dice.getDiceValue();
+    @Override
+    public boolean attack(int diceValue,Creature creature){
         if(hydra.checkPossibleAttack(diceValue)){
-            if(hydra.killHead()){
-                if(hydra.isRespawned())
-                    closeRealm();
-                else
-                    hydra.respawnHydra();    
-            }
+            if(hydra.killHead()&&!hydra.isRespawned())
+                hydra.respawnHydra();
+            if(isRealmDefeated())
+                closeRealm();
             totalDefeatedHeads++;
-            updateTotalRealmScore();
+            incrementTotalNumberOfAttacks();
+            updateTotalRealmScore(totalDefeatedHeads);
             //Give user his rewards,Do I increment total attacks
             return true;
         }
         return false;
+
         }
-    public void updateTotalRealmScore(){
+    @Override
+    public boolean isRealmDefeated() {
+        return hydra.isRespawned();
+    }    
+    @Override    
+    public void updateTotalRealmScore(int totalDefeatedHeads){
         switch(totalDefeatedHeads){
             case 1:setTotalRealmScore(1);break;
             case 2:setTotalRealmScore(3);break;

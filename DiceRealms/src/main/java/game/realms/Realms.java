@@ -5,6 +5,7 @@ public abstract class Realms {
     private final RealmColor REALM_COLOR;
     private boolean isAccessible;//Realm isnt accessible when all enemies are dead!!
     private int totalRealmScore;
+    private int totalNumberOfAttacks;
 
 //============================Constructor============================================
 
@@ -13,7 +14,12 @@ public abstract class Realms {
         isAccessible=true;
     }
 //============================Methods============================================
-    public abstract boolean attack(Dice dice,Creature creature);
+    public abstract boolean attack(int diceValue,Creature creature);
+    public abstract void updateTotalRealmScore(int value);
+    public void incrementTotalNumberOfAttacks(){
+        totalNumberOfAttacks++;
+    }
+    public abstract boolean isRealmDefeated();
 //============================G&S============================================
     public RealmColor getRealmColor(){
         return REALM_COLOR;
@@ -30,7 +36,9 @@ public abstract class Realms {
     public void setTotalRealmScore(int value){
         totalRealmScore=value;
     }
-    public abstract void updateTotalRealmScore();
+    public int getTotalNumberOfAttacks(){
+        return totalNumberOfAttacks;
+    }
 
 
 

@@ -7,6 +7,22 @@ public class GameBoard {
     private Dice[] allDice;
 
 
+     public GameBoard(){
+          player1=new Player();//set active / passive??
+          player2=new Player();
+
+          gameStatus=new GameStatus();
+          
+          ArcanePrism arcanePrism=new ArcanePrism();
+          BlueDice blueDice=new BlueDice();
+          RedDice redDice=new RedDice();
+          GreenDice greenDice=new GreenDice();
+          YellowDice yellowDice=new YellowDice();
+          MagentaDice magentaDice=new MagentaDice();
+          allDice=new Dice[]{redDice,blueDice,greenDice,yellowDice,magentaDice,arcanePrism};
+     }
+
+
 //============================G&S============================================
    public Player getActivePlayer(){
         if(player1.getPlayerStatus()==PlayerStatus.ACTIVE)

@@ -1,5 +1,9 @@
 package main.java.game.dice;
-
-public class ArcanePrism {
+import main.java.game.realms.*;
+public class ArcanePrism extends Dice{
+    public ArcanePrism(){
+        super(RealmColor.WHITE);
+    }
+    
 
 }

@@ -1,5 +1,8 @@
 package main.java.game.dice;
-
-public class BlueDice {
+import main.java.game.realms.*;
+public class BlueDice extends Dice{
+    public BlueDice(){
+        super(RealmColor.BLUE);
+    }
 
 }

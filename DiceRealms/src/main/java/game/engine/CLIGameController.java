@@ -19,8 +19,8 @@ public class CLIGameController extends GameController{
      *         {@code false} otherwise.
      */
     public  boolean switchPlayer(){
-        Player activePlayer=gameBoard.getActivePlayer();
-        Player passivePlayer=gameBoard.getPassivePlayer();
+        Player activePlayer=getActivePlayer();
+        Player passivePlayer=getPassivePlayer();
         passivePlayer.setPlayerStatus(PlayerStatus.PASSIVE);
         activePlayer.setPlayerStatus(PlayerStatus.ACTIVE);
         return true;
@@ -35,8 +35,8 @@ public class CLIGameController extends GameController{
      */
     public  Dice[] rollDice(){
         Dice[] rolledDice=getAvailableDice();
-        for(Dice x:rolledDice)
-            x.rollDice((int)((Math.random()*6)+1));
+        for(Dice currentDice:rolledDice)
+            currentDice.rollDice();
         return rolledDice;
     }
 
@@ -101,7 +101,7 @@ public class CLIGameController extends GameController{
      * @return An array of all possible moves for all rolled dice.
      */
     public  Move[] getAllPossibleMoves(Player player){
-
+        //Checks what can be attacked in each realm
     }
 
     /**
@@ -111,6 +111,7 @@ public class CLIGameController extends GameController{
      * @return An array of all possible moves for all rolled dice.
      */
     public  Move[] getPossibleMovesForAvailableDice(Player player){
+            //What can be attacked given ALL dice
 
     }
 
@@ -122,6 +123,7 @@ public class CLIGameController extends GameController{
      * @return An array of possible moves for the given dice.
      */
     public  Move[] getPossibleMovesForADie(Player player, Dice dice){
+        //What can be attacked given a die 
 
     }
 
@@ -170,6 +172,10 @@ public class CLIGameController extends GameController{
      */
     public  GameStatus getGameStatus(){
 
+
+
+
+        
     }
 
     /**
@@ -236,7 +242,7 @@ public class CLIGameController extends GameController{
      *         {@code false} otherwise.
      */
     public  boolean makeMove(Player player, Move move){
-
+//ATTACK
 
         return false;
     }

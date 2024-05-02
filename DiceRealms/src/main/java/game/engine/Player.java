@@ -2,7 +2,7 @@ package main.java.game.engine;
 
 public class Player {
     private ScoreSheet scoreSheet;
-    private GameScore gameScore;
+    private GameScore gameScore;//Grimore
     private PlayerStatus playerStatus;
 
 

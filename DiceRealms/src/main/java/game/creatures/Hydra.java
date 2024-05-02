@@ -1,5 +1,57 @@
 package main.java.game.creatures;
 
-public class Hydra {
+import main.java.game.realms.RealmColor;
+
+public class Hydra extends Creature{
+    private int remainingHeads;
+    private int totalHeads;
+    private boolean isRespawned;
+    // private Rewards[] hydraRewards; shoudl be in super class also add int totalHits?
+
+//============================Constructor============================================
+    public Hydra(){
+        super(RealmColor.BLUE);
+    }
+
+    
+    public void spawnHydra(){
+        remainingHeads=5;
+        totalHeads=5;
+    //Go Over hydraRewards and put in each one reards
+    }
+    public void respawnHydra(){
+        remainingHeads=6;
+        totalHeads=6;
+        boolean isRespawned=true;
+        //Go Over hydraRewards and put in each one reards
+    }
+//============================Methods================================================
+    public boolean checkPossibleAttack(int diceValue){
+        int minValue=(totalHeads-remainingHeads)+1;
+        return diceValue>=minValue;
+    }
+    public boolean killHead(){
+      remainingHeads-=1;
+      return remainingHeads==0;
+    }  
+//============================G&S====================================================
+    public boolean isRespawned(){
+         return isRespawned;
+    }
+    public int getRemainingNumberOfHeads(){
+        return remainingHeads;
+    }
+
 
 }
+
+
+
+
+
+
+
+
+
+
+

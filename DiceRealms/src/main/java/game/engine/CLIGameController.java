@@ -24,7 +24,7 @@ public class CLIGameController extends GameController{
         passivePlayer.setPlayerStatus(PlayerStatus.PASSIVE);
         activePlayer.setPlayerStatus(PlayerStatus.ACTIVE);
         return true;
-        //Should it do the get dice from bla bla??
+        //Should it do the get dice from bla bla??<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
     }
 
     /**
@@ -226,10 +226,7 @@ public class CLIGameController extends GameController{
      *         {@code false} otherwise.
      */
     public  boolean selectDice(Dice dice, Player player){
-
-
         return false;
-
     }
 
     /**

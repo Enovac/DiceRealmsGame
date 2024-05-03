@@ -7,7 +7,7 @@ public class GameStatus {
         gameRound=1;
         turn=1;
     }
-    public ints getGameRound(){
+    public int getGameRound(){
         return gameRound;
     }
     public int getTurn(){

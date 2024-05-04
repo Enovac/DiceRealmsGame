@@ -2,8 +2,8 @@ package main.java.game.dice;
 import main.java.game.realms.*;
 
 public class MagentaDice extends Dice{
-    public MagentaDice(){
-        super(RealmColor.MAGENTA);
+    public MagentaDice(int diceValue){
+        super(RealmColor.MAGENTA,diceValue);
     }
 
 }

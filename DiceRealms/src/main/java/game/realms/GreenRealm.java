@@ -1,6 +1,7 @@
 package main.java.game.realms;
-
 import main.java.game.creatures.*;
+import main.java.game.dice.*;
+import main.java.game.engine.Move;
 
 
 public class GreenRealm extends Realms{
@@ -45,10 +46,38 @@ public class GreenRealm extends Realms{
     public boolean isRealmDefeated() {
         return getTotalNumberOfAttacks()==11;
     }
+    @Override
+    public Move[] getAllPossibleMoves() {
+        if(!isRealmAccessible())
+            return null;
+        boolean[] gurdiansHealth=gaiaGurdian.getGurdiansHealth();
+        int moveArraySize=0;
+        for(boolean gaiaAlive:gurdiansHealth)
+            if(gaiaAlive)moveArraySize++;
+        Move[] moves=new Move[moveArraySize];
+        
+        for(int i=2,arr=0;i<gurdiansHealth.length;i++)
+            if(gurdiansHealth[i])
+                moves[arr++]=getPossibleMovesForADie(i,RealmColor.GREEN)[0];
+        return moves;
+    }
+    @Override
+    public Move[] getPossibleMovesForADie(int diceValue,RealmColor colorOfDice) {
+        if(gaiaGurdian.checkPossibleAttack(diceValue)){
+            Dice tempDice;
+            if(colorOfDice==RealmColor.GREEN)
+                 tempDice=new GreenDice(diceValue);
+            else
+                 tempDice=new ArcanePrism(diceValue);
+            return new Move[]{new Move(tempDice,gaiaGurdian)};
+        }
+        return null;
+    }
 
 //============================G&S====================================================   
     public Gaia getGaia(){
         return gaiaGurdian;
     }
+    
 
 }

@@ -1,6 +1,8 @@
 package main.java.game.realms;
 
 import main.java.game.creatures.*;
+import main.java.game.dice.*;
+import main.java.game.engine.Move;
 
 public class MagentaRealm extends Realms{
     private Phoenix phoenix;
@@ -33,10 +35,30 @@ public class MagentaRealm extends Realms{
     public boolean isRealmDefeated() {
         return getTotalNumberOfAttacks()==11;
     }
+    @Override
+    public Move[] getAllPossibleMoves() {
+        if(!isRealmAccessible())
+            return null;
+        int minimumAttackValue=phoenix.getMinimumAttackValue();
+        int moveArraySize=6-minimumAttackValue+1;//+1 to include the minimumAttack Value
+        Move[] moves=new Move[moveArraySize];
+        for(int i=0;i<moves.length;i++,minimumAttackValue++)
+            moves[i]=getPossibleMovesForADie(minimumAttackValue,RealmColor.MAGENTA)[0];
+        return  moves;
+    }
+    @Override
+    public Move[] getPossibleMovesForADie(int diceValue, RealmColor colorOfDice) {
+        if(phoenix.checkPossibleAttack(diceValue)){
+            MagentaDice tempDice=new MagentaDice(diceValue);
+            return new Move[]{new Move(tempDice,phoenix)};
+        }
+        return null;
+    }
 
 //============================G&S====================================================   
     public Phoenix getPhoenix(){
         return phoenix;
     }
+   
 
 }

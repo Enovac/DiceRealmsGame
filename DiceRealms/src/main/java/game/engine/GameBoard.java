@@ -4,7 +4,13 @@ public class GameBoard {
     private Player player1;
     private Player player2;
     private GameStatus gameStatus;
-    private Dice[] allDice;
+
+    private ArcanePrism arcanePrism;
+    private BlueDice blueDice;
+    private RedDice redDice;
+    private GreenDice greenDice;
+    private YellowDice yellowDice;
+    private MagentaDice magentaDice;
 
 
      public GameBoard(){
@@ -13,13 +19,12 @@ public class GameBoard {
 
           gameStatus=new GameStatus();
           
-          ArcanePrism arcanePrism=new ArcanePrism();
-          BlueDice blueDice=new BlueDice();
-          RedDice redDice=new RedDice();
-          GreenDice greenDice=new GreenDice();
-          YellowDice yellowDice=new YellowDice();
-          MagentaDice magentaDice=new MagentaDice();
-          allDice=new Dice[]{redDice,blueDice,greenDice,yellowDice,magentaDice,arcanePrism};
+          arcanePrism=new ArcanePrism(6);
+          blueDice=new BlueDice(6);
+          redDice=new RedDice(6);
+          greenDice=new GreenDice(6);
+          yellowDice=new YellowDice(6);
+          magentaDice=new MagentaDice(6);
      }
 
 
@@ -35,7 +40,25 @@ public class GameBoard {
         return player2;    
    }
    public Dice[] getAllDice(){
-    return allDice;
+    return new Dice[]{redDice,blueDice,greenDice,yellowDice,magentaDice,arcanePrism};
+   }
+   public RedDice getRedDice(){
+     return redDice;
+   }
+   public BlueDice getBlueDice(){
+     return blueDice;
+   } 
+   public GreenDice getGreenDice(){
+     return greenDice;
+   }
+   public YellowDice getYellowDice(){
+     return yellowDice;
+   }
+   public MagentaDice getMagentaDice(){
+     return magentaDice;
+   }
+   public ArcanePrism getArcanePrism(){
+     return arcanePrism;
    }
 
 }

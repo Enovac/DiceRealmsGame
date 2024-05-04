@@ -5,9 +5,10 @@ public abstract class Dice {
     private int diceValue;
     private final RealmColor DICE_COLOR;
 
-    public Dice(RealmColor diceColor){
+    public Dice(RealmColor diceColor,int diceValue){
         DICE_COLOR=diceColor;
         diceStatus=DiceStatus.AVAILABLE;
+        this.diceValue=diceValue;
     }
 //============================G&S============================================
     public RealmColor getDiceColor(){

@@ -35,12 +35,17 @@ public class Hydra extends Creature{
       remainingHeads-=1;
       return remainingHeads==0;
     }  
+    
 //============================G&S====================================================
     public boolean isRespawned(){
          return isRespawned;
     }
     public int getRemainingNumberOfHeads(){
         return remainingHeads;
+    }
+    @Override
+    public int getMinimumAttackValue(){
+        return (totalHeads-remainingHeads)+1;
     }
 
 

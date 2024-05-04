@@ -1,6 +1,8 @@
 package main.java.game.realms;
 
 import main.java.game.creatures.*;
+import main.java.game.dice.BlueDice;
+import main.java.game.engine.*;
 
 public class BlueRealm extends Realms{
     private Hydra hydra;
@@ -48,10 +50,30 @@ public class BlueRealm extends Realms{
             case 11:setTotalRealmScore(66);break;
         }
     }   
+    @Override
+    public Move[] getAllPossibleMoves() {
+        if(!isRealmAccessible())
+            return null;
+        int minimumAttackValue=hydra.getMinimumAttackValue();
+        int moveArraySize=6-minimumAttackValue+1;//+1 to include the minimumAttack Value
+        Move[] moves=new Move[moveArraySize];
+        for(int i=0;i<moves.length;i++,minimumAttackValue++)
+            moves[i]=getPossibleMovesForADie(minimumAttackValue,RealmColor.BLUE)[0];
+        return  moves;
+    }
+    @Override
+    public Move[] getPossibleMovesForADie(int diceValue,RealmColor colorOfDice) {
+        if(hydra.checkPossibleAttack(diceValue)){
+            BlueDice tempDice=new BlueDice(diceValue);
+            return new Move[]{new Move(tempDice,hydra)};
+        }
+        return null;
+    }
 //============================G&S====================================================
     public Hydra getHydra(){
         return hydra;
     }
+    
 
     
 

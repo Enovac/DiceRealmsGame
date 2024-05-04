@@ -8,6 +8,9 @@ public abstract class Creature {
     }
 //============================Methods================================================
     public abstract boolean checkPossibleAttack(int diceValue);
+    public int getMinimumAttackValue(){
+        return 0;//Default override if needed;
+    }
 //============================G&S====================================================
     
     public RealmColor getCreatureColor(){

@@ -7,19 +7,19 @@ public class Player {
 
     private PlayerStatus playerStatus;
 
-    private BlueRealm blueRealm;
-    private RedRealm redRealm;
-    private GreenRealm greenRealm;
-    private YellowRealm yellowRealm;
-    private MagentaRealm magentaRealm;
+    private final BlueRealm BLUE_REALM;
+    private final RedRealm RED_REALM;
+    private final GreenRealm GREEN_REALM;
+    private final YellowRealm YELLOW_REALM;
+    private final MagentaRealm MAGENTA_REALM;
 //============================Constructor============================================
 
     public Player(){
-        blueRealm=new BlueRealm();
-        redRealm=new RedRealm();
-        greenRealm=new GreenRealm();
-        yellowRealm=new YellowRealm();
-        magentaRealm=new MagentaRealm();
+        BLUE_REALM=new BlueRealm();
+        RED_REALM=new RedRealm();
+        GREEN_REALM=new GreenRealm();
+        YELLOW_REALM=new YellowRealm();
+        MAGENTA_REALM=new MagentaRealm();
     }
 
 
@@ -31,6 +31,21 @@ public PlayerStatus getPlayerStatus(){
 }
 public void setPlayerStatus(PlayerStatus status){
     playerStatus=status;
+}
+public BlueRealm getBlueRealm(){
+    return BLUE_REALM;
+}
+public RedRealm getRedRealm(){
+    return RED_REALM;
+}
+public GreenRealm getGreenRealm(){
+    return GREEN_REALM;
+}
+public YellowRealm getYellowRealm(){
+    return YELLOW_REALM;
+}
+public MagentaRealm getMagentaRealm(){
+    return MAGENTA_REALM;
 }
 
 }

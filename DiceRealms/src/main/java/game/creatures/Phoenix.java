@@ -26,6 +26,10 @@ public class Phoenix extends Creature{
     public int getHealth(){
         return health;
     }
+    @Override
+    public int getMinimumAttackValue(){
+        return health+1;
+    }
 
 
 }

@@ -23,6 +23,9 @@ public class Gaia extends Creature{
     }
 
 //============================G&S====================================================   
+    public boolean[] getGurdiansHealth(){
+        return gurdiansHealth;
+    }
 
 
 

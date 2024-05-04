@@ -1,5 +1,6 @@
 package main.java.game.collectibles;
 
-public class ArcaneBoost {
+public class ArcaneBoost extends Power{
+    
 
 }

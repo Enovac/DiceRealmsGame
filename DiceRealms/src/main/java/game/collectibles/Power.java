@@ -1,5 +1,10 @@
 package main.java.game.collectibles;
 
-public class Power {
+public abstract class Power extends Reward{
+
+    public Power(){
+        super(RewardType.POWER);
+    }
+
 
 }

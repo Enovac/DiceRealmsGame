@@ -1,5 +1,6 @@
 package main.java.game.realms;
 
+import main.java.game.collectibles.*;
 import main.java.game.creatures.*;
 import main.java.game.dice.BlueDice;
 import main.java.game.engine.*;
@@ -9,7 +10,7 @@ public class BlueRealm extends Realms{
     private int totalDefeatedHeads;
 //============================Constructor============================================
     public BlueRealm(){
-         super(RealmColor.BLUE);
+         super(RealmColor.BLUE,11);
          hydra=new Hydra();
          hydra.spawnHydra();
     }
@@ -69,10 +70,32 @@ public class BlueRealm extends Realms{
         }
         return null;
     }
+    @Override
+    public boolean checkRewardAvailable() {
+        Reward[] rewards=getRealmRewards();
+        return rewards[getTotalNumberOfAttacks()]!=null;
+    }
+   
+    
 //============================G&S====================================================
     public Hydra getHydra(){
         return hydra;
     }
+    @Override
+    public Reward getReward() {
+        Reward[] rewards=getRealmRewards();
+        Reward recievedReward=rewards[getTotalNumberOfAttacks()];
+        rewardClaimed(getTotalNumberOfAttacks());
+        return recievedReward;
+    }
+    @Override
+    public void setRealmRewards(Reward[] realmRewards) {
+        Reward[] templateRewards=new Reward[]{null,null,null,new ArcaneBoost(),null,
+          new Bonus(RealmColor.GREEN),new ElementalCrest(),null,new Bonus(RealmColor.MAGENTA),new TimeWarp(),null};   
+        for(int i=0;i<templateRewards.length;i++)
+            realmRewards[i]=templateRewards[i];
+    }
+    
     
 
     

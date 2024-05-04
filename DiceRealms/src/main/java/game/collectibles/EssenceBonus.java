@@ -1,5 +1,8 @@
 package main.java.game.collectibles;
-
-public class EssenceBonus {
+import main.java.game.realms.*;
+public class EssenceBonus extends Bonus{
+    public EssenceBonus(RealmColor bonuscolor){
+        super(bonuscolor);
+    }
 
 }

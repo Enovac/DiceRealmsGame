@@ -1,5 +1,5 @@
 package main.java.game.collectibles;
 
-public class TimeWarp {
+public class TimeWarp extends Power{
 
 }

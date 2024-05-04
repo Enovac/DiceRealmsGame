@@ -60,5 +60,8 @@ public class GameBoard {
    public ArcanePrism getArcanePrism(){
      return arcanePrism;
    }
+   public GameStatus getGameStatus(){
+      return gameStatus;
+   }
 
 }

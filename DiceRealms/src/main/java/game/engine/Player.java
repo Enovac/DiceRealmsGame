@@ -19,7 +19,7 @@ public class Player {
     private ArrayList<ArcaneBoost> arcaneBoosts;
     private ArrayList<TimeWarp> timeWarps;
     private ArrayList<ElementalCrest> elementalCrests;
-//============================Constructor============================================
+//============================Constructor========================================
 
     public Player(){
         scoreSheet=new ScoreSheet();
@@ -29,47 +29,53 @@ public class Player {
         YELLOW_REALM=scoreSheet.getYellowRealm();
         MAGENTA_REALM=scoreSheet.getMagentaRealm();
     }
-//============================G&S============================================
-public ScoreSheet getScoreSheet(){
-    return scoreSheet;
-}
-public PlayerStatus getPlayerStatus(){
-    return playerStatus;
-}
-public void setPlayerStatus(PlayerStatus status){
-    playerStatus=status;
-}
-public BlueRealm getBlueRealm(){
-    return BLUE_REALM;
-}
-public RedRealm getRedRealm(){
-    return RED_REALM;
-}
-public GreenRealm getGreenRealm(){
-    return GREEN_REALM;
-}
-public YellowRealm getYellowRealm(){
-    return YELLOW_REALM;
-}
-public MagentaRealm getMagentaRealm(){
-    return MAGENTA_REALM;
-}
-public ArrayList<ArcaneBoost> getArcaneBoosts(){
-    return arcaneBoosts;
-}
-public ArrayList<TimeWarp> getTimeWarps(){
-    return timeWarps;
-}
-public ArrayList<ElementalCrest> getElementalCrests(){
-    return elementalCrests;
-}
-public GameScore getGameScore(){
-    int redScore=RED_REALM.getTotalRealmScore();
-    int blueScore=RED_REALM.getTotalRealmScore();
-    int greenScore=RED_REALM.getTotalRealmScore();
-    int yellowScore=RED_REALM.getTotalRealmScore();
-    int magentaScore=RED_REALM.getTotalRealmScore();
-    gameScore.calculateGameScore(redScore, blueScore, greenScore, yellowScore, magentaScore,elementalCrests.size());
-    return gameScore;
-}
+//============================Methods============================================
+    public void updateGameScore(){
+        gameScore.setRedScore(RED_REALM.getTotalRealmScore());
+        gameScore.setBlueScore(BLUE_REALM.getTotalRealmScore());
+        gameScore.setGreenScore(GREEN_REALM.getTotalRealmScore());
+        gameScore.setYellowScore(YELLOW_REALM.getTotalRealmScore());
+        gameScore.setMagentaScore(MAGENTA_REALM.getTotalRealmScore());
+        gameScore.setNumberOfCrests(elementalCrests.size());
+        gameScore.calculateGameScore();
+    }
+
+//============================G&S================================================
+    public ScoreSheet getScoreSheet(){
+        return scoreSheet;
+    }
+    public PlayerStatus getPlayerStatus(){
+        return playerStatus;
+    }
+    public void setPlayerStatus(PlayerStatus status){
+        playerStatus=status;
+    }
+    public BlueRealm getBlueRealm(){
+        return BLUE_REALM;
+    }
+    public RedRealm getRedRealm(){
+        return RED_REALM;
+    }
+    public GreenRealm getGreenRealm(){
+        return GREEN_REALM;
+    }
+    public YellowRealm getYellowRealm(){
+        return YELLOW_REALM;
+    }
+    public MagentaRealm getMagentaRealm(){
+        return MAGENTA_REALM;
+    }
+    public ArrayList<ArcaneBoost> getArcaneBoosts(){
+        return arcaneBoosts;
+    }
+    public ArrayList<TimeWarp> getTimeWarps(){
+        return timeWarps;
+    }
+    public ArrayList<ElementalCrest> getElementalCrests(){
+        return elementalCrests;
+    }
+    public GameScore getGameScore(){
+        updateGameScore();
+        return gameScore;
+    }
 }

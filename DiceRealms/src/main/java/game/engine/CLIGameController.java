@@ -280,11 +280,7 @@ public class CLIGameController extends GameController{
      * @return The current {@code GameStatus} object.
      */
     public  GameStatus getGameStatus(){
-
-
-
-
-        
+        return getGameBoard().getGameStatus();
     }
 
     /**

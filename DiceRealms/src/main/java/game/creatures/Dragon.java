@@ -40,6 +40,18 @@ public class Dragon extends Creature{
         if(face==0&&wings==0&&tail==0&&heart==0)  
             killDragon();   
     }
+    public boolean isFaceKilled(){
+        return face==0;
+    }   
+    public boolean isWingsKilled(){
+        return wings==0;
+    }
+    public boolean isTailKilled(){
+        return tail==0;
+    }
+    public boolean isHeartKilled(){
+        return heart==0;
+    }
 //============================G&S====================================================   
    public DragonNumber getDragonNumber(){
         return dragonNumber;

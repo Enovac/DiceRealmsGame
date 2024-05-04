@@ -1,5 +1,9 @@
 package main.java.game.realms;
 
+import main.java.game.collectibles.ArcaneBoost;
+import main.java.game.collectibles.Bonus;
+import main.java.game.collectibles.ElementalCrest;
+import main.java.game.collectibles.Reward;
 import main.java.game.creatures.*;
 import main.java.game.dice.RedDice;
 import main.java.game.engine.Move;
@@ -10,13 +14,23 @@ public class RedRealm extends Realms{
     private Dragon dragon2;
     private Dragon dragon3;
     private Dragon dragon4;
+    private final int faceRow;
+    private final int wingsRow;
+    private final int tailRow;
+    private final int heartRow;
+    private final int allDeadRow;
 //============================Constructor============================================
     public RedRealm(){
-        super(RealmColor.RED);
+        super(RealmColor.RED,5);
         dragon1=new Dragon(DragonNumber.Dragon1,3,2,1,0);
         dragon2=new Dragon(DragonNumber.Dragon2,6,1,0,3);
         dragon3=new Dragon(DragonNumber.Dragon3,5,0,2,4);
         dragon4=new Dragon(DragonNumber.Dragon4,0,5,4,6);
+        faceRow=0;
+        wingsRow=1;
+        tailRow=2;
+        heartRow=3;
+        allDeadRow=4;
     }
 //============================Methods================================================
   
@@ -148,7 +162,37 @@ public class RedRealm extends Realms{
 
         return moves;
     }
-
+    @Override
+    public boolean isRewardAvailable() {
+        Reward[] rewards=getRealmRewards();
+        if(isAllFacesKilled()&&rewards[faceRow]!=null)  
+            return true;
+        if(isAllWingsKilled()&&rewards[wingsRow]!=null)  
+            return true;    
+        if(isAllTailsKilled()&&rewards[tailRow]!=null)  
+            return true;     
+        if(isAllHeartsKilled()&&rewards[heartRow]!=null)  
+            return true; 
+        if(!isRealmAccessible()&&rewards[allDeadRow]!=null)//NOTE THIS INDICATES U CHECK OUTSIDE AFTER ATTACK OR AFTER CLOSE
+            return true;    
+        return false;    
+    }
+    public boolean isAllFacesKilled(){
+        return dragon1.isFaceKilled()&&dragon2.isFaceKilled()&&
+               dragon3.isFaceKilled()&&dragon4.isFaceKilled();
+    }
+    public boolean isAllWingsKilled(){
+        return dragon1.isWingsKilled()&&dragon2.isWingsKilled()&&
+               dragon3.isWingsKilled()&&dragon4.isWingsKilled();
+    }
+    public boolean isAllTailsKilled(){
+        return dragon1.isTailKilled()&&dragon2.isTailKilled()&&
+        dragon3.isTailKilled()&&dragon4.isTailKilled();
+    }
+    public boolean isAllHeartsKilled(){
+        return dragon1.isHeartKilled()&&dragon2.isHeartKilled()&&
+               dragon3.isHeartKilled()&&dragon4.isHeartKilled();
+    }
 //============================G&S====================================================
     public Dragon getDragon1(){
         return dragon1;
@@ -161,6 +205,43 @@ public class RedRealm extends Realms{
     }
     public Dragon getDragon4(){
         return dragon4;
+    }
+    @Override
+    public Reward getReward() {
+        Reward[] rewards=getRealmRewards();
+        if(isAllFacesKilled()&&rewards[faceRow]!=null){
+            Reward recievedReward=rewards[faceRow];
+            rewardClaimed(faceRow);
+             return recievedReward;
+        }  
+        if(isAllWingsKilled()&&rewards[wingsRow]!=null){
+            Reward recievedReward=rewards[wingsRow];
+            rewardClaimed(wingsRow);
+             return recievedReward;
+        }  
+        if(isAllTailsKilled()&&rewards[tailRow]!=null){
+            Reward recievedReward=rewards[tailRow];
+            rewardClaimed(tailRow);
+             return recievedReward;
+        }  
+        if(isAllHeartsKilled()&&rewards[heartRow]!=null){
+            Reward recievedReward=rewards[heartRow];
+            rewardClaimed(heartRow);
+             return recievedReward;
+        }  
+        if(!isRealmAccessible()&&rewards[allDeadRow]!=null){//NOTE THIS INDICATES U CHECK OUTSIDE AFTER ATTACK OR AFTER CLOSE
+            Reward recievedReward=rewards[allDeadRow];
+            rewardClaimed(allDeadRow);
+             return recievedReward;
+        }
+        return null;  
+    }
+    @Override
+    public void setRealmRewards(Reward[] realmRewards) {
+        Reward[] templateRewards=new Reward[]{new Bonus(RealmColor.GREEN),new Bonus(RealmColor.YELLOW),new Bonus(RealmColor.BLUE),
+            new ElementalCrest(),new ArcaneBoost()};
+        for(int i=0;i<templateRewards.length;i++)
+            realmRewards[i]=templateRewards[i];
     }
 
     

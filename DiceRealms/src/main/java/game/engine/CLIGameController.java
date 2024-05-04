@@ -1,8 +1,7 @@
 package main.java.game.engine;
 import main.java.game.dice.*;
 
-import java.lang.annotation.Retention;
-
+import java.util.*;
 import main.java.game.collectibles.*;
 import main.java.game.realms.*;
 import main.java.game.creatures.*;
@@ -306,9 +305,16 @@ public class CLIGameController extends GameController{
      *         for a given player.
      */
     public  TimeWarp[] getTimeWarpPowers(Player player){
+        ArrayList<TimeWarp> timeWarp=player.getTimeWarps();
 
+        if(timeWarp==null||timeWarp.isEmpty())//May change implementation based on tests
+            return new TimeWarp[0];
 
-        
+        TimeWarp[] timeWarpOutput=new TimeWarp[timeWarp.size()];
+        for(int i=0;i<timeWarpOutput.length;i++)
+            timeWarpOutput[i]=timeWarp.get(i);
+
+        return timeWarpOutput;    
     }
 
     /**
@@ -319,10 +325,16 @@ public class CLIGameController extends GameController{
      *         powers for a given player.
      */
     public  ArcaneBoost[] getArcaneBoostPowers(Player player){
+        ArrayList<ArcaneBoost> arcaneBoosts=player.getArcaneBoosts();
 
+        if(arcaneBoosts==null||arcaneBoosts.isEmpty())//May change implementation based on tests
+            return new ArcaneBoost[0];
 
-
-         
+        ArcaneBoost[] arcaneBoostOutput=new ArcaneBoost[arcaneBoosts.size()];
+        for(int i=0;i<arcaneBoostOutput.length;i++)
+            arcaneBoostOutput[i]=arcaneBoosts.get(i);
+            
+        return arcaneBoostOutput;    
     }
 
     /**

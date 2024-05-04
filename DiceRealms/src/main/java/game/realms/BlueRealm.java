@@ -71,7 +71,7 @@ public class BlueRealm extends Realms{
         return null;
     }
     @Override
-    public boolean checkRewardAvailable() {
+    public boolean isRewardAvailable() {
         Reward[] rewards=getRealmRewards();
         return rewards[getTotalNumberOfAttacks()]!=null;
     }

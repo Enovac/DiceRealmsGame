@@ -29,7 +29,7 @@ public abstract class Realms {
     public abstract boolean isRealmDefeated();
     public abstract Move[] getAllPossibleMoves();
     public abstract Move[] getPossibleMovesForADie(int diceValue,RealmColor colorOfDice);
-    public abstract boolean checkRewardAvailable();
+    public abstract boolean isRewardAvailable();
 //============================G&S============================================
     public RealmColor getRealmColor(){
         return REALM_COLOR;

@@ -295,7 +295,7 @@ public class CLIGameController extends GameController{
      * @return The current {@code GameScore} object.
      */
     public  GameScore getGameScore(Player player){
-
+        return player.getGameScore();
     }
 
     /**
@@ -348,7 +348,7 @@ public class CLIGameController extends GameController{
      *         {@code false} otherwise.
      */
     public  boolean selectDice(Dice dice, Player player){
-        return false;
+
     }
 
     /**

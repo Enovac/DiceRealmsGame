@@ -16,72 +16,10 @@ public class ScoreSheet {
         YELLOW_REALM=new YellowRealm();
         MAGENTA_REALM=new MagentaRealm();
     }
-
-
-
-
-
-/* 
-Emberfall Dominion: Pyroclast Dragon (RED REALM):
-+-----------------------------------+
-|  #  |D1   |D2   |D3   |D4   |R    |
-+-----------------------------------+
-|  F  |3    |6    |5    |X    |GB   |
-|  W  |2    |1    |X    |5    |YB   |
-|  T  |1    |X    |2    |4    |BB   |
-|  H  |X    |3    |4    |6    |EC   |
-+-----------------------------------+
-|  S  |10   |14   |16   |20   |AB   |
-+-----------------------------------+
-
-
-Terra's Heartland: Gaia Guardians (GREEN REALM): 
-+-----------------------------------+
-|  #  |1    |2    |3    |4    |R    |
-+-----------------------------------+
-|  1  |X    |2    |3    |4    |YB   |
-|  2  |5    |6    |7    |8    |RB   |
-|  3  |9    |10   |11   |12   |EC   |
-+-----------------------------------+
-|  R  |TW   |BB   |MB   |AB   |     |
-+-----------------------------------------------------------------------------+
-|  S  |0    |1    |2    |4    |7    |11   |16   |22   |29   |37   |46   |56   |
-+-----------------------------------------------------------------------------+
-
-
-
-
-
-
-
-
-
-*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    @Override
+    public String toString(){
+        return RED_REALM+"\n\n"+GREEN_REALM+"\n\n"+BLUE_REALM+"\n\n"+MAGENTA_REALM+"\n\n"+YELLOW_REALM;
+    }
 
     public BlueRealm getBlueRealm(){
         return BLUE_REALM;
@@ -98,5 +36,4 @@ Terra's Heartland: Gaia Guardians (GREEN REALM):
     public MagentaRealm getMagentaRealm(){
         return MAGENTA_REALM;
     } 
-
 }

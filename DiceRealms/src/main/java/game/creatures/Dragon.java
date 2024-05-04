@@ -59,5 +59,17 @@ public class Dragon extends Creature{
    public boolean isDeadDragon(){
     return isDead;
    }
+   public int getFace(){
+    return face;
+   }
+   public int getWings(){
+    return wings;
+   }
+   public int getTail(){
+    return tail;
+   }
+   public int getHeart(){
+    return heart;
+   }
 
 }

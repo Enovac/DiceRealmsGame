@@ -21,7 +21,7 @@ public class RedRealm extends Realms{
     private final int allDeadRow;
 //============================Constructor============================================
     public RedRealm(){
-        super(RealmColor.RED,5,11);
+        super(RealmColor.RED,5,16);
         dragon1=new Dragon(DragonNumber.Dragon1,3,2,1,0);
         dragon2=new Dragon(DragonNumber.Dragon2,6,1,0,3);
         dragon3=new Dragon(DragonNumber.Dragon3,5,0,2,4);
@@ -38,8 +38,9 @@ public class RedRealm extends Realms{
     public boolean attack(int diceValue, Creature creature) {
         Dragon currentDragon=(Dragon)creature;
         if(currentDragon.checkPossibleAttack(diceValue)){
-            currentDragon.attackPart(diceValue);
             incrementTotalNumberOfAttacks();
+            recordAttack(diceValue,currentDragon);//the string thing
+            currentDragon.attackPart(diceValue);
             updateTotalRealmScore(diceValue);//change
             if(isRealmDefeated())
                 closeRealm();
@@ -193,6 +194,36 @@ public class RedRealm extends Realms{
         return dragon1.isHeartKilled()&&dragon2.isHeartKilled()&&
                dragon3.isHeartKilled()&&dragon4.isHeartKilled();
     }
+    @Override
+    public void initializePreviousAttacks(String[] previousAttacks) {
+        String[] templateValue=new String[]{"3","6","5","X","2","1","X","5","1","X","2","4","X","3","4","6"};
+        for(int i=0;i<templateValue.length;i++)
+            previousAttacks[i]=templateValue[i]+"    ";
+    }
+    public void recordAttack(int diceValue,Dragon drag){
+        int offsetValue=4;
+        if(diceValue==drag.getFace())
+            offsetValue*=0;
+        else if(diceValue==drag.getWings())
+            offsetValue*=1;
+        else if(diceValue==drag.getTail())
+            offsetValue*=2;
+        else
+            offsetValue*=3;
+        switch (drag.getDragonNumber()) {
+            case Dragon4:offsetValue++;
+            case Dragon3:offsetValue++;
+            case Dragon2:offsetValue++;
+            case Dragon1:break;//did to remove the warning
+        }    
+        recordAttack(offsetValue);    
+    }
+    @Override
+    public void recordAttack(int indexValue){
+        String[]previousAttacks=getPreviousAttacks();
+        previousAttacks[indexValue]="X    ";
+
+    }
 //============================G&S====================================================
     public Dragon getDragon1(){
         return dragon1;
@@ -243,7 +274,36 @@ public class RedRealm extends Realms{
         for(int i=0;i<templateRewards.length;i++)
             realmRewards[i]=templateRewards[i];
     }
-//============================toString===============================================   
+//============================toString===============================================      
+    @Override
+    public String toString() {
+        String[] prevAt=getPreviousAttacks();//previousAttacks
+        String[] drawRew=new String[]{"GB   ","YB   ","BB   ","EC   ","AB   "};//drawReward
+        Reward[] rewards=getRealmRewards();
+        if(rewards[faceRow]==null)
+            drawRew[0]="X    ";
+        if(rewards[wingsRow]==null)
+            drawRew[1]="X    "; 
+        if(rewards[tailRow]==null)
+            drawRew[2]="X    ";   
+        if(rewards[heartRow]==null)
+            drawRew[3]="X    ";
+        if(rewards[allDeadRow]==null)
+            drawRew[4]="X    ";
+
+
+        return "Emberfall Dominion: Pyroclast Dragon (RED REALM):"+"\n"+
+        "+-----------------------------------+"+"\n"+
+        "|  #  |D1   |D2   |D3   |D4   |R    |"+"\n"+
+        "+-----------------------------------+"+"\n"+
+        "|  F  |"+prevAt[0]+"|"+prevAt[1]+"|"+prevAt[2]+"|"+prevAt[3]+"|"+drawRew[0]+"|"+"\n"+
+        "|  W  |"+prevAt[4]+"|"+prevAt[5]+"|"+prevAt[6]+"|"+prevAt[7]+"|"+drawRew[1]+"|"+"\n"+
+        "|  T  |"+prevAt[8]+"|"+prevAt[9]+"|"+prevAt[10]+"|"+prevAt[11]+"|"+drawRew[2]+"|"+"\n"+
+        "|  H  |"+prevAt[12]+"|"+prevAt[13]+"|"+prevAt[14]+"|"+prevAt[15]+"|"+drawRew[3]+"|"+"\n"+
+        "+-----------------------------------+"+"\n"+
+        "|  S  |10   |14   |16   |20   |"+drawRew[4]+"|"+"\n"+
+        "+-----------------------------------+"+"\n";
+    }
 
     
 }

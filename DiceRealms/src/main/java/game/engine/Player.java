@@ -6,7 +6,7 @@ import main.java.game.realms.*;
 import java.util.*;
 public class Player {
     private ScoreSheet scoreSheet;
-    // private GameScore gameScore;//Grimore
+    private GameScore gameScore;
 
     private PlayerStatus playerStatus;
 
@@ -62,5 +62,14 @@ public ArrayList<TimeWarp> getTimeWarps(){
 }
 public ArrayList<ElementalCrest> getElementalCrests(){
     return elementalCrests;
+}
+public GameScore getGameScore(){
+    int redScore=RED_REALM.getTotalRealmScore();
+    int blueScore=RED_REALM.getTotalRealmScore();
+    int greenScore=RED_REALM.getTotalRealmScore();
+    int yellowScore=RED_REALM.getTotalRealmScore();
+    int magentaScore=RED_REALM.getTotalRealmScore();
+    gameScore.calculateGameScore(redScore, blueScore, greenScore, yellowScore, magentaScore,elementalCrests.size());
+    return gameScore;
 }
 }

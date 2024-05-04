@@ -20,7 +20,7 @@ public class GreenRealm extends Realms{
     private final int rewardRow3;
 //============================Constructor============================================
     public GreenRealm(){
-        super(RealmColor.GREEN,7,11);
+        super(RealmColor.GREEN,7,12);
         gaiaGurdian=new Gaia();
         rewardColumn1=0;
         rewardColumn2=1;

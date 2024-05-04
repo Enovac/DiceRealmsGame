@@ -19,6 +19,8 @@ public class Player {
     private ArrayList<ArcaneBoost> arcaneBoosts;
     private ArrayList<TimeWarp> timeWarps;
     private ArrayList<ElementalCrest> elementalCrests;
+
+    private PlayerType playerType;
 //============================Constructor========================================
 
     public Player(){
@@ -77,5 +79,11 @@ public class Player {
     public GameScore getGameScore(){
         updateGameScore();
         return gameScore;
+    }
+    public PlayerType getPlayerType(){
+        return playerType;
+    }
+    public void setPlayerType(PlayerType type){
+        playerType=type;
     }
 }

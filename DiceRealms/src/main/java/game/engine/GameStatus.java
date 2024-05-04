@@ -3,10 +3,12 @@ package main.java.game.engine;
 public class GameStatus {
     private int gameRound;
     private int turn;
+    private boolean PlayerSwitched;
     public GameStatus(){
         gameRound=1;
         turn=1;
     }
+
     public int getGameRound(){
         return gameRound;
     }
@@ -21,14 +23,17 @@ public class GameStatus {
         turn=1;
     }
     public void incrementTurn(){
-        turn++;//???
+        turn++;
     }
+
+
     public void incrementRound(){
         gameRound++;
     }
+
+
     public boolean isGameFinished(){
-        return gameRound>=7;
-        //based on implemnetation
+        return gameRound==7;
     }
 
 

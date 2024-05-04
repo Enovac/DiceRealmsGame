@@ -7,12 +7,91 @@ import main.java.game.realms.*;
 import main.java.game.creatures.*;
 public class CLIGameController extends GameController{
     private GameBoard gameBoard;
+    private Scanner sc;
     
 
-
-    
     public  void startGame(){
-     //Initializes necessary components and starts the game loop.
+        sc=new Scanner(System.in);
+        gameBoard=new GameBoard();
+        while(!getGameStatus().isGameFinished()){
+            Player currentPlayer=getActivePlayer();
+            while(getGameStatus().getTurn()<=3){
+                System.out.println(currentPlayer.getPlayerType()+"'s Turn!!!");
+                createDelay();
+                System.out.println(getScoreSheet(currentPlayer));
+                System.out.println("Rolling dice......");
+                createDelay();
+                if(getAvailableDice()==null){
+                    System.out.println("No more dice to roll :( ");
+                    break;
+                }
+                rollDice();
+                int chosenDie=displayAvailableDice();
+                Dice[] availableDice=getAvailableDice();
+                Dice selectedDie=availableDice[chosenDie];
+                selectDice(selectedDie, currentPlayer);
+                RealmColor theDiceColor;
+                if(selectedDie.getDiceColor()==RealmColor.WHITE){
+                    chooseArcaneDiceColor();
+                    theDiceColor=((ArcanePrism)selectedDie).getChosenColor();
+                }
+                else theDiceColor=selectedDie.getDiceColor();
+                choseCreatureInRealm(theDiceColor, currentPlayer);
+                break;
+            }   
+            break;
+        }
+    }
+    public Creature choseCreatureInRealm(RealmColor color,Player player){
+        switch (color) {
+            case RED:System.out.println(player.getRedRealm());
+            System.out.println("Please Choose  A dragon");
+            return player.getRedRealm().getDragon1();
+            case BLUE:System.out.println(player.getBlueRealm());
+            System.out.println("Attacking Hydra....");
+            createDelay();
+            return player.getBlueRealm().getHydra();
+            case GREEN:System.out.println(player.getGreenRealm());
+            System.out.println("Attacking Gaia Gurdian....");
+            createDelay();
+            return player.getGreenRealm().getGaia();
+            case YELLOW:System.out.println(player.getYellowRealm());
+            System.out.println("Attacking Lion....");
+            createDelay();
+            return player.getYellowRealm().getLion();
+            case MAGENTA:System.out.println(player.getMagentaRealm());
+            System.out.println("Attacking Phoenix....");
+            createDelay();
+            return player.getMagentaRealm().getPhoenix();
+        }
+        return null;//error occured
+    }
+    public void chooseArcaneDiceColor(){
+        System.out.println("Please chose a color for the Arcane Prism:");
+        System.out.println("Red Blue Green Yellow Magenta");
+        System.out.print("Chosen color: ");
+        getGameBoard().getArcanePrism().setChosenColor(sc.next());
+    }
+    public int displayAvailableDice(){
+        Dice[]availableDice=getAvailableDice();
+        for(int i=0;i<availableDice.length;i++)
+            System.out.print(i+"-"+availableDice[i]);
+        System.out.println();
+        System.out.println("Choose a number between 0 and "+(availableDice.length-1)+" to pick a die");
+        System.out.print("Chosen Number: ");
+        String chosenDie=sc.next().trim();
+        //Error here
+        return Integer.parseInt(chosenDie);
+
+    }
+    public void createDelay(){
+        try{
+            Thread.sleep(3000);
+        }
+        catch(Exception ex){
+            System.out.println("Error in Thread Sleep");
+            ex.printStackTrace();
+        }
     }
 
     /**
@@ -31,12 +110,6 @@ public class CLIGameController extends GameController{
         //Should it do the get dice from bla bla??<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
     }
 
-    /**
-     * Rolls all available dice for the current turn, assigning each a random
-     * number from 1 to 6.
-     * 
-     * @return An array of the currently rolled {@code Dice}.
-     */
     public  Dice[] rollDice(){
         Dice[] rolledDice=getAvailableDice();
         for(Dice currentDice:rolledDice)
@@ -44,18 +117,14 @@ public class CLIGameController extends GameController{
         return rolledDice;
     }
 
-    /**
-     * Gets the dice available for rolling or rerolling.
-     * 
-     * @return An array of {@code Dice} available for the current turn.
-     */
     public  Dice[] getAvailableDice(){
         Dice[] allDice=getAllDice();
         int numberOfAvailableDice=0;
         for(Dice x:allDice)
             if(x.getDiceStatus()==DiceStatus.AVAILABLE)
                 numberOfAvailableDice++;
-
+       if(numberOfAvailableDice==0)
+            return null;
        Dice[] availableDice=new Dice[numberOfAvailableDice];
 
         for(int i=0,j=0;i<numberOfAvailableDice;j++)
@@ -64,24 +133,11 @@ public class CLIGameController extends GameController{
 
         return availableDice;        
     }
-    /**
-     * Gets all six dice, providing their current state and value within the
-     * game regardless of their location or status. The dice could be in various
-     * states, such as currently rolled and awaiting selection by the active player,
-     * in the Forgotten Realm awaiting selection by the passive player, or already
-     * assigned to a specific turn by the active player.
-     *
-     * @return An array of all six {@code Dice}, with each die's state and value.
-     */
+    
     public  Dice[] getAllDice(){
         return gameBoard.getAllDice();//or Do I do seperate Dice?
     }
 
-    /**
-     * Gets the dice currently available in the Forgotten Realm.
-     *
-     * @return An array of {@code Dice} that are currently in the Forgotten Realm.
-     */
     public  Dice[] getForgottenRealmDice(){
         Dice[] allDice=getAllDice();
         int numberOfForgottenDice=0;
@@ -98,12 +154,6 @@ public class CLIGameController extends GameController{
         return forgottenDice;     
     }
 
-    /**
-     * Gets all possible moves for a given player.
-     *
-     * @param player The player for whom to determine possible moves.
-     * @return An array of all possible moves for all rolled dice.
-     */
     public  Move[] getAllPossibleMoves(Player player){
         BlueRealm playerBlueRealm=player.getBlueRealm();
         RedRealm  playerRedRealm=player.getRedRealm();
@@ -120,12 +170,6 @@ public class CLIGameController extends GameController{
         return mergeMoves(blueRealmMoves, redRealmMoves, greenRealmMoves, yellowRealmMoves, magentaRealmMoves);
     }
 
-    /**
-     * Gets possible moves for all currently rolled dice for a given player.
-     *
-     * @param player The player for whom to determine possible moves.
-     * @return An array of all possible moves for all rolled dice.
-     */
     public  Move[] getPossibleMovesForAvailableDice(Player player){
         ArcanePrism arcanePrism=gameBoard.getArcanePrism();
         BlueDice blueDice=gameBoard.getBlueDice();
@@ -145,13 +189,6 @@ public class CLIGameController extends GameController{
         return mergeMoves(moves1,arcaneMoves,null,null,null);
     }
 
-    /**
-     * Gets all possible moves for a given die for a given player.
-     *
-     * @param player The player for whom to determine possible moves.
-     * @param dice   The dice to determine possible moves for.
-     * @return An array of possible moves for the given dice.
-     */ 
     public  Move[] getPossibleMovesForADie(Player player, Dice dice){
      
         RealmColor diceColor=dice.getDiceColor();
@@ -236,71 +273,31 @@ public class CLIGameController extends GameController{
         return moves;
     }
 
-    /**
-     * Gets the current game board, including all players and all score sheets.
-     * 
-     * @return The current {@code GameBoard} object.
-     */
     public  GameBoard getGameBoard(){
         return gameBoard;
     }
 
-    /**
-     * Gets the current active player's information.
-     * 
-     * @return The active {@code Player} object.
-     */
     public  Player getActivePlayer(){
         return gameBoard.getActivePlayer();
     }
 
-    /**
-     * Gets the current passive player's information.
-     * 
-     * @return The passive {@code Player} object.
-     */
     public  Player getPassivePlayer(){
         return gameBoard.getPassivePlayer();
     }
 
-    /**
-     * Gets the score sheet for a given player.
-     * 
-     * @param player The player to get the current score sheet for.
-     * @return The {@code ScoreSheet} object for a given player.
-     */
     public  ScoreSheet getScoreSheet(Player player){
         return player.getScoreSheet();
     }
 
-    /**
-     * Gets the current game status, including round and turn information for the
-     * current active player.
-     * 
-     * @return The current {@code GameStatus} object.
-     */
+
     public  GameStatus getGameStatus(){
         return getGameBoard().getGameStatus();
     }
 
-    /**
-     * Gets the current score of the game, including scores in each realm, number of
-     * elemental crests, and the total score for a given player.
-     * 
-     * @param player The player to determine current score for.
-     * @return The current {@code GameScore} object.
-     */
     public  GameScore getGameScore(Player player){
         return player.getGameScore();
     }
 
-    /**
-     * Gets the array of TimeWarp powers and their status for a given player.
-     *
-     * @param player The player to get the current TimeWarp powers for.
-     * @return An array of {@code TimeWarp} objects representing the TimeWarp powers
-     *         for a given player.
-     */
     public  TimeWarp[] getTimeWarpPowers(Player player){
         ArrayList<TimeWarp> timeWarp=player.getTimeWarps();
 
@@ -314,13 +311,6 @@ public class CLIGameController extends GameController{
         return timeWarpOutput;    
     }
 
-    /**
-     * Gets the array of ArcaneBoost powers and their status for a given player.
-     *
-     * @param player The player to get the current ArcaneBoost powers for.
-     * @return An array of {@code ArcaneBoost} objects representing the ArcaneBoost
-     *         powers for a given player.
-     */
     public  ArcaneBoost[] getArcaneBoostPowers(Player player){
         ArrayList<ArcaneBoost> arcaneBoosts=player.getArcaneBoosts();
 
@@ -334,28 +324,19 @@ public class CLIGameController extends GameController{
         return arcaneBoostOutput;    
     }
 
-    /**
-     * Selects a die and adds it to the player class, then moves
-     * all other dice with less value to the Forgotten Realm.
-     * 
-     * @param player The player who selected the die.
-     * @param dice   The dice to be selected.
-     * @return {@code true} if the selection was successful,
-     *         {@code false} otherwise.
-     */
     public  boolean selectDice(Dice dice, Player player){
-
+       Dice[] availableDice=getAvailableDice();
+       boolean foundDice=false;
+       for(Dice x:availableDice){
+        if(x==dice){
+            foundDice=true;
+            x.setDiceStatus(DiceStatus.TURN_SELECTED);
+        }
+        else if(x.getDiceValue()<dice.getDiceValue())    
+            x.setDiceStatus(DiceStatus.FORGOTTEN_REALM);
+       }
+        return foundDice;    
     }
-
-    /**
-     * Executes a move using the selected dice on a specified creature.
-     *
-     * @param player The player who wants to make the move.
-     * @param move   The move to be executed, including the selected dice and
-     *               target creature.
-     * @return {@code true} if the move is successfully completed,
-     *         {@code false} otherwise.
-     */
     public  boolean makeMove(Player player, Move move){ 
         Dice moveDice=move.getMoveDice();
         Creature moveCreature=move.getMoveCreature();

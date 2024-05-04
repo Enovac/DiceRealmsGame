@@ -15,7 +15,11 @@ public class GameBoard {
 
      public GameBoard(){
           player1=new Player();//set active / passive??
+          player1.setPlayerStatus(PlayerStatus.ACTIVE);
+          player1.setPlayerType(PlayerType.WHITE_WIZARD);
           player2=new Player();
+          player2.setPlayerStatus(PlayerStatus.PASSIVE);
+          player2.setPlayerType(PlayerType.BLACK_WIZARD);
 
           gameStatus=new GameStatus();
           
@@ -63,5 +67,4 @@ public class GameBoard {
    public GameStatus getGameStatus(){
       return gameStatus;
    }
-
 }

@@ -27,5 +27,9 @@ public abstract class Dice {
         int newValue=((int)((Math.random()*6)+1));
         diceValue=newValue;
     }
+    @Override
+    public String toString(){
+        return DICE_COLOR+": "+diceValue+"   ";
+    }
 }
 

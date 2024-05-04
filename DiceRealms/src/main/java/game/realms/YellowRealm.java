@@ -28,6 +28,7 @@ public class YellowRealm extends Realms{
             else if(totalNumberOfAttacks==11)
                 diceValue*=3;    
             updateTotalRealmScore(diceValue);
+            recordAttack(diceValue);//the string thing
             if(isRealmDefeated())
                 closeRealm();
            //Give Rewards
@@ -68,6 +69,11 @@ public class YellowRealm extends Realms{
         Reward[] rewards=getRealmRewards();
         return rewards[getTotalNumberOfAttacks()]!=null;
     }
+    @Override
+    public void initializePreviousAttacks(String[] previousAttacks) {
+        for(int i=0;i<previousAttacks.length;i++)
+         previousAttacks[i]="0    ";
+    }
 
 //============================G&S====================================================    
     public Lion getLion(){
@@ -89,6 +95,33 @@ public class YellowRealm extends Realms{
             realmRewards[i]=templateRewards[i];
     }
 //============================toString===============================================   
+    @Override
+    public String toString() {
+            String[] prevAt=getPreviousAttacks();//previousAttacks
+            String[] drawRew=new String[]{"TW   ","RB   ","AB   ","EC   ","MB   "};//drawReward
+            switch(getTotalNumberOfAttacks()){
+            case 11:
+            case 10:drawRew[4]="X    ";
+            case 9:
+            case 8:drawRew[3]="X    ";
+            case 7:
+            case 6:drawRew[2]="X    ";
+            case 5:drawRew[1]="X    ";
+            case 4:
+            case 3:drawRew[0]="X    ";
+            } 
+
+           return "Radiant Savanna: Solar Lion (YELLOW REALM):"+"\n"+
+           "+-----------------------------------------------------------------------+"+"\n"+
+           "|  #  |1    |2    |3    |4    |5    |6    |7    |8    |9    |10   |11   |"+"\n"+
+           "+-----------------------------------------------------------------------+"+"\n"+
+           "|  H  |"+prevAt[0]+"|"+prevAt[1]+"|"+prevAt[2]+"|"+prevAt[3]+"|"+prevAt[4]+"|"+
+            prevAt[5]+"|"+prevAt[6]+"|"+prevAt[7]+"|"+prevAt[8]+"|"+prevAt[9]+"|"+prevAt[10]+"|"+"\n"+
+           "|  M  |     |     |     |x2   |     |     |x2   |     |x2   |     |x3   |"+"\n"+
+           "|  R  |     |     |"+drawRew[0]+"|     |"+drawRew[1]+"|"+drawRew[2]+"|     |"+
+            drawRew[3]+"|     |"+drawRew[4]+"|     |"+"\n"+
+           "+-----------------------------------------------------------------------+"+"\n";
+    }
     
 
 }

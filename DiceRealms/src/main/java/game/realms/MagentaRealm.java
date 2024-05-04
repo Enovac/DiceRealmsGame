@@ -20,6 +20,7 @@ public class MagentaRealm extends Realms{
             phoenix.setHealth(diceValue);
             updateTotalRealmScore(diceValue);
             incrementTotalNumberOfAttacks();
+            recordAttack(diceValue);//the string thing
             if(isRealmDefeated())
                 closeRealm();
             //Give Rewards 
@@ -60,7 +61,11 @@ public class MagentaRealm extends Realms{
         Reward[] rewards=getRealmRewards();
         return rewards[getTotalNumberOfAttacks()]!=null;
     }
-
+    @Override
+    public void initializePreviousAttacks(String[] previousAttacks) {
+        for(int i=0;i<previousAttacks.length;i++)
+         previousAttacks[i]="0    ";
+    }
 //============================G&S====================================================   
     public Phoenix getPhoenix(){
         return phoenix;
@@ -83,6 +88,34 @@ public class MagentaRealm extends Realms{
             realmRewards[i]=templateRewards[i];
     }
 //============================toString===============================================   
+    @Override
+    public String toString() {
+    String[] prevAt=getPreviousAttacks();//previousAttacks
+       String[] drawRew=new String[]{"TW   ","GB   ","AB   ","RB   ","EC   ","TW   ","BB   ","YB   ","AB   "};//drawReward
+       switch(getTotalNumberOfAttacks()){
+        case 11:drawRew[8]="X    ";
+        case 10:drawRew[7]="X    ";
+        case 9:drawRew[6]="X    ";
+        case 8:drawRew[5]="X    ";
+        case 7:drawRew[4]="X    ";
+        case 6:drawRew[3]="X    ";
+        case 5:drawRew[2]="X    ";
+        case 4:drawRew[1]="X    ";
+        case 3:drawRew[0]="X    ";
+       } 
+        
+
+      return "Mystical Sky: Majestic Phoenix (MAGENTA REALM):"+"\n"+
+       "+-----------------------------------------------------------------------+"+"\n"+
+       "|  #  |1    |2    |3    |4    |5    |6    |7    |8    |9    |10   |11   |"+"\n"+
+       "+-----------------------------------------------------------------------+"+"\n"+
+       "|  H  |"+prevAt[0]+"|"+prevAt[1]+"|"+prevAt[2]+"|"+prevAt[3]+"|"+prevAt[4]+"|"+
+       prevAt[5]+"|"+prevAt[6]+"|"+prevAt[7]+"|"+prevAt[8]+"|"+prevAt[9]+"|"+prevAt[10]+"|"+"\n"+
+       "|  C  |<    |<    |<    |<    |<    |<    |<    |<    |<    |<    |<    |"+"\n"+
+       "|  R  |     |     |"+drawRew[0]+"|"+drawRew[1]+"|"+drawRew[2]+"|"+drawRew[3]+"|"+
+       drawRew[4]+"|"+drawRew[5]+"|"+drawRew[6]+"|"+drawRew[7]+"|"+drawRew[8]+"|"+"\n"+
+       "+-----------------------------------------------------------------------+"+"\n";
+    }
    
 
 }

@@ -37,6 +37,7 @@ public class GreenRealm extends Realms{
             gaiaGurdian.killGaiaGurdian(diceValue);
             incrementTotalNumberOfAttacks();
             updateTotalRealmScore(getTotalNumberOfAttacks());
+            recordAttack(diceValue);//the string thing
             if(isRealmDefeated())
                     closeRealm();
             //get rewards
@@ -113,7 +114,21 @@ public class GreenRealm extends Realms{
             return true; 
        return false;                     
     }
+    @Override
+    public void initializePreviousAttacks(String[] previousAttacks) {
+        previousAttacks[0]="X    ";//Everything shifted Down one
+        for(int i=1;i<9;i++)
+            previousAttacks[i]=(i+1)+"    ";
+        previousAttacks[9]=10+"   ";
+        previousAttacks[10]=11+"   ";
+        previousAttacks[11]=12+"   ";      
+    }
+    @Override
+    public void recordAttack(int diceValue){
+        String[]previousAttacks=getPreviousAttacks();
+        previousAttacks[diceValue]="X    ";
 
+    }
 //============================G&S====================================================   
     public Gaia getGaia(){
         return gaiaGurdian;
@@ -171,6 +186,42 @@ public class GreenRealm extends Realms{
             realmRewards[i]=templateRewards[i];
     }
 //============================toString===============================================   
+    @Override
+    public String toString() {
+        String[] prevAt=getPreviousAttacks();//previousAttacks
+        String[] drawRew=new String[]{"TW   ","BB   ","MB   ","AB   ","YB   ","RB   ","EC   "};//drawReward
+        Reward[] rewards=getRealmRewards();
+        if(rewards[rewardColumn1]==null)
+            drawRew[0]="X    ";
+        if(rewards[rewardColumn2]==null)
+            drawRew[1]="X    ";
+        if(rewards[rewardColumn3]==null)
+            drawRew[2]="X    ";     
+        if(rewards[rewardColumn4]==null)
+            drawRew[3]="X    ";
+        if(rewards[rewardRow1]==null)
+            drawRew[4]="X    ";
+        if(rewards[rewardRow2]==null)
+            drawRew[5]="X    ";
+        if(rewards[rewardRow3]==null)
+            drawRew[6]="X    ";
+         
+
+
+        return "Terra's Heartland: Gaia Guardians (GREEN REALM):"+"\n"+ 
+        "+-----------------------------------+"+"\n"+
+        "|  #  |1    |2    |3    |4    |R    |"+"\n"+
+        "+-----------------------------------+"+"\n"+
+        "|  1  |"+prevAt[0]+"|"+prevAt[1]+"|"+prevAt[2]+"|"+prevAt[3]+"|"+drawRew[4]+"|"+"\n"+
+        "|  2  |"+prevAt[4]+"|"+prevAt[5]+"|"+prevAt[6]+"|"+prevAt[7]+"|"+drawRew[5]+"|"+"\n"+
+        "|  3  |"+prevAt[8]+"|"+prevAt[9]+"|"+prevAt[10]+"|"+prevAt[11]+"|"+drawRew[6]+"|"+"\n"+
+        "+-----------------------------------+"+"\n"+
+        "|  R  |"+drawRew[0]+"|"+drawRew[1]+"|"+drawRew[2]+"|"+drawRew[3]+"|     |"+"\n"+
+        "+-----------------------------------------------------------------------------+"+"\n"+
+        "|  S  |0    |1    |2    |4    |7    |11   |16   |22   |29   |37   |46   |56   |"+"\n"+
+        "+-----------------------------------------------------------------------------+"+"\n";
+
+    }
     
 
 }

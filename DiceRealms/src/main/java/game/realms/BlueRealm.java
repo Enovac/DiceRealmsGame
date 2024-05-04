@@ -108,10 +108,13 @@ public class BlueRealm extends Realms{
        String[] prevAt=getPreviousAttacks();//previousAttacks
        String[] drawRew=new String[]{"AB   ","GB   ","EC   ","MB   ","TW   "};//drawReward
        switch(getTotalNumberOfAttacks()){
+        case 11:
         case 10:drawRew[4]="X    ";
         case 9:drawRew[3]="X    ";
+        case 8:
         case 7:drawRew[2]="X    ";
         case 6:drawRew[1]="X    ";
+        case 5:
         case 4:drawRew[0]="X    ";
        } 
         

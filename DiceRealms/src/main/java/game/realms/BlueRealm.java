@@ -10,7 +10,7 @@ public class BlueRealm extends Realms{
     private int totalDefeatedHeads;
 //============================Constructor============================================
     public BlueRealm(){
-         super(RealmColor.BLUE,11);
+         super(RealmColor.BLUE,11,11);
          hydra=new Hydra();
          hydra.spawnHydra();
     }
@@ -22,10 +22,11 @@ public class BlueRealm extends Realms{
                 hydra.respawnHydra();
             totalDefeatedHeads++;
             incrementTotalNumberOfAttacks();
+            recordAttack(diceValue);//the string thing
             updateTotalRealmScore(totalDefeatedHeads);
             if(isRealmDefeated())
                 closeRealm();
-            //Give user his rewards,Do I increment total attacks
+            //Give user his rewards
             return true;
         }
         return false;
@@ -75,6 +76,12 @@ public class BlueRealm extends Realms{
         Reward[] rewards=getRealmRewards();
         return rewards[getTotalNumberOfAttacks()]!=null;
     }
+    @Override
+    public void initializePreviousAttacks(String[] previousAttacks){
+        for(int i=0;i<previousAttacks.length;i++)
+            previousAttacks[i]="---  ";
+        
+    }
    
     
 //============================G&S====================================================
@@ -94,6 +101,32 @@ public class BlueRealm extends Realms{
           new Bonus(RealmColor.GREEN),new ElementalCrest(),null,new Bonus(RealmColor.MAGENTA),new TimeWarp(),null};   
         for(int i=0;i<templateRewards.length;i++)
             realmRewards[i]=templateRewards[i];
+    }
+//============================toString===============================================   
+    @Override
+    public String toString() {
+       String[] prevAt=getPreviousAttacks();//previousAttacks
+       String[] drawRew=new String[]{"AB   ","GB   ","EC   ","MB   ","TW   "};//drawReward
+       switch(getTotalNumberOfAttacks()){
+        case 10:drawRew[4]="X    ";
+        case 9:drawRew[3]="X    ";
+        case 7:drawRew[2]="X    ";
+        case 6:drawRew[1]="X    ";
+        case 4:drawRew[0]="X    ";
+       } 
+        
+        return "Tide Abyss: Hydra Serpents (BLUE REALM):"+"\n"+
+        "+-----------------------------------------------------------------------+"+"\n"+
+        "|  #  |H11  |H12  |H13  |H14  |H15  |H21  |H22  |H23  |H24  |H25  |H26  |"+"\n"+
+        "+-----------------------------------------------------------------------+"+"\n"+
+        "|  H  |"+prevAt[0]+"|"+prevAt[1]+"|"+prevAt[2]+"|"+prevAt[3]+"|"+prevAt[4]+"|"
+        +prevAt[5]+"|"+prevAt[6]+"|"+prevAt[7]+"|"+prevAt[8]+"|"+prevAt[9]+"|"+prevAt[10]+"|"+"\n"+
+        "|  C  |≥1   |≥2   |≥3   |≥4   |≥5   |≥1   |≥2   |≥3   |≥4   |≥5   |≥6   |"+"\n"+
+        "|  R  |     |     |     |"+drawRew[0]+"|     |"+drawRew[1]+"|"+drawRew[2]+"|     |"
+        +drawRew[3]+"|"+drawRew[4]+"|     |"+"\n"+
+        "+-----------------------------------------------------------------------+"+"\n"+
+        "|  S  |1    |3    |6    |10   |15   |21   |28   |36   |45   |55   |66   |"+"\n"+
+        "+-----------------------------------------------------------------------+"+"\n";
     }
     
     

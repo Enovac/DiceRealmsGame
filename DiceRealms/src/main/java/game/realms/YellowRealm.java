@@ -14,7 +14,7 @@ public class YellowRealm extends Realms{
 
 //============================Constructor============================================
     public YellowRealm(){
-        super(RealmColor.YELLOW,11);
+        super(RealmColor.YELLOW,11,11);
         lion=new Lion();
     }
 //============================Methods================================================
@@ -88,6 +88,7 @@ public class YellowRealm extends Realms{
         for(int i=0;i<templateRewards.length;i++)
             realmRewards[i]=templateRewards[i];
     }
-   
+//============================toString===============================================   
+    
 
 }

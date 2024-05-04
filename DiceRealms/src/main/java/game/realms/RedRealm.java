@@ -21,7 +21,7 @@ public class RedRealm extends Realms{
     private final int allDeadRow;
 //============================Constructor============================================
     public RedRealm(){
-        super(RealmColor.RED,5);
+        super(RealmColor.RED,5,11);
         dragon1=new Dragon(DragonNumber.Dragon1,3,2,1,0);
         dragon2=new Dragon(DragonNumber.Dragon2,6,1,0,3);
         dragon3=new Dragon(DragonNumber.Dragon3,5,0,2,4);
@@ -243,6 +243,7 @@ public class RedRealm extends Realms{
         for(int i=0;i<templateRewards.length;i++)
             realmRewards[i]=templateRewards[i];
     }
+//============================toString===============================================   
 
     
 }

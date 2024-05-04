@@ -10,7 +10,7 @@ public class MagentaRealm extends Realms{
 
 //============================Constructor============================================
     public MagentaRealm(){
-        super(RealmColor.MAGENTA,11);
+        super(RealmColor.MAGENTA,11,11);
         phoenix=new Phoenix();
     }
 //============================Methods================================================
@@ -82,6 +82,7 @@ public class MagentaRealm extends Realms{
         for(int i=0;i<templateRewards.length;i++)
             realmRewards[i]=templateRewards[i];
     }
+//============================toString===============================================   
    
 
 }

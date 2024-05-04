@@ -5,7 +5,7 @@ import main.java.game.collectibles.TimeWarp;
 import main.java.game.realms.*;
 import java.util.*;
 public class Player {
-    // private ScoreSheet scoreSheet;
+    private ScoreSheet scoreSheet;
     // private GameScore gameScore;//Grimore
 
     private PlayerStatus playerStatus;
@@ -22,17 +22,17 @@ public class Player {
 //============================Constructor============================================
 
     public Player(){
-        BLUE_REALM=new BlueRealm();
-        RED_REALM=new RedRealm();
-        GREEN_REALM=new GreenRealm();
-        YELLOW_REALM=new YellowRealm();
-        MAGENTA_REALM=new MagentaRealm();
+        scoreSheet=new ScoreSheet();
+        BLUE_REALM=scoreSheet.getBlueRealm();
+        RED_REALM=scoreSheet.getRedRealm();
+        GREEN_REALM=scoreSheet.getGreenRealm();
+        YELLOW_REALM=scoreSheet.getYellowRealm();
+        MAGENTA_REALM=scoreSheet.getMagentaRealm();
     }
-
-
-
-
 //============================G&S============================================
+public ScoreSheet getScoreSheet(){
+    return scoreSheet;
+}
 public PlayerStatus getPlayerStatus(){
     return playerStatus;
 }

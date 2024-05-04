@@ -270,6 +270,7 @@ public class CLIGameController extends GameController{
      * @return The {@code ScoreSheet} object for a given player.
      */
     public  ScoreSheet getScoreSheet(Player player){
+        return player.getScoreSheet();
     }
 
     /**

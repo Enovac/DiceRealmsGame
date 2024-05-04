@@ -8,28 +8,38 @@ public abstract class Realms {
     private int totalRealmScore;
     private int totalNumberOfAttacks;
     private Reward[] realmRewards;
+    private String[] previousAttacks;
 
 //============================Constructor============================================
 
-    public Realms(RealmColor color,int rewardSize){
+    public Realms(RealmColor color,int rewardSize,int maximumNumberOfAttacks){
         REALM_COLOR=color;
         isRealmAccessible=true;
+        previousAttacks=new String[maximumNumberOfAttacks];
+        initializePreviousAttacks(previousAttacks);
         realmRewards=new Reward[rewardSize];
         setRealmRewards(realmRewards);
     }
 //============================Methods============================================
+    public abstract void initializePreviousAttacks(String[] previousAttacks);
     public abstract boolean attack(int diceValue,Creature creature);
     public abstract void updateTotalRealmScore(int value);
+    public abstract boolean isRealmDefeated();
+    public abstract Move[] getAllPossibleMoves();
+    public abstract Move[] getPossibleMovesForADie(int diceValue,RealmColor colorOfDice);
+    public abstract boolean isRewardAvailable();
     public void incrementTotalNumberOfAttacks(){
         totalNumberOfAttacks++;
     }
     public void rewardClaimed(int index){
         realmRewards[index]=null;
     }
-    public abstract boolean isRealmDefeated();
-    public abstract Move[] getAllPossibleMoves();
-    public abstract Move[] getPossibleMovesForADie(int diceValue,RealmColor colorOfDice);
-    public abstract boolean isRewardAvailable();
+    public void recordAttack(int diceValue){
+        if(diceValue<10)
+            previousAttacks[totalNumberOfAttacks]=diceValue+"    ";
+        else 
+            previousAttacks[totalNumberOfAttacks]=diceValue+"   ";  
+    }
 //============================G&S============================================
     public RealmColor getRealmColor(){
         return REALM_COLOR;
@@ -52,7 +62,16 @@ public abstract class Realms {
     public Reward[] getRealmRewards(){
         return realmRewards;
     }
+    public String[] getPreviousAttacks(){
+        return previousAttacks;
+    }
     public abstract Reward getReward();
     public abstract void setRealmRewards(Reward[] realmRewards);
+    
+//============================toString===============================================   
+    @Override
+    public abstract String toString();
+
+
     
 }

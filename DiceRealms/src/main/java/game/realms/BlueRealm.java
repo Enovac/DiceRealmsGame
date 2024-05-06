@@ -9,15 +9,15 @@ import main.java.game.engine.*;
 public class BlueRealm extends Realms{
     private Hydra hydra;
     private int totalDefeatedHeads;
-//============================Constructor============================================
+//=======================================Constructor===================================
     public BlueRealm(){
-         super(RealmColor.BLUE,11,11);
-         hydra=new Hydra();
-         hydra.spawnHydra();
+        super(RealmColor.BLUE,11,11);
+        hydra=new Hydra();
+        hydra.spawnHydra();
     }
-//============================Methods================================================
+//=======================================Methods=======================================
     @Override
-    public boolean attack(int diceValue,Creature creature){
+    public boolean attack(int diceValue,Creature creature){//TODO remove Creature Parameter
         if(hydra.checkPossibleAttack(diceValue)){
             if(hydra.killHead()&&!hydra.isRespawned())
                 hydra.respawnHydra();
@@ -27,16 +27,11 @@ public class BlueRealm extends Realms{
             updateTotalRealmScore(totalDefeatedHeads);
             if(isRealmDefeated())
                 closeRealm();
-            //Give user his rewards
+
             return true;
         }
-        return false;
-
-        }
-    @Override
-    public boolean isRealmDefeated() {
-        return getTotalNumberOfAttacks()==11;
-    }    
+        return false;//TODO: throw error here surround with try catch?
+    } 
     @Override    
     public void updateTotalRealmScore(int totalDefeatedHeads){
         switch(totalDefeatedHeads){
@@ -58,7 +53,7 @@ public class BlueRealm extends Realms{
         if(!isRealmAccessible())
             return new Move[0];
         int minimumAttackValue=hydra.getMinimumAttackValue();
-        int moveArraySize=6-minimumAttackValue+1;//+1 to include the minimumAttack Value
+        int moveArraySize=6-minimumAttackValue+1;       //+1 to include the minimumAttack Value
         Move[] moves=new Move[moveArraySize];
         for(int i=0;i<moves.length;i++,minimumAttackValue++)
             moves[i]=getPossibleMovesForADie(minimumAttackValue,RealmColor.BLUE)[0];
@@ -72,25 +67,16 @@ public class BlueRealm extends Realms{
         }
         return new Move[0];
     }
-    @Override
-    public boolean isRewardAvailable() {
-        Reward[] rewards=getRealmRewards();
-        return rewards[getTotalNumberOfAttacks()-1]!=null;
-    }
+    
     @Override
     public void initializePreviousAttacks(String[] previousAttacks){
         for(int i=0;i<previousAttacks.length;i++)
             previousAttacks[i]="---  ";
         
     }
-   
-    
-//============================G&S====================================================
-    public Hydra getHydra(){
-        return hydra;
-    }
+//=======================================Get&Set=======================================
     @Override
-    public Reward getReward() {
+    public Reward getReward() {//TODO: Make it Return Reward[]
         Reward[] rewards=getRealmRewards();
         Reward recievedReward=rewards[getTotalNumberOfAttacks()-1];
         rewardClaimed(getTotalNumberOfAttacks()-1);
@@ -103,10 +89,23 @@ public class BlueRealm extends Realms{
         for(int i=0;i<templateRewards.length;i++)
             realmRewards[i]=templateRewards[i];
     }
+    
+    @Override
+    public boolean isRealmDefeated() {
+        return getTotalNumberOfAttacks()==11;
+    }  
+    @Override
+    public boolean isRewardAvailable() {
+        Reward[] rewards=getRealmRewards();
+        return rewards[getTotalNumberOfAttacks()-1]!=null;
+    }
+    public Hydra getHydra(){
+        return hydra;
+    }
     public  Creature getCreatureByRealm(Dice dice){
         return hydra;
     }
-//============================toString===============================================   
+//=======================================Display=======================================
     @Override
     public String toString() {
        String[] prevAt=getPreviousAttacks();//previousAttacks
@@ -135,9 +134,4 @@ public class BlueRealm extends Realms{
         "|  S  |1    |3    |6    |10   |15   |21   |28   |36   |45   |55   |66   |"+"\n"+
         "+-----------------------------------------------------------------------+"+"\n\n";
     }
-    
-    
-
-    
-
 }

@@ -1,9 +1,5 @@
 package main.java.game.realms;
-import main.java.game.collectibles.ArcaneBoost;
-import main.java.game.collectibles.Bonus;
-import main.java.game.collectibles.ElementalCrest;
-import main.java.game.collectibles.Reward;
-import main.java.game.collectibles.TimeWarp;
+import main.java.game.collectibles.*;
 import main.java.game.creatures.*;
 import main.java.game.dice.*;
 import main.java.game.engine.Move;
@@ -18,7 +14,7 @@ public class GreenRealm extends Realms{
     private final int rewardRow1;
     private final int rewardRow2;
     private final int rewardRow3;
-//============================Constructor============================================
+//=======================================Constructor===================================
     public GreenRealm(){
         super(RealmColor.GREEN,7,12);
         gaiaGurdian=new Gaia();
@@ -30,20 +26,19 @@ public class GreenRealm extends Realms{
         rewardRow2=5;
         rewardRow3=6;
     }
-//============================Methods================================================
+//=======================================Methods=======================================
     @Override
-    public boolean attack(int diceValue, Creature creature) {//diceValue is green+white
+    public boolean attack(int diceValue, Creature creature) {//TODO: remove Parameter Creature creature
         if(gaiaGurdian.checkPossibleAttack(diceValue)){
             gaiaGurdian.killGaiaGurdian(diceValue);
             incrementTotalNumberOfAttacks();
             updateTotalRealmScore(getTotalNumberOfAttacks());
             recordAttack(diceValue);//the string thing
             if(isRealmDefeated())
-                    closeRealm();
-            //get rewards
+                closeRealm();
             return true;
         }
-        return false;
+        return false;//TODO: throw error here surround with try catch?
     }
     @Override
     public void updateTotalRealmScore(int totalNumberOfAttacks) {
@@ -60,18 +55,15 @@ public class GreenRealm extends Realms{
             case 10:setTotalRealmScore(46);break;
             case 11:setTotalRealmScore(56);break;
         }
-        
-    }
-    @Override
-    public boolean isRealmDefeated() {
-        return getTotalNumberOfAttacks()==11;
     }
     @Override
     public Move[] getAllPossibleMoves() {
         if(!isRealmAccessible())
             return new Move[0];
+
         boolean[] gurdiansHealth=gaiaGurdian.getGurdiansHealth();
         int moveArraySize=0;
+        
         for(boolean gaiaAlive:gurdiansHealth)
             if(gaiaAlive)moveArraySize++;
         Move[] moves=new Move[moveArraySize];
@@ -125,12 +117,14 @@ public class GreenRealm extends Realms{
         previousAttacks[diceValue-1]="X    ";
 
     }
-//============================G&S====================================================   
-    public Gaia getGaia(){
-        return gaiaGurdian;
-    }
+//=======================================Get&Set=======================================
     @Override
-    public Reward getReward() {
+    public boolean isRealmDefeated() {
+        return getTotalNumberOfAttacks()==11;
+    }
+
+    @Override
+    public Reward getReward() {//TODO: make return Reward[] and try to make simpler
         boolean[] gurdiansHealth=gaiaGurdian.getGurdiansHealth();
         Reward[] rewards=getRealmRewards();
 
@@ -183,9 +177,10 @@ public class GreenRealm extends Realms{
     }
     public  Creature getCreatureByRealm(Dice dice){
         return gaiaGurdian;
+    }public Gaia getGaia(){
+        return gaiaGurdian;
     }
-//============================toString===============================================   
-    @Override
+//=======================================Display=======================================    @Override
     public String toString() {
         String[] prevAt=getPreviousAttacks();//previousAttacks
         String[] drawRew=new String[]{"TW   ","BB   ","MB   ","AB   ","YB   ","RB   ","EC   "};//drawReward
@@ -205,8 +200,6 @@ public class GreenRealm extends Realms{
         if(rewards[rewardRow3]==null)
             drawRew[6]="X    ";
          
-
-
         return "Terra's Heartland: Gaia Guardians (GREEN REALM):"+"\n"+ 
         "+-----------------------------------+"+"\n"+
         "|  #  |1    |2    |3    |4    |R    |"+"\n"+
@@ -219,9 +212,5 @@ public class GreenRealm extends Realms{
         "+-----------------------------------------------------------------------+"+"\n"+
         "|  S  |1    |2    |4    |7    |11   |16   |22   |29   |37   |46   |56   |"+"\n"+
         "+-----------------------------------------------------------------------+"+"\n\n";
-
     }
-   
-    
-
 }

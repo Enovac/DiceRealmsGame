@@ -3,21 +3,17 @@ package main.java.game.creatures;
 import main.java.game.realms.RealmColor;
 
 public class Lion extends Creature{
-//============================Constructor============================================
+//=======================================Constructor===================================
     public Lion(){
-        super(RealmColor.YELLOW);
+            super(RealmColor.YELLOW);
     }
-
-//============================Methods================================================
-
-@Override
-public boolean checkPossibleAttack(int diceValue) {
-    return true;//always Possible
-}
-//============================G&S====================================================   
-
-
-
-
-
+//=======================================Methods=======================================
+    @Override
+    public boolean checkPossibleAttack(int diceValue) {//TODO: check Dice>0 <=6 and Throw Error
+        return true;//always Possible
+    }
+//=======================================Display=======================================
+    @Override public String toString(){
+        return "Lion";
+    }
 }

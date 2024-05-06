@@ -11,12 +11,13 @@ import java.util.stream.Collectors;
 import main.java.game.dice.*;
 import main.java.game.engine.*;
 import main.java.game.exceptions.*;
-
 import main.java.game.collectibles.*;
-
 import main.java.game.creatures.*;
 import main.java.game.realms.*;
 
+
+
+@SuppressWarnings("unused")
 public class CLIGameControllerTest {
 
     @Test

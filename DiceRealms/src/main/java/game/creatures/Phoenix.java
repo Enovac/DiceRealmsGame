@@ -4,19 +4,23 @@ import main.java.game.realms.RealmColor;
 
 public class Phoenix extends Creature{
     private int health;
-//============================Constructor============================================
+//=======================================Constructor===================================
     public Phoenix(){
         super(RealmColor.MAGENTA);
     }
-//============================Methods================================================
+//=======================================Methods=======================================
+    @Override
+    public boolean checkPossibleAttack(int diceValue) {//TODO: check Dice>0 <=6 and Throw Error
+        return diceValue>health;
+    }
     public void resetHealth(){
         health=0;
     }
+//=======================================Get&Set=======================================
     @Override
-    public boolean checkPossibleAttack(int diceValue) {
-        return diceValue>health;
+    public int getMinimumAttackValue(){
+        return health+1;
     }
-//============================G&S====================================================
     public void setHealth(int value){
        if(value==6)
             resetHealth();
@@ -26,10 +30,9 @@ public class Phoenix extends Creature{
     public int getHealth(){
         return health;
     }
-    @Override
-    public int getMinimumAttackValue(){
-        return health+1;
+//=======================================Display=======================================
+    @Override 
+    public String toString(){
+        return "Phoenix";
     }
-
-
 }

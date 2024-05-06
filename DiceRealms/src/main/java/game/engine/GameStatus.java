@@ -28,11 +28,10 @@ public class GameStatus {
 
 
     public void incrementRound(){
-        if(!playerSwitched)
-            resetTurn();
-        else    
+        if(playerSwitched)  
             gameRound++;
-        playerSwitched=playerSwitched?false:true;    
+        playerSwitched=playerSwitched?false:true;
+        resetTurn();    
     }
 
 

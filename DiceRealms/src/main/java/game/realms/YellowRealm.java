@@ -1,10 +1,6 @@
 package main.java.game.realms;
 
-import main.java.game.collectibles.ArcaneBoost;
-import main.java.game.collectibles.Bonus;
-import main.java.game.collectibles.ElementalCrest;
-import main.java.game.collectibles.Reward;
-import main.java.game.collectibles.TimeWarp;
+import main.java.game.collectibles.*;
 import main.java.game.creatures.*;
 import main.java.game.dice.*;
 import main.java.game.engine.Move;
@@ -12,12 +8,12 @@ import main.java.game.engine.Move;
 public class YellowRealm extends Realms{
     private Lion lion;
 
-//============================Constructor============================================
-    public YellowRealm(){
+//=======================================Constructor===================================
+public YellowRealm(){
         super(RealmColor.YELLOW,11,11);
         lion=new Lion();
     }
-//============================Methods================================================
+//=======================================Methods=======================================
     @Override
     public boolean attack(int diceValue, Creature creature) {
         if(lion.checkPossibleAttack(diceValue)){
@@ -31,7 +27,6 @@ public class YellowRealm extends Realms{
             recordAttack(diceValue);//the string thing
             if(isRealmDefeated())
                 closeRealm();
-           //Give Rewards
            return true;     
         }
         return false;
@@ -40,10 +35,6 @@ public class YellowRealm extends Realms{
     public void updateTotalRealmScore(int value) {
         int oldScore=getTotalRealmScore();
         setTotalRealmScore(value+oldScore);
-    }
-    @Override
-    public boolean isRealmDefeated() {
-        return getTotalNumberOfAttacks()==11;
     }
     @Override
     public Move[] getAllPossibleMoves() {
@@ -63,22 +54,14 @@ public class YellowRealm extends Realms{
             return new Move[]{new Move(tempDice,lion)};
         }
         return new Move[0];
-    }
-    @Override
-    public boolean isRewardAvailable() {
-        Reward[] rewards=getRealmRewards();
-        return rewards[getTotalNumberOfAttacks()-1]!=null;
-    }
+    } 
     @Override
     public void initializePreviousAttacks(String[] previousAttacks) {
         for(int i=0;i<previousAttacks.length;i++)
          previousAttacks[i]="0    ";
     }
 
-//============================G&S====================================================    
-    public Lion getLion(){
-        return lion;
-    }
+//=======================================Get&Set=======================================
     @Override
     public Reward getReward() {
         Reward[] rewards=getRealmRewards();
@@ -97,7 +80,21 @@ public class YellowRealm extends Realms{
     public  Creature getCreatureByRealm(Dice dice){
         return lion;   
     }
-//============================toString===============================================   
+    @Override
+    public boolean isRealmDefeated() {
+        return getTotalNumberOfAttacks()==11;
+    }
+    @Override
+    public boolean isRewardAvailable() {
+        Reward[] rewards=getRealmRewards();
+        return rewards[getTotalNumberOfAttacks()-1]!=null;
+    }
+    public Lion getLion(){
+        return lion;
+    }
+
+
+//=======================================Display=======================================    
     @Override
     public String toString() {
             String[] prevAt=getPreviousAttacks();//previousAttacks
@@ -125,6 +122,4 @@ public class YellowRealm extends Realms{
             drawRew[3]+"|     |"+drawRew[4]+"|     |"+"\n"+
            "+-----------------------------------------------------------------------+"+"\n\n";
     }
-    
-
 }

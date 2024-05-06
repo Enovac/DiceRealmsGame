@@ -4,16 +4,15 @@ import main.java.game.realms.RealmColor;
 
 public class Gaia extends Creature{
     private boolean[] gurdiansHealth;
-//============================Constructor============================================
-    public Gaia(){
+//=======================================Constructor===================================
+public Gaia(){
         super(RealmColor.GREEN);
         gurdiansHealth=new boolean[13];
         for(int i=2;i<gurdiansHealth.length;i++)
             gurdiansHealth[i]=true;
         //False for dead , True for avaibble, Index = required Value    
     }
-//============================Methods================================================
-
+//=======================================Methods=======================================
     @Override
     public boolean checkPossibleAttack(int diceValue) {
         return diceValue>=2&&diceValue<=12&&gurdiansHealth[diceValue];
@@ -21,12 +20,13 @@ public class Gaia extends Creature{
     public void killGaiaGurdian(int diceValue){
         gurdiansHealth[diceValue]=false;
     }
-
-//============================G&S====================================================   
+//=======================================Get&Set=======================================
     public boolean[] getGurdiansHealth(){
-        return gurdiansHealth;
+            return gurdiansHealth;
     }
-
-
-
+//=======================================Display=======================================
+    @Override 
+    public String toString(){
+        return "Gaia";
+    }
 }

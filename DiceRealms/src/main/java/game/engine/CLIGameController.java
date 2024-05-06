@@ -1,8 +1,6 @@
 package main.java.game.engine;
 import main.java.game.dice.*;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.*;
 import main.java.game.collectibles.*;
 import main.java.game.realms.*;
@@ -39,33 +37,10 @@ public class CLIGameController extends GameController{
                     break;
                 }
                 rollDice();
-                //Ask Use TimeWarp Power????
-                int chosenDie=displayAndChooseAvailableDice();
-                Dice[] availableDice=getAvailableDice();
-                Dice selectedDie=availableDice[chosenDie];
-                selectDice(selectedDie, currentPlayer);
-                System.out.println("Sending remaining Dice to forgoten realm.....");
-                createDelay();
-                displayForgottenDice();
-                createDelay();
-                RealmColor theDiceColor=selectedDie.getDiceColor();
-                if(selectedDie.getDiceColor()==RealmColor.WHITE){
-                    chooseArcaneDiceColor();
-                    theDiceColor=((ArcanePrism)selectedDie).getChosenColor();
-                }
-                Creature selectedCreature=chooseCreatureToAttack(theDiceColor, currentPlayer);
-                boolean suc=makeMove(currentPlayer,new Move(selectedDie,selectedCreature));//Here say successful or failed based on...
-                if(suc)
-                    System.out.println("Attack Successful");
-                else System.out.println("Attack Failed :(");
-
-                checkAndGetPossibleRewards(currentPlayer, theDiceColor);
-                System.out.println("Sending Selected Die to forgotten Realm....");
-                selectedDie.setDiceStatus(DiceStatus.FORGOTTEN_REALM);
-                createDelay();
+                displayAvailableDice();
+                displayTimeWarp(currentPlayer);
+                attackSequence(currentPlayer);
                 System.out.println(getScoreSheet(currentPlayer));
-                //Ask Use ArcaneBoost Power???
-               
                 getGameStatus().incrementTurn();
             } 
             
@@ -96,7 +71,7 @@ public class CLIGameController extends GameController{
         }
         if(!checkInRealm.isRewardAvailable())
             return;
-        Reward storeReward=checkInRealm.getReward();//DONT FORGET TO FIX IMPLEMENTATION TO ARRAYSSSSSSSSSS
+        Reward storeReward=checkInRealm.getReward();// TODO: FORGET TO FIX IMPLEMENTATION TO ARRAYSSSSSSSSSS
         switch (storeReward.getRewardType()) {
             case CREST:player.addElementalCrest((ElementalCrest)storeReward);break; 
             case POWER:
@@ -176,24 +151,27 @@ public class CLIGameController extends GameController{
     
     public void createDelay(){
         try{
-            Thread.sleep(2000);
+            Thread.sleep(1500);
         }
         catch(Exception ex){
             System.out.println("Error in Thread Sleep");
             ex.printStackTrace();}
     }
 //============================Display====================================================
-    public int displayAndChooseAvailableDice(){
+    public void displayAvailableDice(){
         Dice[]availableDice=getAvailableDice();
         for(int i=0;i<availableDice.length;i++)
             System.out.print(i+"-"+availableDice[i]);
         System.out.println();
+
+    }
+    public int chooseAvailableDice(){
+        Dice[]availableDice=getAvailableDice();
         System.out.println("Choose a number between 0 and "+(availableDice.length-1)+" to pick a die");
         System.out.print("Chosen Number: ");
         String chosenDie=sc.next().trim();
         //Error here
         return Integer.parseInt(chosenDie);
-
     }
     public void displayForgottenDice(){
         System.out.println("Forgotten Realm Dice: ");
@@ -201,7 +179,73 @@ public class CLIGameController extends GameController{
         for(Dice x:forgottenDice)
             System.out.println(x+"  ");
     }
+    public void displayTimeWarp(Player player){
+        while(true){
+        System.out.println("Would you like to use Time Warp?");
+        int numberOfTimeWarps=player.getTimeWarps().size();
+        System.out.println("You have x"+numberOfTimeWarps+" TimeWarps Type Yes or No");
+        System.out.print("Choice: ");
+        char choice=sc.next().trim().toUpperCase().charAt(0);
+        if(choice=='Y'){
+            if(numberOfTimeWarps>0){
+                player.removeTimeWarp();
+                System.out.println("TimeWarp Used!! Rerolling dice.....");
+                createDelay();
+                rollDice();
+                displayAvailableDice();
+            }
+            else{
+                System.out.println("Not enough TimeWarps :( ");
+                break;
+            }
+        }
+        else break;
+        }
+    }
+    public void attackSequence(Player currentPlayer){
+        int chosenDie=chooseAvailableDice();
+                Dice[] availableDice=getAvailableDice();
+                Dice selectedDie=availableDice[chosenDie];
+                selectDice(selectedDie, currentPlayer);
+                System.out.println("Sending remaining Dice to forgoten realm.....");
+                createDelay();
+                displayForgottenDice();
+                createDelay();
+                RealmColor theDiceColor=selectedDie.getDiceColor();
+                if(selectedDie.getDiceColor()==RealmColor.WHITE){
+                    chooseArcaneDiceColor();
+                    theDiceColor=((ArcanePrism)selectedDie).getChosenColor();
+                }
+                Creature selectedCreature=chooseCreatureToAttack(theDiceColor, currentPlayer);
+                boolean suc=makeMove(currentPlayer,new Move(selectedDie,selectedCreature));
+                System.out.println(suc?"Attack was successful!!":"Attack failed :(");
+                checkAndGetPossibleRewards(currentPlayer, theDiceColor);
+                displayArcaneBoost(currentPlayer);
+    }
+    public void displayArcaneBoost(Player player){
+        while(true){
+            System.out.println("Would you like to use ArcaneBoost?");
+            displayAvailableDice();
+            int numberOfArcaneBoosts=player.getArcaneBoosts().size();
+            System.out.println("You have x"+numberOfArcaneBoosts+" ArcaneBoosts Type Yes or No");
+            System.out.print("Choice: ");
+            char choice=sc.next().trim().toUpperCase().charAt(0);
+            if(choice=='Y'){
+                if(numberOfArcaneBoosts>0){
+                    player.removeArcaneBoost();
+                    System.out.println("ArcaneBoost used!!");
+                    createDelay();
+                    
+                }
+                else{
+                    System.out.println("Not enough ArcaneBoosts :( ");
+                    break;
+                }
+            }
+            else break;
+            }
 
+    }
 //============================Methods====================================================    
     public  boolean switchPlayer(){
         Player activePlayer=getActivePlayer();
@@ -269,7 +313,7 @@ public class CLIGameController extends GameController{
         Move[] yellowRealmMoves=playerYellowRealm.getAllPossibleMoves();
         Move[] magentaRealmMoves=playerMagentaRealm.getAllPossibleMoves();
 
-        return mergeMoves(redRealmMoves,greenRealmMoves,blueRealmMoves,magentaRealmMoves, yellowRealmMoves );
+        return mergeMoves(redRealmMoves,greenRealmMoves,blueRealmMoves,magentaRealmMoves, yellowRealmMoves,new Move[0] );
     }
 
     public  Move[] getPossibleMovesForAvailableDice(Player player){
@@ -280,27 +324,27 @@ public class CLIGameController extends GameController{
         YellowDice yellowDice=gameBoard.getYellowDice();
         MagentaDice magentaDice=gameBoard.getMagentaDice();
 
-        Move[] blueMoves=getPossibleMovesForADie(player, blueDice);
-        if(blueDice.getDiceStatus()!=DiceStatus.AVAILABLE)
-            blueMoves=new Move[0];
+        
         Move[] redMoves=getPossibleMovesForADie(player, redDice);
         if(redDice.getDiceStatus()!=DiceStatus.AVAILABLE)
             redMoves=new Move[0];
         Move[] greenMoves=getPossibleMovesForADie(player, greenDice);
         if(greenDice.getDiceStatus()!=DiceStatus.AVAILABLE||arcanePrism.getDiceStatus()==DiceStatus.AVAILABLE)
             greenMoves=new Move[0];
-        Move[] yellowMoves=getPossibleMovesForADie(player, yellowDice);
-        if(yellowDice.getDiceStatus()!=DiceStatus.AVAILABLE)
-            yellowMoves=new Move[0];
+        Move[] blueMoves=getPossibleMovesForADie(player, blueDice);
+        if(blueDice.getDiceStatus()!=DiceStatus.AVAILABLE)
+            blueMoves=new Move[0];    
         Move[] magentaMoves=getPossibleMovesForADie(player, magentaDice);
         if(magentaDice.getDiceStatus()!=DiceStatus.AVAILABLE)
             magentaMoves=new Move[0];
+        Move[] yellowMoves=getPossibleMovesForADie(player, yellowDice);
+        if(yellowDice.getDiceStatus()!=DiceStatus.AVAILABLE)
+            yellowMoves=new Move[0];
         Move[] arcaneMoves=getPossibleMovesForADie(player, arcanePrism);
         if(arcanePrism.getDiceStatus()!=DiceStatus.AVAILABLE)
             arcaneMoves=new Move[0];
 
-        Move[] moves1=mergeMoves(blueMoves,redMoves, greenMoves, yellowMoves, magentaMoves);
-        return mergeMoves(moves1,arcaneMoves,new Move[0],new Move[0],new Move[0]);
+        return mergeMoves(redMoves, greenMoves,blueMoves,magentaMoves,yellowMoves,arcaneMoves);
     }
 
     public  Move[] getPossibleMovesForADie(Player player, Dice dice){
@@ -346,29 +390,51 @@ public class CLIGameController extends GameController{
             magentaRealmMoves=playerMagentaRealm.getPossibleMovesForADie(diceValue, diceColor);
         }
 
-        return mergeMoves( redRealmMoves, greenRealmMoves,blueRealmMoves,magentaRealmMoves,yellowRealmMoves );
+        return mergeMoves( redRealmMoves, greenRealmMoves,blueRealmMoves,magentaRealmMoves,yellowRealmMoves,new Move[0] );
     }
 
-    public Move[] mergeMoves(Move[] moves1,Move[] moves2,Move[] moves3,Move[] moves4,Move[] moves5){
+    public Move[] mergeMoves(Move[] red,Move[] green,Move[] blue,Move[]magenta,Move[] yellow,Move[]white){
         int moveArraySize=0;
-        moveArraySize+=moves1.length;
-        moveArraySize+=moves2.length;
-        moveArraySize+=moves3.length;
-        moveArraySize+=moves4.length;
-        moveArraySize+=moves5.length;
+        moveArraySize+=red.length;
+        moveArraySize+=green.length;
+        moveArraySize+=blue.length;
+        moveArraySize+=magenta.length;
+        moveArraySize+=yellow.length;
+        moveArraySize+=white.length;
+
         
         Move[]moves=new Move[moveArraySize];
         int index=0;
-        for(Move x:moves1)
+        //red
+        for(int i=0;i<white.length;i++)
+            if(white[i].getDice().getDiceColor()==RealmColor.RED)
+                moves[index++]=white[i];
+        for(Move x:red)
             moves[index++]=x;
-        for(Move x:moves2)
-            moves[index++]=x;
-        for(Move x:moves3)
-            moves[index++]=x;
-        for(Move x:moves4)
-            moves[index++]=x;
-        for(Move x:moves5)
-            moves[index++]=x;
+        //Green
+        for(int i=0;i<white.length;i++)
+            if(white[i].getDice().getDiceColor()==RealmColor.GREEN)
+                moves[index++]=white[i];
+        for(Move x:green)
+            moves[index++]=x;    
+        //blue
+        for(int i=0;i<white.length;i++)
+            if(white[i].getDice().getDiceColor()==RealmColor.BLUE)
+                moves[index++]=white[i];
+        for(Move x:blue)
+            moves[index++]=x;    
+        //magenta
+        for(int i=0;i<white.length;i++)
+            if(white[i].getDice().getDiceColor()==RealmColor.MAGENTA)
+                moves[index++]=white[i];
+        for(Move x:magenta)
+            moves[index++]=x;    
+        //yellow
+        for(int i=0;i<white.length;i++)
+            if(white[i].getDice().getDiceColor()==RealmColor.YELLOW)
+                moves[index++]=white[i];
+        for(Move x:yellow)
+            moves[index++]=x;    
 
         return moves;
     }

@@ -10,9 +10,7 @@ public abstract class Realms {
     private int totalNumberOfAttacks;
     private Reward[] realmRewards;
     private String[] previousAttacks;
-
-//============================Constructor============================================
-
+//=======================================Constructor===================================
     public Realms(RealmColor color,int rewardSize,int maximumNumberOfAttacks){
         REALM_COLOR=color;
         isRealmAccessible=true;
@@ -21,14 +19,12 @@ public abstract class Realms {
         realmRewards=new Reward[rewardSize];
         setRealmRewards(realmRewards);
     }
-//============================Methods============================================
-    public abstract void initializePreviousAttacks(String[] previousAttacks);
+//=======================================Methods=======================================
+public abstract void initializePreviousAttacks(String[] previousAttacks);
     public abstract boolean attack(int diceValue,Creature creature);
     public abstract void updateTotalRealmScore(int value);
-    public abstract boolean isRealmDefeated();
     public abstract Move[] getAllPossibleMoves();
     public abstract Move[] getPossibleMovesForADie(int diceValue,RealmColor colorOfDice);
-    public abstract boolean isRewardAvailable();
     public void incrementTotalNumberOfAttacks(){
         totalNumberOfAttacks++;
     }
@@ -41,7 +37,9 @@ public abstract class Realms {
         else 
             previousAttacks[totalNumberOfAttacks-1]=diceValue+"   ";  
     }
-//============================G&S============================================
+//=======================================Get&Set=======================================
+    public abstract boolean isRealmDefeated();
+    public abstract boolean isRewardAvailable();
     public RealmColor getRealmColor(){
         return REALM_COLOR;
     }
@@ -70,11 +68,6 @@ public abstract class Realms {
     public abstract void setRealmRewards(Reward[] realmRewards);
     public abstract Creature getCreatureByRealm(Dice dice);
     
-//============================toString===============================================   
-    @Override
+//=======================================Display=======================================    @Override
     public abstract String toString();
-
-
-
-    
 }

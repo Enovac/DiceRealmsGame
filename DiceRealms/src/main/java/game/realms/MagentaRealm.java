@@ -7,14 +7,14 @@ import main.java.game.engine.Move;
 
 public class MagentaRealm extends Realms{
     private Phoenix phoenix;
-
-//============================Constructor============================================
-    public MagentaRealm(){
+//TODO: CHECK OTHER CLASSES FOR REPEATED THIGNS
+//=======================================Constructor===================================
+public MagentaRealm(){
         super(RealmColor.MAGENTA,11,11);
         phoenix=new Phoenix();
     }
-//============================Methods================================================
-    @Override
+//=======================================Methods=======================================
+@Override
     public  boolean attack(int diceValue,Creature creature){
         if(phoenix.checkPossibleAttack(diceValue)){
             phoenix.setHealth(diceValue);
@@ -23,7 +23,6 @@ public class MagentaRealm extends Realms{
             recordAttack(diceValue);//the string thing
             if(isRealmDefeated())
                 closeRealm();
-            //Give Rewards 
             return true;
         }
         return false;
@@ -32,10 +31,6 @@ public class MagentaRealm extends Realms{
     public void updateTotalRealmScore(int value) {
         int oldScore=getTotalRealmScore();
         setTotalRealmScore(value+oldScore);
-    }
-    @Override
-    public boolean isRealmDefeated() {
-        return getTotalNumberOfAttacks()==11;
     }
     @Override
     public Move[] getAllPossibleMoves() {
@@ -57,20 +52,15 @@ public class MagentaRealm extends Realms{
         return new Move[0];
     }
     @Override
-    public boolean isRewardAvailable() {
-        Reward[] rewards=getRealmRewards();
-        return rewards[getTotalNumberOfAttacks()]!=null;
-    }
-    @Override
     public void initializePreviousAttacks(String[] previousAttacks) {
         for(int i=0;i<previousAttacks.length;i++)
          previousAttacks[i]="0    ";
     }
-//============================G&S====================================================   
-    public Phoenix getPhoenix(){
-        return phoenix;
+//=======================================Get&Set=======================================
+   @Override
+    public boolean isRealmDefeated() {
+        return getTotalNumberOfAttacks()==11;
     }
-   
     @Override
     public Reward getReward() {
         Reward[] rewards=getRealmRewards();
@@ -87,10 +77,17 @@ public class MagentaRealm extends Realms{
         for(int i=0;i<templateRewards.length;i++)
             realmRewards[i]=templateRewards[i];
     }
+    @Override
+    public boolean isRewardAvailable() {
+        Reward[] rewards=getRealmRewards();
+        return rewards[getTotalNumberOfAttacks()]!=null;
+    }public Phoenix getPhoenix(){
+        return phoenix;
+    }
     public  Creature getCreatureByRealm(Dice dice){
         return phoenix;   
-    }
-//============================toString===============================================   
+    }    
+//=======================================Display=======================================
     @Override
     public String toString() {
     String[] prevAt=getPreviousAttacks();//previousAttacks
@@ -106,8 +103,7 @@ public class MagentaRealm extends Realms{
         case 4:drawRew[1]="X    ";
         case 3:drawRew[0]="X    ";
        } 
-        
-
+    
       return "Mystical Sky: Majestic Phoenix (MAGENTA REALM):"+"\n"+
        "+-----------------------------------------------------------------------+"+"\n"+
        "|  #  |1    |2    |3    |4    |5    |6    |7    |8    |9    |10   |11   |"+"\n"+
@@ -119,7 +115,5 @@ public class MagentaRealm extends Realms{
        drawRew[4]+"|"+drawRew[5]+"|"+drawRew[6]+"|"+drawRew[7]+"|"+drawRew[8]+"|"+"\n"+
        "+-----------------------------------------------------------------------+"+"\n\n";
     }
-   
-
 }
  

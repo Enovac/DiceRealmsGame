@@ -7,26 +7,24 @@ public class Dragon extends Creature{
     private int tail;
     private int heart;
     private boolean isDead;
-//============================Constructor============================================
+//=======================================Constructor===================================
     public Dragon(DragonNumber number,int face,int wings,int tail,int heart){
-        super(RealmColor.RED);
-        this.dragonNumber=number;
-        this.face=face;
-        this.wings=wings;
-        this.tail=tail;
-        this.heart=heart;
-    }
-//============================Methods================================================
-    public void killDragon(){
-        isDead=true;
-    }
+            super(RealmColor.RED);
+            this.dragonNumber=number;
+            this.face=face;
+            this.wings=wings;
+            this.tail=tail;
+            this.heart=heart;
+        }
+//=======================================Methods=======================================
     @Override
-    public boolean checkPossibleAttack(int diceValue) {
+    public boolean checkPossibleAttack(int diceValue) {//TODO: check Dice>0 <=6 and Throw Error
         if(diceValue>0&&!isDead){
             return diceValue==face||diceValue==wings||diceValue==tail||diceValue==heart;
         }
         return false;
     }
+
     public void attackPart(int diceValue){
         if(diceValue==face)
             face=0;
@@ -40,6 +38,29 @@ public class Dragon extends Creature{
         if(face==0&&wings==0&&tail==0&&heart==0)  
             killDragon();   
     }
+
+    public void killDragon(){
+        isDead=true;
+    }
+//=======================================Get&Set=======================================
+    public DragonNumber getDragonNumber(){
+        return dragonNumber;
+    }
+    public boolean isDeadDragon(){
+        return isDead;
+    }
+    public int getFace(){
+        return face;
+    }
+    public int getWings(){
+        return wings;
+    }
+    public int getTail(){
+        return tail;
+    }
+    public int getHeart(){
+        return heart;
+    }
     public boolean isFaceKilled(){
         return face==0;
     }   
@@ -52,27 +73,8 @@ public class Dragon extends Creature{
     public boolean isHeartKilled(){
         return heart==0;
     }
-    @Override public String toString(){
-        return ""+dragonNumber;
-    }
-//============================G&S====================================================   
-   public DragonNumber getDragonNumber(){
-        return dragonNumber;
-   }
-   public boolean isDeadDragon(){
-    return isDead;
-   }
-   public int getFace(){
-    return face;
-   }
-   public int getWings(){
-    return wings;
-   }
-   public int getTail(){
-    return tail;
-   }
-   public int getHeart(){
-    return heart;
-   }
-
+//=======================================Display=======================================
+@Override public String toString(){
+    return "Dragon";
+}
 }

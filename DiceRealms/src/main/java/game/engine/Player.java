@@ -54,6 +54,12 @@ public class Player {
     public void addElementalCrest(ElementalCrest crest){
         elementalCrests.add(crest);
     }
+    public void removeTimeWarp(){
+        timeWarps.remove(0);
+    }
+    public void removeArcaneBoost(){
+        arcaneBoosts.remove(0);
+    }
 
 //============================G&S================================================
     public ScoreSheet getScoreSheet(){

@@ -6,47 +6,45 @@ public class Hydra extends Creature{
     private int remainingHeads;
     private int totalHeads;
     private boolean isRespawned;
-//============================Constructor============================================
+//=======================================Constructor===================================
     public Hydra(){
-        super(RealmColor.BLUE);
+            super(RealmColor.BLUE);
     }
-
-    
-    public void spawnHydra(){
-        remainingHeads=5;
-        totalHeads=5;
-    //Go Over hydraRewards and put in each one reards
-    }
-    public void respawnHydra(){
-        remainingHeads=6;
-        totalHeads=6;
-         isRespawned=true;
-        //Go Over hydraRewards and put in each one reards
-    }
-//============================Methods================================================
+//=======================================Methods=======================================
     @Override
-    public boolean checkPossibleAttack(int diceValue){
+    public boolean checkPossibleAttack(int diceValue){//TODO: check Dice>0 <=6 and Throw Error
         int minValue=(totalHeads-remainingHeads)+1;
         return diceValue>=minValue;
     }
     public boolean killHead(){
-      remainingHeads-=1;
-      return remainingHeads==0;
+        remainingHeads-=1;
+        return remainingHeads==0;
     }  
-    
-//============================G&S====================================================
-    public boolean isRespawned(){
-         return isRespawned;
+    public void spawnHydra(){
+        remainingHeads=5;
+        totalHeads=5;
     }
-    public int getRemainingNumberOfHeads(){
-        return remainingHeads;
+    public void respawnHydra(){
+        remainingHeads=6;
+        totalHeads=6;
+        isRespawned=true;
     }
+//=======================================Get&Set=======================================
     @Override
     public int getMinimumAttackValue(){
         return (totalHeads-remainingHeads)+1;
     }
-
-
+    public boolean isRespawned(){
+        return isRespawned;
+    }
+    public int getRemainingNumberOfHeads(){
+        return remainingHeads;
+    }
+//=======================================Display=======================================
+    @Override 
+    public String toString(){
+        return "Hydra";
+    }
 }
 
 

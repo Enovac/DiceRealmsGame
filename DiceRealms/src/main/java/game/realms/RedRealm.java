@@ -10,7 +10,7 @@ import main.java.game.dice.RedDice;
 import main.java.game.engine.Move;
 
 
-public class RedRealm extends Realms{
+public class RedRealm extends Realms{//TODO: CHECK OTHER TODOS IN OTHER REALM
     private Dragon dragon1;
     private Dragon dragon2;
     private Dragon dragon3;
@@ -20,7 +20,7 @@ public class RedRealm extends Realms{
     private final int tailRow;
     private final int heartRow;
     private final int allDeadRow;
-//============================Constructor============================================
+//=======================================Constructor===================================
     public RedRealm(){
         super(RealmColor.RED,5,16);
         dragon1=new Dragon(DragonNumber.Dragon1,3,2,1,0);
@@ -33,19 +33,17 @@ public class RedRealm extends Realms{
         heartRow=3;
         allDeadRow=4;
     }
-//============================Methods================================================
-  
+//=======================================Methods=======================================
     @Override
-    public boolean attack(int diceValue, Creature creature) {
+    public boolean attack(int diceValue, Creature creature) {//TODO: FIX MAKE DEPEND ON THE DICE.GETSELECTDRAG PASS DICE PARAMETER
         Dragon currentDragon=(Dragon)creature;
         if(currentDragon.checkPossibleAttack(diceValue)){
             incrementTotalNumberOfAttacks();
             recordAttack(diceValue,currentDragon);//the string thing
             currentDragon.attackPart(diceValue);
-            updateTotalRealmScore(diceValue);//change
+            updateTotalRealmScore(diceValue);
             if(isRealmDefeated())
                 closeRealm();
-            //getRewards
             return true;
         }
         return false;
@@ -63,10 +61,7 @@ public class RedRealm extends Realms{
             newScore+=20;
         setTotalRealmScore(newScore);             
     }
-    @Override
-    public boolean isRealmDefeated() {
-        return dragon1.isDeadDragon()&&dragon2.isDeadDragon()&&dragon3.isDeadDragon()&&dragon4.isDeadDragon();
-    }  
+     
     @Override
     public Move[] getAllPossibleMoves() {
         if(!isRealmAccessible())
@@ -126,37 +121,7 @@ public class RedRealm extends Realms{
 
         return moves;
     }
-    @Override
-    public boolean isRewardAvailable() {
-        Reward[] rewards=getRealmRewards();
-        if(isAllFacesKilled()&&rewards[faceRow]!=null)  
-            return true;
-        if(isAllWingsKilled()&&rewards[wingsRow]!=null)  
-            return true;    
-        if(isAllTailsKilled()&&rewards[tailRow]!=null)  
-            return true;     
-        if(isAllHeartsKilled()&&rewards[heartRow]!=null)  
-            return true; 
-        if(!isRealmAccessible()&&rewards[allDeadRow]!=null)//NOTE THIS INDICATES U CHECK OUTSIDE AFTER ATTACK OR AFTER CLOSE
-            return true;    
-        return false;    
-    }
-    public boolean isAllFacesKilled(){
-        return dragon1.isFaceKilled()&&dragon2.isFaceKilled()&&
-               dragon3.isFaceKilled()&&dragon4.isFaceKilled();
-    }
-    public boolean isAllWingsKilled(){
-        return dragon1.isWingsKilled()&&dragon2.isWingsKilled()&&
-               dragon3.isWingsKilled()&&dragon4.isWingsKilled();
-    }
-    public boolean isAllTailsKilled(){
-        return dragon1.isTailKilled()&&dragon2.isTailKilled()&&
-        dragon3.isTailKilled()&&dragon4.isTailKilled();
-    }
-    public boolean isAllHeartsKilled(){
-        return dragon1.isHeartKilled()&&dragon2.isHeartKilled()&&
-               dragon3.isHeartKilled()&&dragon4.isHeartKilled();
-    }
+   
     @Override
     public void initializePreviousAttacks(String[] previousAttacks) {
         String[] templateValue=new String[]{"3","6","5","X","2","1","X","5","1","X","2","4","X","3","4","6"};
@@ -187,7 +152,53 @@ public class RedRealm extends Realms{
         previousAttacks[indexValue]="X    ";
 
     }
-//============================G&S====================================================
+//=======================================Get&Set=======================================
+    @Override
+    public Reward getReward() {//TODO: Fix implementation so its diagonal not all dead
+        Reward[] rewards=getRealmRewards();
+        if(isAllFacesKilled()&&rewards[faceRow]!=null){
+            Reward recievedReward=rewards[faceRow];
+            rewardClaimed(faceRow);
+             return recievedReward;
+        }  
+        if(isAllWingsKilled()&&rewards[wingsRow]!=null){
+            Reward recievedReward=rewards[wingsRow];
+            rewardClaimed(wingsRow);
+             return recievedReward;
+        }  
+        if(isAllTailsKilled()&&rewards[tailRow]!=null){
+            Reward recievedReward=rewards[tailRow];
+            rewardClaimed(tailRow);
+             return recievedReward;
+        }  
+        if(isAllHeartsKilled()&&rewards[heartRow]!=null){
+            Reward recievedReward=rewards[heartRow];
+            rewardClaimed(heartRow);
+             return recievedReward;
+        }  
+        if(!isRealmAccessible()&&rewards[allDeadRow]!=null){//NOTE THIS INDICATES U CHECK OUTSIDE AFTER ATTACK OR AFTER CLOSE
+            Reward recievedReward=rewards[allDeadRow];
+            rewardClaimed(allDeadRow);
+             return recievedReward;
+        }
+        return null;  
+    }
+    
+     @Override
+    public boolean isRewardAvailable() {//TODO: Fix implementation so its diagonal not all dead
+        Reward[] rewards=getRealmRewards();
+        if(isAllFacesKilled()&&rewards[faceRow]!=null)  
+            return true;
+        if(isAllWingsKilled()&&rewards[wingsRow]!=null)  
+            return true;    
+        if(isAllTailsKilled()&&rewards[tailRow]!=null)  
+            return true;     
+        if(isAllHeartsKilled()&&rewards[heartRow]!=null)  
+            return true; 
+        if(!isRealmAccessible()&&rewards[allDeadRow]!=null)
+            return true;    
+        return false;    
+    }
     public Dragon[] getAliveDragons(){
         int count=0;
         if(!dragon1.isDeadDragon())
@@ -224,35 +235,22 @@ public class RedRealm extends Realms{
     public Dragon getDragon4(){
         return dragon4;
     }
-    @Override
-    public Reward getReward() {
-        Reward[] rewards=getRealmRewards();
-        if(isAllFacesKilled()&&rewards[faceRow]!=null){
-            Reward recievedReward=rewards[faceRow];
-            rewardClaimed(faceRow);
-             return recievedReward;
-        }  
-        if(isAllWingsKilled()&&rewards[wingsRow]!=null){
-            Reward recievedReward=rewards[wingsRow];
-            rewardClaimed(wingsRow);
-             return recievedReward;
-        }  
-        if(isAllTailsKilled()&&rewards[tailRow]!=null){
-            Reward recievedReward=rewards[tailRow];
-            rewardClaimed(tailRow);
-             return recievedReward;
-        }  
-        if(isAllHeartsKilled()&&rewards[heartRow]!=null){
-            Reward recievedReward=rewards[heartRow];
-            rewardClaimed(heartRow);
-             return recievedReward;
-        }  
-        if(!isRealmAccessible()&&rewards[allDeadRow]!=null){//NOTE THIS INDICATES U CHECK OUTSIDE AFTER ATTACK OR AFTER CLOSE
-            Reward recievedReward=rewards[allDeadRow];
-            rewardClaimed(allDeadRow);
-             return recievedReward;
-        }
-        return null;  
+    
+    public boolean isAllFacesKilled(){
+        return dragon1.isFaceKilled()&&dragon2.isFaceKilled()&&
+               dragon3.isFaceKilled()&&dragon4.isFaceKilled();
+    }
+    public boolean isAllWingsKilled(){
+        return dragon1.isWingsKilled()&&dragon2.isWingsKilled()&&
+               dragon3.isWingsKilled()&&dragon4.isWingsKilled();
+    }
+    public boolean isAllTailsKilled(){
+        return dragon1.isTailKilled()&&dragon2.isTailKilled()&&
+        dragon3.isTailKilled()&&dragon4.isTailKilled();
+    }
+    public boolean isAllHeartsKilled(){
+        return dragon1.isHeartKilled()&&dragon2.isHeartKilled()&&
+               dragon3.isHeartKilled()&&dragon4.isHeartKilled();
     }
     @Override
     public void setRealmRewards(Reward[] realmRewards) {
@@ -269,7 +267,11 @@ public class RedRealm extends Realms{
                 return x;
         return null;        
     }
-//============================toString===============================================      
+    @Override
+    public boolean isRealmDefeated() {
+        return dragon1.isDeadDragon()&&dragon2.isDeadDragon()&&dragon3.isDeadDragon()&&dragon4.isDeadDragon();
+    } 
+//=======================================Display=======================================
     @Override
     public String toString() {
         String[] prevAt=getPreviousAttacks();//previousAttacks

@@ -70,50 +70,14 @@ public class RedRealm extends Realms{
     public Move[] getAllPossibleMoves() {
         if(!isRealmAccessible())
             return null;
-
-        Move[] movesForDice1=getPossibleMovesForADie(1,RealmColor.RED); 
-        Move[] movesForDice2=getPossibleMovesForADie(2,RealmColor.RED); 
-        Move[] movesForDice3=getPossibleMovesForADie(3,RealmColor.RED); 
-        Move[] movesForDice4=getPossibleMovesForADie(4,RealmColor.RED);  
-        Move[] movesForDice5=getPossibleMovesForADie(5,RealmColor.RED); 
-        Move[] movesForDice6=getPossibleMovesForADie(6,RealmColor.RED); 
-        
-        int moveArraySize=0;
-        if(movesForDice1!=null)
-            moveArraySize+=movesForDice1.length;
-        if(movesForDice2!=null)
-            moveArraySize+=movesForDice2.length;  
-        if(movesForDice3!=null)
-            moveArraySize+=movesForDice3.length;  
-        if(movesForDice4!=null)
-            moveArraySize+=movesForDice4.length;
-        if(movesForDice5!=null)
-            moveArraySize+=movesForDice5.length;
-        if(movesForDice6!=null)
-            moveArraySize+=movesForDice6.length;
-
-        Move[] moves=new Move[moveArraySize];
-        int index=0;
-        
-        if(movesForDice1!=null)
-            for(Move x:movesForDice1)
-                moves[index++]=x;
-        if(movesForDice2!=null)
-            for(Move x:movesForDice2)
-                moves[index++]=x; 
-        if(movesForDice3!=null)
-            for(Move x:movesForDice3)
-                moves[index++]=x;  
-        if(movesForDice4!=null)
-            for(Move x:movesForDice4)
-                moves[index++]=x; 
-        if(movesForDice5!=null)
-            for(Move x:movesForDice5)
-                moves[index++]=x;   
-        if(movesForDice6!=null)
-            for(Move x:movesForDice6)
-                moves[index++]=x;     
-        
+        Move[] moves=new Move[12-getTotalNumberOfAttacks()];
+        for(int i=1,j=0;i<=6;i++){
+            Move[]movesForDice=getPossibleMovesForADie(i, RealmColor.RED);
+            if(movesForDice!=null)
+                for(Move move:movesForDice)
+                    moves[j++]=move;
+                            
+        }      
         return moves;
     }
 
@@ -225,6 +189,30 @@ public class RedRealm extends Realms{
 
     }
 //============================G&S====================================================
+    public Dragon[] getAliveDragons(){
+        int count=0;
+        if(!dragon1.isDeadDragon())
+            count++;
+        if(!dragon2.isDeadDragon())
+            count++;
+        if(!dragon3.isDeadDragon())
+            count++;
+        if(!dragon4.isDeadDragon())
+            count++;
+        if(count==0)
+            return null;
+        Dragon[] aliveDragons=new Dragon[count];
+        count=0;
+        if(!dragon1.isDeadDragon())
+            aliveDragons[count++]=dragon1;
+        if(!dragon2.isDeadDragon())
+            aliveDragons[count++]=dragon2;
+        if(!dragon3.isDeadDragon())
+            aliveDragons[count++]=dragon3;
+        if(!dragon4.isDeadDragon())
+            aliveDragons[count++]=dragon4;
+        return aliveDragons;
+    }
     public Dragon getDragon1(){
         return dragon1;
     }

@@ -74,7 +74,7 @@ public class BlueRealm extends Realms{
     @Override
     public boolean isRewardAvailable() {
         Reward[] rewards=getRealmRewards();
-        return rewards[getTotalNumberOfAttacks()]!=null;
+        return rewards[getTotalNumberOfAttacks()-1]!=null;
     }
     @Override
     public void initializePreviousAttacks(String[] previousAttacks){
@@ -91,8 +91,8 @@ public class BlueRealm extends Realms{
     @Override
     public Reward getReward() {
         Reward[] rewards=getRealmRewards();
-        Reward recievedReward=rewards[getTotalNumberOfAttacks()];
-        rewardClaimed(getTotalNumberOfAttacks());
+        Reward recievedReward=rewards[getTotalNumberOfAttacks()-1];
+        rewardClaimed(getTotalNumberOfAttacks()-1);
         return recievedReward;
     }
     @Override

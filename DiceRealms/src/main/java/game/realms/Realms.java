@@ -36,9 +36,9 @@ public abstract class Realms {
     }
     public void recordAttack(int diceValue){
         if(diceValue<10)
-            previousAttacks[totalNumberOfAttacks]=diceValue+"    ";
+            previousAttacks[totalNumberOfAttacks-1]=diceValue+"    ";
         else 
-            previousAttacks[totalNumberOfAttacks]=diceValue+"   ";  
+            previousAttacks[totalNumberOfAttacks-1]=diceValue+"   ";  
     }
 //============================G&S============================================
     public RealmColor getRealmColor(){
@@ -71,6 +71,7 @@ public abstract class Realms {
 //============================toString===============================================   
     @Override
     public abstract String toString();
+
 
 
     

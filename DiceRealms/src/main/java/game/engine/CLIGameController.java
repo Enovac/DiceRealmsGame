@@ -10,15 +10,24 @@ public class CLIGameController extends GameController{
     private Scanner sc;
     
 
+//============================GameFlow=================================================
     public  void startGame(){
+        createDelay();
+        createDelay();
         sc=new Scanner(System.in);
         gameBoard=new GameBoard();
         while(!getGameStatus().isGameFinished()){
             Player currentPlayer=getActivePlayer();
+            System.out.println("Round: "+getGameStatus().getGameRound());
+            System.out.println(currentPlayer.getPlayerType()+"'s Turn!!!");
+            createDelay();
+            System.out.println("Printing your Grimore......");
+            createDelay();
+            System.out.println(getScoreSheet(currentPlayer));
             while(getGameStatus().getTurn()<=3){
-                System.out.println(currentPlayer.getPlayerType()+"'s Turn!!!");
+                System.out.println("Turn: "+getGameStatus().getTurn());
                 createDelay();
-                System.out.println(getScoreSheet(currentPlayer));
+                
                 System.out.println("Rolling dice......");
                 createDelay();
                 if(getAvailableDice()==null){
@@ -26,45 +35,133 @@ public class CLIGameController extends GameController{
                     break;
                 }
                 rollDice();
-                int chosenDie=displayAvailableDice();
+                //Ask Use TimeWarp Power????
+                int chosenDie=displayAndChooseAvailableDice();
                 Dice[] availableDice=getAvailableDice();
                 Dice selectedDie=availableDice[chosenDie];
                 selectDice(selectedDie, currentPlayer);
-                RealmColor theDiceColor;
+                System.out.println("Sending remaining Dice to forgoten realm.....");
+                createDelay();
+                displayForgottenDice();
+                createDelay();
+                RealmColor theDiceColor=selectedDie.getDiceColor();
                 if(selectedDie.getDiceColor()==RealmColor.WHITE){
                     chooseArcaneDiceColor();
                     theDiceColor=((ArcanePrism)selectedDie).getChosenColor();
                 }
-                else theDiceColor=selectedDie.getDiceColor();
-                choseCreatureInRealm(theDiceColor, currentPlayer);
-                break;
-            }   
-            break;
+                Creature selectedCreature=chooseCreatureToAttack(theDiceColor, currentPlayer);
+                boolean suc=makeMove(currentPlayer,new Move(selectedDie,selectedCreature));//Here say successful or failed based on...
+                if(suc)
+                    System.out.println("Attack Successful");
+                else System.out.println("Attack Failed :(");
+
+                checkAndGetPossibleRewards(currentPlayer, theDiceColor);
+                System.out.println("Sending Selected Die to forgotten Realm....");
+                selectedDie.setDiceStatus(DiceStatus.FORGOTTEN_REALM);
+                createDelay();
+                System.out.println(getScoreSheet(currentPlayer));
+                //Ask Use ArcaneBoost Power???
+               
+                getGameStatus().incrementTurn();
+            } 
+            
+            getGameStatus().incrementRound();
+            switchPlayer();
+            System.out.println("Passive player choose dice from forgotten realm later..");
+            resetDiceStatus();
         }
+        if(getGameScore(getActivePlayer()).getTotalGameScore()>getGameScore(getPassivePlayer()).getTotalGameScore())
+            System.out.println(getActivePlayer().getPlayerType()+" Wins!!!");
+        else
+            System.out.println(getPassivePlayer().getPlayerType()+" Wins!!!");     
     }
-    public Creature choseCreatureInRealm(RealmColor color,Player player){
+    public void resetDiceStatus(){
+       Dice[] allDice= getAllDice();
+       for(Dice x:allDice)
+            x.setDiceStatus(DiceStatus.AVAILABLE);
+    }
+    public void checkAndGetPossibleRewards(Player player,RealmColor diceColor){
+        Realms checkInRealm=null;
+        switch(diceColor){
+            case RED:checkInRealm=player.getRedRealm();break;
+            case BLUE:checkInRealm=player.getBlueRealm();break;
+            case GREEN:checkInRealm=player.getGreenRealm();break;
+            case YELLOW:checkInRealm=player.getYellowRealm();break;
+            case MAGENTA:checkInRealm=player.getMagentaRealm();break;
+            case WHITE:System.out.println("Error checking reward in white realm");//change later
+        }
+        if(!checkInRealm.isRewardAvailable())
+            return;
+        Reward storeReward=checkInRealm.getReward();//DONT FORGET TO FIX IMPLEMENTATION TO ARRAYSSSSSSSSSS
+        switch (storeReward.getRewardType()) {
+            case CREST:player.addElementalCrest((ElementalCrest)storeReward);break; 
+            case POWER:
+            if(storeReward instanceof TimeWarp){
+                System.out.println("You got a TimeWarp power");
+                player.addTimeWarp((TimeWarp)storeReward);
+            }
+            else{
+                System.out.println("You got an ArcaneBoost power");  
+                player.addArcaneBoost((ArcaneBoost)storeReward);
+            }break;
+            case BONUS:
+            if(storeReward instanceof EssenceBonus){
+                System.out.println("You got an Essence Bonus");  
+                //Calls the Method that interrupts and uses Bonus!!!!
+            }
+            else{
+                System.out.println("You got a insertColor  Bonus");  
+                //Calls the Method That interrupts and uses Bonuss!!!
+            }
+            System.out.println("Bonuses are not yet implemented");
+        } 
+        createDelay(); 
+    }
+    public Creature chooseDragon(Player player){
+        System.out.println();
+        System.out.print("Chosen Dragon:");
+        System.out.println();
+        String chosen=sc.next();
+        int dragonNumber=Integer.parseInt(""+chosen.charAt(chosen.length()-1));
+        switch (dragonNumber) {
+            case 1:return player.getRedRealm().getDragon1();
+            case 2:return player.getRedRealm().getDragon2();
+            case 3:return player.getRedRealm().getDragon3();
+            case 4:return player.getRedRealm().getDragon4();
+        }
+        return null;//error occured
+    }
+    public Creature chooseCreatureToAttack(RealmColor color,Player player){
         switch (color) {
             case RED:System.out.println(player.getRedRealm());
-            System.out.println("Please Choose  A dragon");
-            return player.getRedRealm().getDragon1();
+            System.out.println("Please Choose a dragon");
+            Dragon[] aliveDragons=player.getRedRealm().getAliveDragons();
+            for(Dragon x:aliveDragons)
+                System.out.print(x+" ");
+            return chooseDragon(player);
+
             case BLUE:System.out.println(player.getBlueRealm());
             System.out.println("Attacking Hydra....");
             createDelay();
             return player.getBlueRealm().getHydra();
+
             case GREEN:System.out.println(player.getGreenRealm());
             System.out.println("Attacking Gaia Gurdian....");
             createDelay();
             return player.getGreenRealm().getGaia();
+
             case YELLOW:System.out.println(player.getYellowRealm());
             System.out.println("Attacking Lion....");
             createDelay();
             return player.getYellowRealm().getLion();
+
             case MAGENTA:System.out.println(player.getMagentaRealm());
             System.out.println("Attacking Phoenix....");
             createDelay();
             return player.getMagentaRealm().getPhoenix();
+            case WHITE:System.out.println("Error Arcane not set");
         }
-        return null;//error occured
+        return null;//Invalid Color Entered
     }
     public void chooseArcaneDiceColor(){
         System.out.println("Please chose a color for the Arcane Prism:");
@@ -72,7 +169,17 @@ public class CLIGameController extends GameController{
         System.out.print("Chosen color: ");
         getGameBoard().getArcanePrism().setChosenColor(sc.next());
     }
-    public int displayAvailableDice(){
+    
+    public void createDelay(){
+        try{
+            Thread.sleep(2000);
+        }
+        catch(Exception ex){
+            System.out.println("Error in Thread Sleep");
+            ex.printStackTrace();}
+    }
+//============================Display====================================================
+    public int displayAndChooseAvailableDice(){
         Dice[]availableDice=getAvailableDice();
         for(int i=0;i<availableDice.length;i++)
             System.out.print(i+"-"+availableDice[i]);
@@ -84,30 +191,21 @@ public class CLIGameController extends GameController{
         return Integer.parseInt(chosenDie);
 
     }
-    public void createDelay(){
-        try{
-            Thread.sleep(3000);
-        }
-        catch(Exception ex){
-            System.out.println("Error in Thread Sleep");
-            ex.printStackTrace();
-        }
+    public void displayForgottenDice(){
+        System.out.println("Forgotten Realm Dice: ");
+        Dice[]forgottenDice=getForgottenRealmDice();
+        for(Dice x:forgottenDice)
+            System.out.println(x+"  ");
     }
 
-    /**
-     * Switches the role of the current active player to passive and vice versa,
-     * ensuring that the turn-taking mechanism functions correctly.
-     *
-     * @return {@code true} if the switch was successful,
-     *         {@code false} otherwise.
-     */
+//============================Methods====================================================    
     public  boolean switchPlayer(){
         Player activePlayer=getActivePlayer();
         Player passivePlayer=getPassivePlayer();
-        passivePlayer.setPlayerStatus(PlayerStatus.PASSIVE);
-        activePlayer.setPlayerStatus(PlayerStatus.ACTIVE);
+        passivePlayer.setPlayerStatus(PlayerStatus.ACTIVE);
+        activePlayer.setPlayerStatus(PlayerStatus.PASSIVE);
+        System.out.println("Switching");
         return true;
-        //Should it do the get dice from bla bla??<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
     }
 
     public  Dice[] rollDice(){
@@ -325,6 +423,8 @@ public class CLIGameController extends GameController{
     }
 
     public  boolean selectDice(Dice dice, Player player){
+
+        //Do i make mara from passive mara from Active??????????
        Dice[] availableDice=getAvailableDice();
        boolean foundDice=false;
        for(Dice x:availableDice){
@@ -340,22 +440,27 @@ public class CLIGameController extends GameController{
     public  boolean makeMove(Player player, Move move){ 
         Dice moveDice=move.getMoveDice();
         Creature moveCreature=move.getMoveCreature();
-        switch(moveDice.getDiceColor()){
+        RealmColor color=moveDice.getDiceColor();
+        if(color==RealmColor.WHITE)
+            color=((ArcanePrism)moveDice).getChosenColor();
+        switch(color){
             case BLUE:
             return player.getBlueRealm().attack(moveDice.getDiceValue(), moveCreature);
             case RED:
             return player.getRedRealm().attack(moveDice.getDiceValue(), moveCreature);
             case GREEN:
-            ArcanePrism arcanePrism=gameBoard.getArcanePrism();
-            int sumValue=moveDice.getDiceValue()+arcanePrism.getDiceValue();
+            int sumValue=moveDice.getDiceValue();
+            if(moveDice.getDiceColor()==RealmColor.WHITE)
+                sumValue+=gameBoard.getGreenDice().getDiceValue();
+            else sumValue+=gameBoard.getArcanePrism().getDiceValue();      
             return player.getGreenRealm().attack(sumValue, moveCreature);
             case YELLOW:
             return player.getYellowRealm().attack(moveDice.getDiceValue(), moveCreature);
             case MAGENTA:
             return player.getMagentaRealm().attack(moveDice.getDiceValue(), moveCreature);
-        }//I should implement rewards here right?????
-
+            case WHITE:System.out.println("Error Attacking WHite");
+        }
+        //getGameScore(player).calculateGameScore();
         return false;
     }
-//^^^^^^^Make it so it checks color of dice "color to check" if white it reverts to the temp color but still keeps its color to be done later
 }

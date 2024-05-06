@@ -6,8 +6,6 @@ public class Hydra extends Creature{
     private int remainingHeads;
     private int totalHeads;
     private boolean isRespawned;
-    // private Rewards[] hydraRewards; shoudl be in super class also add int totalHits?
-
 //============================Constructor============================================
     public Hydra(){
         super(RealmColor.BLUE);

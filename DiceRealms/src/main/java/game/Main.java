@@ -1,4 +1,4 @@
-package main.java.game;5
+package main.java.game;
 
 import main.java.game.engine.*;
 
@@ -8,4 +8,5 @@ public class Main {
         CLIGameController cliGameController = new CLIGameController();
         cliGameController.startGame();
     }
+
 }

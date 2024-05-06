@@ -3,7 +3,7 @@ package main.java.game.engine;
 public class GameStatus {
     private int gameRound;
     private int turn;
-    private boolean PlayerSwitched;
+    private boolean playerSwitched;
     public GameStatus(){
         gameRound=1;
         turn=1;
@@ -28,7 +28,11 @@ public class GameStatus {
 
 
     public void incrementRound(){
-        gameRound++;
+        if(!playerSwitched)
+            resetTurn();
+        else    
+            gameRound++;
+        playerSwitched=playerSwitched?false:true;    
     }
 
 

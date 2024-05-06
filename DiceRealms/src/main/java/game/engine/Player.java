@@ -30,16 +30,27 @@ public class Player {
         GREEN_REALM=scoreSheet.getGreenRealm();
         YELLOW_REALM=scoreSheet.getYellowRealm();
         MAGENTA_REALM=scoreSheet.getMagentaRealm();
+        arcaneBoosts=new ArrayList<ArcaneBoost>();
+        timeWarps=new ArrayList<TimeWarp>();
+        elementalCrests=new ArrayList<ElementalCrest>();
     }
 //============================Methods============================================
     public void updateGameScore(){
-        gameScore.setRedScore(RED_REALM.getTotalRealmScore());
-        gameScore.setBlueScore(BLUE_REALM.getTotalRealmScore());
-        gameScore.setGreenScore(GREEN_REALM.getTotalRealmScore());
-        gameScore.setYellowScore(YELLOW_REALM.getTotalRealmScore());
-        gameScore.setMagentaScore(MAGENTA_REALM.getTotalRealmScore());
-        gameScore.setNumberOfCrests(elementalCrests.size());
-        gameScore.calculateGameScore();
+        gameScore.calculateGameScore(RED_REALM.getTotalRealmScore(),
+        BLUE_REALM.getTotalRealmScore(),
+         GREEN_REALM.getTotalRealmScore(),
+         YELLOW_REALM.getTotalRealmScore(),
+         MAGENTA_REALM.getTotalRealmScore(),
+         elementalCrests.size());
+    }
+    public void addTimeWarp(TimeWarp warp){
+        timeWarps.add(warp);
+    }
+    public void addArcaneBoost(ArcaneBoost boost){
+        arcaneBoosts.add(boost);
+    }
+    public void addElementalCrest(ElementalCrest crest){
+        elementalCrests.add(crest);
     }
 
 //============================G&S================================================

@@ -52,6 +52,9 @@ public class Dragon extends Creature{
     public boolean isHeartKilled(){
         return heart==0;
     }
+    @Override public String toString(){
+        return ""+dragonNumber;
+    }
 //============================G&S====================================================   
    public DragonNumber getDragonNumber(){
         return dragonNumber;

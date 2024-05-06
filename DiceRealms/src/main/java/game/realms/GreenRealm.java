@@ -126,7 +126,7 @@ public class GreenRealm extends Realms{
     @Override
     public void recordAttack(int diceValue){
         String[]previousAttacks=getPreviousAttacks();
-        previousAttacks[diceValue]="X    ";
+        previousAttacks[diceValue-1]="X    ";
 
     }
 //============================G&S====================================================   

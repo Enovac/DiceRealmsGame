@@ -40,7 +40,7 @@ public class MagentaRealm extends Realms{
     @Override
     public Move[] getAllPossibleMoves() {
         if(!isRealmAccessible())
-            return null;
+            return new Move[0];
         int minimumAttackValue=phoenix.getMinimumAttackValue();
         int moveArraySize=6-minimumAttackValue+1;//+1 to include the minimumAttack Value
         Move[] moves=new Move[moveArraySize];
@@ -54,7 +54,7 @@ public class MagentaRealm extends Realms{
             MagentaDice tempDice=new MagentaDice(diceValue);
             return new Move[]{new Move(tempDice,phoenix)};
         }
-        return null;
+        return new Move[0];
     }
     @Override
     public boolean isRewardAvailable() {
@@ -87,6 +87,9 @@ public class MagentaRealm extends Realms{
         for(int i=0;i<templateRewards.length;i++)
             realmRewards[i]=templateRewards[i];
     }
+    public  Creature getCreatureByRealm(Dice dice){
+        return phoenix;   
+    }
 //============================toString===============================================   
     @Override
     public String toString() {
@@ -114,7 +117,7 @@ public class MagentaRealm extends Realms{
        "|  C  |<    |<    |<    |<    |<    |<    |<    |<    |<    |<    |<    |"+"\n"+
        "|  R  |     |     |"+drawRew[0]+"|"+drawRew[1]+"|"+drawRew[2]+"|"+drawRew[3]+"|"+
        drawRew[4]+"|"+drawRew[5]+"|"+drawRew[6]+"|"+drawRew[7]+"|"+drawRew[8]+"|"+"\n"+
-       "+-----------------------------------------------------------------------+"+"\n";
+       "+-----------------------------------------------------------------------+"+"\n\n";
     }
    
 

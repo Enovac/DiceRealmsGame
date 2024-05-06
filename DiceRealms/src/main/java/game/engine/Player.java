@@ -25,6 +25,7 @@ public class Player {
 
     public Player(){
         scoreSheet=new ScoreSheet();
+        gameScore=new GameScore();
         BLUE_REALM=scoreSheet.getBlueRealm();
         RED_REALM=scoreSheet.getRedRealm();
         GREEN_REALM=scoreSheet.getGreenRealm();
@@ -33,6 +34,7 @@ public class Player {
         arcaneBoosts=new ArrayList<ArcaneBoost>();
         timeWarps=new ArrayList<TimeWarp>();
         elementalCrests=new ArrayList<ElementalCrest>();
+
     }
 //============================Methods============================================
     public void updateGameScore(){

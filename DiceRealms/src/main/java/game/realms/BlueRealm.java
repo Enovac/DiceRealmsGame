@@ -3,6 +3,7 @@ package main.java.game.realms;
 import main.java.game.collectibles.*;
 import main.java.game.creatures.*;
 import main.java.game.dice.BlueDice;
+import main.java.game.dice.Dice;
 import main.java.game.engine.*;
 
 public class BlueRealm extends Realms{
@@ -55,7 +56,7 @@ public class BlueRealm extends Realms{
     @Override
     public Move[] getAllPossibleMoves() {
         if(!isRealmAccessible())
-            return null;
+            return new Move[0];
         int minimumAttackValue=hydra.getMinimumAttackValue();
         int moveArraySize=6-minimumAttackValue+1;//+1 to include the minimumAttack Value
         Move[] moves=new Move[moveArraySize];
@@ -69,7 +70,7 @@ public class BlueRealm extends Realms{
             BlueDice tempDice=new BlueDice(diceValue);
             return new Move[]{new Move(tempDice,hydra)};
         }
-        return null;
+        return new Move[0];
     }
     @Override
     public boolean isRewardAvailable() {
@@ -102,6 +103,9 @@ public class BlueRealm extends Realms{
         for(int i=0;i<templateRewards.length;i++)
             realmRewards[i]=templateRewards[i];
     }
+    public  Creature getCreatureByRealm(Dice dice){
+        return hydra;
+    }
 //============================toString===============================================   
     @Override
     public String toString() {
@@ -129,7 +133,7 @@ public class BlueRealm extends Realms{
         +drawRew[3]+"|"+drawRew[4]+"|     |"+"\n"+
         "+-----------------------------------------------------------------------+"+"\n"+
         "|  S  |1    |3    |6    |10   |15   |21   |28   |36   |45   |55   |66   |"+"\n"+
-        "+-----------------------------------------------------------------------+"+"\n";
+        "+-----------------------------------------------------------------------+"+"\n\n";
     }
     
     

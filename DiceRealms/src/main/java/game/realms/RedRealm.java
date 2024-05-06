@@ -5,6 +5,7 @@ import main.java.game.collectibles.Bonus;
 import main.java.game.collectibles.ElementalCrest;
 import main.java.game.collectibles.Reward;
 import main.java.game.creatures.*;
+import main.java.game.dice.Dice;
 import main.java.game.dice.RedDice;
 import main.java.game.engine.Move;
 
@@ -69,13 +70,12 @@ public class RedRealm extends Realms{
     @Override
     public Move[] getAllPossibleMoves() {
         if(!isRealmAccessible())
-            return null;
+            return new Move[0];
         Move[] moves=new Move[12-getTotalNumberOfAttacks()];
         for(int i=1,j=0;i<=6;i++){
             Move[]movesForDice=getPossibleMovesForADie(i, RealmColor.RED);
-            if(movesForDice!=null)
-                for(Move move:movesForDice)
-                    moves[j++]=move;
+            for(Move move:movesForDice)
+                moves[j++]=move;
                             
         }      
         return moves;
@@ -84,7 +84,7 @@ public class RedRealm extends Realms{
     @Override
     public Move[] getPossibleMovesForADie(int diceValue, RealmColor colorOfDice) {
         int counter=0;
-        Move[] moves=null;
+    
         Move dragon1Move=null;
         Move dragon2Move=null;
         Move dragon3Move=null;
@@ -111,8 +111,7 @@ public class RedRealm extends Realms{
             dragon4Move =new Move(tempDice,dragon4);
         }
 
-        if(counter!=0)
-            moves=new Move[counter];
+        Move[] moves=new Move[counter];
 
         int index=0;
 
@@ -262,6 +261,14 @@ public class RedRealm extends Realms{
         for(int i=0;i<templateRewards.length;i++)
             realmRewards[i]=templateRewards[i];
     }
+     public  Creature getCreatureByRealm(Dice dice){
+        int dv=dice.getValue();
+        Dragon[] temp=new Dragon[]{dragon1,dragon2,dragon3,dragon4};
+        for(Dragon x:temp)
+            if(x.getFace()==dv||x.getWings()==dv||x.getTail()==dv||x.getHeart()==dv)
+                return x;
+        return null;        
+    }
 //============================toString===============================================      
     @Override
     public String toString() {
@@ -290,7 +297,7 @@ public class RedRealm extends Realms{
         "|  H  |"+prevAt[12]+"|"+prevAt[13]+"|"+prevAt[14]+"|"+prevAt[15]+"|"+drawRew[3]+"|"+"\n"+
         "+-----------------------------------+"+"\n"+
         "|  S  |10   |14   |16   |20   |"+drawRew[4]+"|"+"\n"+
-        "+-----------------------------------+"+"\n";
+        "+-----------------------------------+"+"\n\n";
     }
 
     

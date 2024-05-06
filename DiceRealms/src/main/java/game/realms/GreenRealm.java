@@ -69,7 +69,7 @@ public class GreenRealm extends Realms{
     @Override
     public Move[] getAllPossibleMoves() {
         if(!isRealmAccessible())
-            return null;
+            return new Move[0];
         boolean[] gurdiansHealth=gaiaGurdian.getGurdiansHealth();
         int moveArraySize=0;
         for(boolean gaiaAlive:gurdiansHealth)
@@ -84,14 +84,10 @@ public class GreenRealm extends Realms{
     @Override
     public Move[] getPossibleMovesForADie(int diceValue,RealmColor colorOfDice) {
         if(gaiaGurdian.checkPossibleAttack(diceValue)){
-            Dice tempDice;
-            if(colorOfDice==RealmColor.GREEN)
-                 tempDice=new GreenDice(diceValue);
-            else
-                 tempDice=new ArcanePrism(diceValue);
+                 Dice tempDice=new GreenDice(diceValue);
             return new Move[]{new Move(tempDice,gaiaGurdian)};
         }
-        return null;
+        return new Move[0];
     }
     @Override
     public boolean isRewardAvailable() {
@@ -185,6 +181,9 @@ public class GreenRealm extends Realms{
         for(int i=0;i<templateRewards.length;i++)
             realmRewards[i]=templateRewards[i];
     }
+    public  Creature getCreatureByRealm(Dice dice){
+        return gaiaGurdian;
+    }
 //============================toString===============================================   
     @Override
     public String toString() {
@@ -217,11 +216,12 @@ public class GreenRealm extends Realms{
         "|  3  |"+prevAt[8]+"|"+prevAt[9]+"|"+prevAt[10]+"|"+prevAt[11]+"|"+drawRew[6]+"|"+"\n"+
         "+-----------------------------------+"+"\n"+
         "|  R  |"+drawRew[0]+"|"+drawRew[1]+"|"+drawRew[2]+"|"+drawRew[3]+"|     |"+"\n"+
-        "+-----------------------------------------------------------------------------+"+"\n"+
-        "|  S  |0    |1    |2    |4    |7    |11   |16   |22   |29   |37   |46   |56   |"+"\n"+
-        "+-----------------------------------------------------------------------------+"+"\n";
+        "+-----------------------------------------------------------------------+"+"\n"+
+        "|  S  |1    |2    |4    |7    |11   |16   |22   |29   |37   |46   |56   |"+"\n"+
+        "+-----------------------------------------------------------------------+"+"\n\n";
 
     }
+   
     
 
 }

@@ -1,5 +1,6 @@
 package main.java.game.realms;
 import main.java.game.creatures.*;
+import main.java.game.dice.Dice;
 import main.java.game.engine.*;
 import main.java.game.collectibles.*;
 public abstract class Realms {
@@ -67,6 +68,7 @@ public abstract class Realms {
     }
     public abstract Reward getReward();
     public abstract void setRealmRewards(Reward[] realmRewards);
+    public abstract Creature getCreatureByRealm(Dice dice);
     
 //============================toString===============================================   
     @Override

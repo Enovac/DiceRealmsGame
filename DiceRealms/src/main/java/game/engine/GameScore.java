@@ -19,6 +19,21 @@ public class GameScore {
 
         totalGameScore+=minRealmScore*numberOfCrests;
     }
+    public int getRedRealmScore(){
+        return redScore;
+    }
+    public int getGreenRealmScore(){
+        return greenScore;
+    }
+    public int getBlueRealmScore(){
+        return blueScore;
+    }
+    public int getMagentaRealmScore(){
+        return magentaScore;
+    }
+    public int getYellowRealmScore(){
+        return yellowScore;
+    }
     public int getTotalGameScore(){
         return totalGameScore;
     }

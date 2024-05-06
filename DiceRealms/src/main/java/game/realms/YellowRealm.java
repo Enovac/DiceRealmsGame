@@ -48,7 +48,7 @@ public class YellowRealm extends Realms{
     @Override
     public Move[] getAllPossibleMoves() {
         if(!isRealmAccessible())
-            return null;
+            return new Move[0];
             
         Move[] moves =new Move[6];
         for(int i=0;i<moves.length;i++)
@@ -62,7 +62,7 @@ public class YellowRealm extends Realms{
             YellowDice tempDice=new YellowDice(diceValue);
             return new Move[]{new Move(tempDice,lion)};
         }
-        return null;
+        return new Move[0];
     }
     @Override
     public boolean isRewardAvailable() {
@@ -94,6 +94,9 @@ public class YellowRealm extends Realms{
         for(int i=0;i<templateRewards.length;i++)
             realmRewards[i]=templateRewards[i];
     }
+    public  Creature getCreatureByRealm(Dice dice){
+        return lion;   
+    }
 //============================toString===============================================   
     @Override
     public String toString() {
@@ -120,7 +123,7 @@ public class YellowRealm extends Realms{
            "|  M  |     |     |     |x2   |     |     |x2   |     |x2   |     |x3   |"+"\n"+
            "|  R  |     |     |"+drawRew[0]+"|     |"+drawRew[1]+"|"+drawRew[2]+"|     |"+
             drawRew[3]+"|     |"+drawRew[4]+"|     |"+"\n"+
-           "+-----------------------------------------------------------------------+"+"\n";
+           "+-----------------------------------------------------------------------+"+"\n\n";
     }
     
 

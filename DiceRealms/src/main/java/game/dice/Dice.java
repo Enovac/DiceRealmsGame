@@ -14,13 +14,16 @@ public abstract class Dice {
     public RealmColor getDiceColor(){
        return DICE_COLOR;
     }
+    public RealmColor getRealm(){
+        return DICE_COLOR;
+     }
     public void setDiceStatus(DiceStatus status){
         diceStatus=status;
     }
     public DiceStatus getDiceStatus(){
         return diceStatus;
     }
-    public int getDiceValue(){
+    public int getValue(){
         return diceValue;
     }
     public void rollDice(){
@@ -30,6 +33,9 @@ public abstract class Dice {
     @Override
     public String toString(){
         return DICE_COLOR+": "+diceValue+"   ";
+    }
+    public void setValue(int value){
+        diceValue=value;
     }
 }
 

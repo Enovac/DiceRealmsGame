@@ -43,6 +43,12 @@ public class GameBoard {
              return player1;
         return player2;    
    }
+   public Player getPlayer1(){
+    return player1;
+   }
+   public Player getPlayer2(){
+    return player2;
+   }
    public Dice[] getAllDice(){
     return new Dice[]{redDice,blueDice,greenDice,yellowDice,magentaDice,arcanePrism};
    }
@@ -66,5 +72,8 @@ public class GameBoard {
    }
    public GameStatus getGameStatus(){
       return gameStatus;
+   }
+   public Dice[] getDice(){
+    return new Dice[]{redDice,greenDice,blueDice,magentaDice,yellowDice,arcanePrism};
    }
 }

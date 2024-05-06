@@ -8,7 +8,7 @@ public class Move {
         this.dice=dice;
         this.creature=creature; 
     }
-    public Dice getMoveDice(){
+    public Dice getDice(){
         return dice;
     }
     public Creature getMoveCreature(){

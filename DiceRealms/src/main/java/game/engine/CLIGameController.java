@@ -1,6 +1,8 @@
 package main.java.game.engine;
 import main.java.game.dice.*;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.*;
 import main.java.game.collectibles.*;
 import main.java.game.realms.*;
@@ -9,13 +11,15 @@ public class CLIGameController extends GameController{
     private GameBoard gameBoard;
     private Scanner sc;
     
-
+    public CLIGameController(){
+        gameBoard=new GameBoard();
+        sc=new Scanner(System.in);
+    }
 //============================GameFlow=================================================
     public  void startGame(){
         createDelay();
         createDelay();
-        sc=new Scanner(System.in);
-        gameBoard=new GameBoard();
+    
         while(!getGameStatus().isGameFinished()){
             Player currentPlayer=getActivePlayer();
             System.out.println("Round: "+getGameStatus().getGameRound());
@@ -265,7 +269,7 @@ public class CLIGameController extends GameController{
         Move[] yellowRealmMoves=playerYellowRealm.getAllPossibleMoves();
         Move[] magentaRealmMoves=playerMagentaRealm.getAllPossibleMoves();
 
-        return mergeMoves(blueRealmMoves, redRealmMoves, greenRealmMoves, yellowRealmMoves, magentaRealmMoves);
+        return mergeMoves(redRealmMoves,greenRealmMoves,blueRealmMoves,magentaRealmMoves, yellowRealmMoves );
     }
 
     public  Move[] getPossibleMovesForAvailableDice(Player player){
@@ -277,26 +281,38 @@ public class CLIGameController extends GameController{
         MagentaDice magentaDice=gameBoard.getMagentaDice();
 
         Move[] blueMoves=getPossibleMovesForADie(player, blueDice);
+        if(blueDice.getDiceStatus()!=DiceStatus.AVAILABLE)
+            blueMoves=new Move[0];
         Move[] redMoves=getPossibleMovesForADie(player, redDice);
+        if(redDice.getDiceStatus()!=DiceStatus.AVAILABLE)
+            redMoves=new Move[0];
         Move[] greenMoves=getPossibleMovesForADie(player, greenDice);
+        if(greenDice.getDiceStatus()!=DiceStatus.AVAILABLE||arcanePrism.getDiceStatus()==DiceStatus.AVAILABLE)
+            greenMoves=new Move[0];
         Move[] yellowMoves=getPossibleMovesForADie(player, yellowDice);
+        if(yellowDice.getDiceStatus()!=DiceStatus.AVAILABLE)
+            yellowMoves=new Move[0];
         Move[] magentaMoves=getPossibleMovesForADie(player, magentaDice);
+        if(magentaDice.getDiceStatus()!=DiceStatus.AVAILABLE)
+            magentaMoves=new Move[0];
         Move[] arcaneMoves=getPossibleMovesForADie(player, arcanePrism);
+        if(arcanePrism.getDiceStatus()!=DiceStatus.AVAILABLE)
+            arcaneMoves=new Move[0];
 
         Move[] moves1=mergeMoves(blueMoves,redMoves, greenMoves, yellowMoves, magentaMoves);
-        return mergeMoves(moves1,arcaneMoves,null,null,null);
+        return mergeMoves(moves1,arcaneMoves,new Move[0],new Move[0],new Move[0]);
     }
 
     public  Move[] getPossibleMovesForADie(Player player, Dice dice){
      
         RealmColor diceColor=dice.getDiceColor();
-        int diceValue=dice.getDiceValue();
+        int diceValue=dice.getValue();
 
-        Move[] blueRealmMoves=null;
-        Move[] redRealmMoves=null;
-        Move[] greenRealmMoves=null;
-        Move[] yellowRealmMoves=null;
-        Move[] magentaRealmMoves=null;
+        Move[] blueRealmMoves=new Move[0];
+        Move[] redRealmMoves=new Move[0];
+        Move[] greenRealmMoves=new Move[0];
+        Move[] yellowRealmMoves=new Move[0];
+        Move[] magentaRealmMoves=new Move[0];
         
         if(diceColor==RealmColor.BLUE||diceColor==RealmColor.WHITE){
             BlueRealm playerBlueRealm=player.getBlueRealm();
@@ -312,11 +328,11 @@ public class CLIGameController extends GameController{
             
             if(diceColor==RealmColor.WHITE){
                 GreenDice greenDice=gameBoard.getGreenDice();
-                sumDiceValue+=greenDice.getDiceValue();
+                sumDiceValue+=greenDice.getValue();
             }
             else{
                 ArcanePrism arcanePrism=gameBoard.getArcanePrism();
-                sumDiceValue+=arcanePrism.getDiceValue();
+                sumDiceValue+=arcanePrism.getValue();
             }
 
             greenRealmMoves=playerGreenRealm.getPossibleMovesForADie(sumDiceValue, diceColor);
@@ -330,43 +346,29 @@ public class CLIGameController extends GameController{
             magentaRealmMoves=playerMagentaRealm.getPossibleMovesForADie(diceValue, diceColor);
         }
 
-        return mergeMoves(blueRealmMoves, redRealmMoves, greenRealmMoves, yellowRealmMoves, magentaRealmMoves);
+        return mergeMoves( redRealmMoves, greenRealmMoves,blueRealmMoves,magentaRealmMoves,yellowRealmMoves );
     }
 
     public Move[] mergeMoves(Move[] moves1,Move[] moves2,Move[] moves3,Move[] moves4,Move[] moves5){
         int moveArraySize=0;
-        Move[] moves=null;
-
-        if(moves1!=null)
-            moveArraySize+=moves1.length;
-        if(moves2!=null)
-            moveArraySize+=moves2.length;
-        if(moves3!=null)
-            moveArraySize+=moves3.length;
-        if(moves4!=null)
-            moveArraySize+=moves4.length;
-        if(moves5!=null)
-            moveArraySize+=moves5.length;
+        moveArraySize+=moves1.length;
+        moveArraySize+=moves2.length;
+        moveArraySize+=moves3.length;
+        moveArraySize+=moves4.length;
+        moveArraySize+=moves5.length;
         
-        if(moveArraySize!=0)
-            moves=new Move[moveArraySize];
+        Move[]moves=new Move[moveArraySize];
         int index=0;
-
-        if(moves1!=null)
-            for(Move x:moves1)
-                moves[index++]=x;
-        if(moves2!=null)
-            for(Move x:moves2)
-                moves[index++]=x;
-        if(moves3!=null)
-            for(Move x:moves3)
-                moves[index++]=x;
-        if(moves4!=null)
-            for(Move x:moves4)
-                moves[index++]=x;
-        if(moves5!=null)
-            for(Move x:moves5)
-                moves[index++]=x;
+        for(Move x:moves1)
+            moves[index++]=x;
+        for(Move x:moves2)
+            moves[index++]=x;
+        for(Move x:moves3)
+            moves[index++]=x;
+        for(Move x:moves4)
+            moves[index++]=x;
+        for(Move x:moves5)
+            moves[index++]=x;
 
         return moves;
     }
@@ -432,32 +434,31 @@ public class CLIGameController extends GameController{
             foundDice=true;
             x.setDiceStatus(DiceStatus.TURN_SELECTED);
         }
-        else if(x.getDiceValue()<dice.getDiceValue())    
+        else if(x.getValue()<dice.getValue())    
             x.setDiceStatus(DiceStatus.FORGOTTEN_REALM);
        }
         return foundDice;    
     }
     public  boolean makeMove(Player player, Move move){ 
-        Dice moveDice=move.getMoveDice();
+        Dice moveDice=move.getDice();
         Creature moveCreature=move.getMoveCreature();
         RealmColor color=moveDice.getDiceColor();
         if(color==RealmColor.WHITE)
             color=((ArcanePrism)moveDice).getChosenColor();
         switch(color){
             case BLUE:
-            return player.getBlueRealm().attack(moveDice.getDiceValue(), moveCreature);
+            return player.getBlueRealm().attack(moveDice.getValue(), moveCreature);
             case RED:
-            return player.getRedRealm().attack(moveDice.getDiceValue(), moveCreature);
+            return player.getRedRealm().attack(moveDice.getValue(), moveCreature);
             case GREEN:
-            int sumValue=moveDice.getDiceValue();
-            if(moveDice.getDiceColor()==RealmColor.WHITE)
-                sumValue+=gameBoard.getGreenDice().getDiceValue();
-            else sumValue+=gameBoard.getArcanePrism().getDiceValue();      
+            int sumValue=0;
+            sumValue+=gameBoard.getGreenDice().getValue();
+            sumValue+=gameBoard.getArcanePrism().getValue();  
             return player.getGreenRealm().attack(sumValue, moveCreature);
             case YELLOW:
-            return player.getYellowRealm().attack(moveDice.getDiceValue(), moveCreature);
+            return player.getYellowRealm().attack(moveDice.getValue(), moveCreature);
             case MAGENTA:
-            return player.getMagentaRealm().attack(moveDice.getDiceValue(), moveCreature);
+            return player.getMagentaRealm().attack(moveDice.getValue(), moveCreature);
             case WHITE:System.out.println("Error Attacking WHite");
         }
         //getGameScore(player).calculateGameScore();

@@ -14,26 +14,13 @@ public class CLIGameController extends GameController{
         sc=new Scanner(System.in);
     }
 //=======================================GameFlow======================================
-public  void startGame(){
-
-    while(!getGameStatus().isGameFinished()){
-        
-       
-        
-    }
-    if(getGameScore(getActivePlayer()).getTotalGameScore()>getGameScore(getPassivePlayer()).getTotalGameScore())
-        System.out.println(getActivePlayer().getPlayerType()+" Wins!!!");
-    else
-        System.out.println(getPassivePlayer().getPlayerType()+" Wins!!!");     
-}
-//===================================================
     public void startGame(){//TODO: Colors for Dice and only allow selection of dice that can be used
         //Delay to Show Game Name
         createDelay();
         createDelay();
         //Enter Player Name
         selectPlayerName(getActivePlayer(), 1);
-        selectPlayerName(getActivePlayer(), 2);
+        selectPlayerName(getPassivePlayer(), 2);
         while(!getGameStatus().isGameFinished()){
             //Displaying ActivePlayer Name and Round Number,Grimore
             Player activePlayer=getActivePlayer();
@@ -69,16 +56,18 @@ public  void startGame(){
                 //ArcaneBoost
                 displayArcaneBoostPrompt(activePlayer);
                 //Display Score Sheet after each turn
-                System.out.println(getScoreSheet(activePlayer));
-                createDelay();
+                displayPlayerGrimore(activePlayer);
                 getGameStatus().incrementTurn();
             }
+            passivePlayerSequence(getPassivePlayer());
             switchPlayer();
-            System.out.println("Passive player choose dice from forgotten realm later..");
-            resetDiceStatus();     
+            resetDiceStatus(); 
+            getGameStatus().incrementRound();
         }
-
-
+        if(getGameScore(getActivePlayer()).getTotalGameScore()>getGameScore(getPassivePlayer()).getTotalGameScore())
+        System.out.println(getActivePlayer().getPlayerName()+" Wins!!!");
+        else
+        System.out.println(getPassivePlayer().getPlayerName()+" Wins!!!");     
     }
     public void createDelay(){
         try{
@@ -96,7 +85,7 @@ public  void startGame(){
         playerName=sc.next().trim();
         if(playerName.isEmpty())
             System.out.println("Player name cannot be blank ");
-        if(playerName.toUpperCase().charAt('0')<'A'||playerName.toUpperCase().charAt('0')>'Z'){
+        if(playerName.toUpperCase().charAt(0)<'A'||playerName.toUpperCase().charAt(0)>'Z'){
             System.out.println("Player name cannot start with a special character!");
             playerName="";
         }
@@ -107,7 +96,7 @@ public  void startGame(){
         System.out.println("Printing "+player.getPlayerName()+"'s Grimore");
         createDelay();
         System.out.println(getScoreSheet(player));
-        System.out.println("Press Enter to continue:");
+        System.out.println("Type anything to continue:");
         sc.next();
     }
     public void displayAvailableDice(){
@@ -147,8 +136,14 @@ public  void startGame(){
     }
     public Dice selectDiceSequence(Player player){
          //First select dice
+         Dice selectedDice;
          int selectedDiceIndex=displaySelectDicePromt(player)-1;//-1 Because Prompt starts from 1
-         Dice selectedDice=getAvailableDice()[selectedDiceIndex];
+         if(player.getPlayerStatus()==PlayerStatus.ACTIVE){//Active
+             selectedDice=getAvailableDice()[selectedDiceIndex];
+         }
+         else{//Passive
+            selectedDice=getForgottenRealmDice()[selectedDiceIndex];
+         }
          //Prompt Player to choose Arcane Dice color if chosen
          RealmColor selectedDiceColor=selectedDice.getDiceColor();    
          if(selectedDiceColor==RealmColor.WHITE){
@@ -159,7 +154,7 @@ public  void startGame(){
     }
     public void attackSequence(Player player,Dice selectedDice){
         //Select Creature
-        Creature selectedCreature;
+        Creature selectedCreature=null;//to initialize
         if(selectedDice.getDiceStatus()==DiceStatus.POWER_SELECTED
         &&selectedDice.getDiceColor()==RealmColor.RED
         &&((RedDice)selectedDice).getselectsDragon()!=-1){//-1 To prevent ArcaneBoost from entering
@@ -188,7 +183,11 @@ public  void startGame(){
         checkForPossibleRewards(player,selectedDice.getDiceColor());    
     }
     public int displaySelectDicePromt(Player player){
-        Dice[]availableDice=getAvailableDice();
+        Dice[]availableDice;
+        if(player.getPlayerStatus()==PlayerStatus.ACTIVE)
+            availableDice=getAvailableDice();
+        else
+            availableDice=getForgottenRealmDice();
         while(true){
             System.out.println("Choose a number between 1 and "+(availableDice.length)+" to select a dice");
             System.out.print("Choice: ");
@@ -205,13 +204,15 @@ public  void startGame(){
         }
     }
     public void displayForgottenRealmDice(){//TODO make gray
+        System.out.println("Forgotten Realm Dice:");
         Dice[]forgottenDice=getForgottenRealmDice();
         if(forgottenDice.length==0){
             System.out.println("No dice in Forgotten Realm");
             return;
         }
-        for(Dice x:forgottenDice)
-            System.out.println(x+"  ");
+        for(int i=1;i<=forgottenDice.length;i++)
+            System.out.print("("+i+") "+forgottenDice[i-1]+"  ");
+        System.out.println();
     }
     public void displayChooseArcaneDiceColorPrompt(){//TODO: cant selected if realm closed
         ArcanePrism whiteDice=gameBoard.getArcanePrism();
@@ -235,7 +236,7 @@ public  void startGame(){
     }
     public Creature selectCreatureToAttack(Player player,RealmColor color){
         switch (color) {
-            case RED:displaySelectDragonPrompt(player);
+            case RED:return displaySelectDragonPrompt(player);
             case GREEN:
             System.out.println("Attacking Gaia Gurdian....");
             createDelay();
@@ -254,6 +255,7 @@ public  void startGame(){
             return player.getYellowRealm().getLion();
             case WHITE:System.out.println("Error occured White Selection wasnt successful");    
         }
+        return null;//error occured
     }
     public Creature displaySelectDragonPrompt(Player player){//TODO: make sure possible attack and not dead
         int choice=0;
@@ -348,7 +350,7 @@ public  void startGame(){
     public void useColorBonusPrompt(Player player,Bonus bonus){//TODO: CAN I USE COLOR BONUS IF DICE NOT AVAIABLE
         if(!(bonus instanceof EssenceBonus))
             System.out.println("You earned a "+bonus.getBonusColor()+" Color Bonus!!");
-        Dice diceToBeUsed;
+        Dice diceToBeUsed=null;
         switch(bonus.getBonusColor()){
             case RED:diceToBeUsed=selectRedColorBonusDragon(player);break;
             case GREEN:diceToBeUsed=selectGreenColorBonusGaia(player);break;
@@ -387,7 +389,7 @@ public  void startGame(){
             }
         }
         RedRealm redRealm=player.getRedRealm();
-        Dragon dragon;
+        Dragon dragon=null;
         switch(choice){
             case 1:dragon=redRealm.getDragon1();break;
             case 2:dragon=redRealm.getDragon2();break;
@@ -504,21 +506,24 @@ public  void startGame(){
     }
     public void passivePlayerSequence(Player player){
         System.out.println("Passive Player Choose from forgotten Realm");
-
-
-
+        createDelay();
+        createDelay();
+        if(getForgottenRealmDice().length==0){
+            System.out.println("No Dice Found in forgotten Realm");
+            createDelay();
+            return;
+        }
+        displayForgottenRealmDice();
+        Dice selectedDice=selectDiceSequence(player);
+        selectedDice.setDiceStatus(DiceStatus.AVAILABLE);
+        attackSequence(player, selectedDice);
+        displayArcaneBoostPrompt(player);
     }
-//============================================================================================================    
     public void resetDiceStatus(){
-       Dice[] allDice= getAllDice();
-       for(Dice x:allDice)
-            x.setDiceStatus(DiceStatus.AVAILABLE);
-    }
-fqwfqwfqwfqw
-    ffffa
-   fqwfqwfqwfqw 
-   qwfqwfqwfqwfqw
-fqwfqwfqwfqwfqwfqw
+        Dice[] allDice= getAllDice();
+        for(Dice x:allDice)
+             x.setDiceStatus(DiceStatus.AVAILABLE);
+     }
 //=======================================Methods=======================================
     public  boolean switchPlayer(){
         Player activePlayer=getActivePlayer();

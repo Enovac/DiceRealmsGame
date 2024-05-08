@@ -9,7 +9,7 @@ public class ScoreSheet {
     private final GreenRealm GREEN_REALM;
     private final YellowRealm YELLOW_REALM;
     private  final MagentaRealm MAGENTA_REALM;
-
+//=======================================Constructor===================================
     public ScoreSheet(){
         BLUE_REALM=new BlueRealm();
         RED_REALM=new RedRealm();
@@ -17,11 +17,7 @@ public class ScoreSheet {
         YELLOW_REALM=new YellowRealm();
         MAGENTA_REALM=new MagentaRealm();
     }
-    @Override
-    public String toString(){
-        return "\n\nScoreSheet\n\n"+RED_REALM+"\n"+GREEN_REALM+"\n"+BLUE_REALM+"\n"+MAGENTA_REALM+"\n"+YELLOW_REALM;
-    }
-
+//=======================================Get&Set=======================================
     public BlueRealm getBlueRealm(){
         return BLUE_REALM;
     }
@@ -46,5 +42,10 @@ public class ScoreSheet {
             case YELLOW:return YELLOW_REALM.getCreatureByRealm(dice);
             default:return null;//error occured
         }
+    }
+//=======================================Display=======================================  
+    @Override
+    public String toString(){
+        return "\n\nScoreSheet\n\n"+RED_REALM+"\n"+GREEN_REALM+"\n"+BLUE_REALM+"\n"+MAGENTA_REALM+"\n"+YELLOW_REALM;
     }
 }

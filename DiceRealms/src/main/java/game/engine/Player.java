@@ -20,8 +20,8 @@ public class Player {
     private ArrayList<TimeWarp> timeWarps;
     private ArrayList<ElementalCrest> elementalCrests;
 
-    private PlayerType playerType;
-//============================Constructor========================================
+    private String playerName;
+//=======================================Constructor===================================
 
     public Player(){
         scoreSheet=new ScoreSheet();
@@ -36,7 +36,7 @@ public class Player {
         elementalCrests=new ArrayList<ElementalCrest>();
 
     }
-//============================Methods============================================
+//=======================================Methods=======================================
     public void updateGameScore(){
         gameScore.calculateGameScore(RED_REALM.getTotalRealmScore(),
         BLUE_REALM.getTotalRealmScore(),
@@ -60,8 +60,7 @@ public class Player {
     public void removeArcaneBoost(){
         arcaneBoosts.remove(0);
     }
-
-//============================G&S================================================
+//=======================================Get&Set=======================================
     public ScoreSheet getScoreSheet(){
         return scoreSheet;
     }
@@ -99,10 +98,10 @@ public class Player {
         updateGameScore();
         return gameScore;
     }
-    public PlayerType getPlayerType(){
-        return playerType;
+    public void setPlayerName(String name){
+        playerName=name;
     }
-    public void setPlayerType(PlayerType type){
-        playerType=type;
+    public String getPlayerName(){
+        return playerName;
     }
 }

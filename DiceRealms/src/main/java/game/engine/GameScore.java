@@ -9,6 +9,7 @@ public class GameScore {
     private int magentaScore;
     private int numberOfCrests;
     
+//=======================================Methods=======================================
     public void calculateGameScore(int red,int blue,int green,int yellow,int magenta,int numberCrests){
         redScore=red;blueScore=blue;greenScore=green;
         yellowScore=yellow;magentaScore=magenta;numberOfCrests=numberCrests;
@@ -19,6 +20,7 @@ public class GameScore {
 
         totalGameScore+=minRealmScore*numberOfCrests;
     }
+//=======================================Get&Set=======================================
     public int getRedRealmScore(){
         return redScore;
     }

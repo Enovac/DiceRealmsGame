@@ -12,14 +12,12 @@ public class GameBoard {
     private YellowDice yellowDice;
     private MagentaDice magentaDice;
 
-
+//=======================================Constructor===================================
      public GameBoard(){
-          player1=new Player();//set active / passive??
+          player1=new Player();
           player1.setPlayerStatus(PlayerStatus.ACTIVE);
-          player1.setPlayerType(PlayerType.WHITE_WIZARD);
           player2=new Player();
           player2.setPlayerStatus(PlayerStatus.PASSIVE);
-          player2.setPlayerType(PlayerType.BLACK_WIZARD);
 
           gameStatus=new GameStatus();
           
@@ -30,9 +28,7 @@ public class GameBoard {
           yellowDice=new YellowDice(6);
           magentaDice=new MagentaDice(6);
      }
-
-
-//============================G&S============================================
+//=======================================Get&Set=======================================
    public Player getActivePlayer(){
         if(player1.getPlayerStatus()==PlayerStatus.ACTIVE)
             return player1;

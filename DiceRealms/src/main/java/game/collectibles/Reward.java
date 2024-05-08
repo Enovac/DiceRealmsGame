@@ -1,6 +1,6 @@
 package main.java.game.collectibles;
 
-public abstract class Reward { 
+public abstract class Reward { //TODO IMPLEMENT COMPARABLE
     private final RewardType rewardType;
 //=======================================Constructor===================================
     public Reward(RewardType rewardType){

@@ -3,21 +3,17 @@ package main.java.game.engine;
 import main.java.game.creatures.*;
 import main.java.game.dice.*;
 import main.java.game.realms.RealmColor;
-public class Move implements Comparable<Move>{
+public class Move implements Comparable<Move>{//TODO: fix comparable
     private Dice dice;
     private Creature creature;
+//=======================================Constructor===================================
     public Move(Dice dice,Creature creature){
         this.dice=dice;
         this.creature=creature; 
     }
-    public Dice getDice(){
-        return dice;
-    }
-    public Creature getMoveCreature(){
-        return creature;
-    }
+//=======================================Methods======================================= 
     @Override
-    public int compareTo(Move o) {
+    public int compareTo(Move o) {//TODO: fix tbis
         Dice dice1=this.dice;
         Dice dice2=o.getDice();
         RealmColor color1=dice1.getDiceColor();
@@ -40,9 +36,16 @@ public class Move implements Comparable<Move>{
         }
         System.out.println("error comparable");return 1;
     }
+//=======================================Get&Set=======================================
+    public Dice getDice(){
+        return dice;
+    }
+    public Creature getMoveCreature(){
+        return creature;
+    }
+//=======================================Display=======================================    
     @Override 
     public String toString(){
         return dice+" "+creature;
     }
-
 }

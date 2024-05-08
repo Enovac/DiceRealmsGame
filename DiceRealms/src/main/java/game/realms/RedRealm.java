@@ -8,7 +8,7 @@ import main.java.game.creatures.*;
 import main.java.game.dice.Dice;
 import main.java.game.dice.RedDice;
 import main.java.game.engine.Move;
-
+import java.util.*;
 
 public class RedRealm extends Realms{//TODO: CHECK OTHER TODOS IN OTHER REALM
     private Dragon dragon1;
@@ -19,7 +19,7 @@ public class RedRealm extends Realms{//TODO: CHECK OTHER TODOS IN OTHER REALM
     private final int wingsRow;
     private final int tailRow;
     private final int heartRow;
-    private final int allDeadRow;
+    private final int diagonalRow;
 //=======================================Constructor===================================
     public RedRealm(){
         super(RealmColor.RED,5,16);
@@ -31,7 +31,7 @@ public class RedRealm extends Realms{//TODO: CHECK OTHER TODOS IN OTHER REALM
         wingsRow=1;
         tailRow=2;
         heartRow=3;
-        allDeadRow=4;
+        diagonalRow=4;
     }
 //=======================================Methods=======================================
     @Override
@@ -154,34 +154,38 @@ public class RedRealm extends Realms{//TODO: CHECK OTHER TODOS IN OTHER REALM
     }
 //=======================================Get&Set=======================================
     @Override
-    public Reward getReward() {//TODO: Fix implementation so its diagonal not all dead
+    public Reward[] getReward() {
         Reward[] rewards=getRealmRewards();
+        ArrayList<Reward> outputRewards=new ArrayList<Reward>();
         if(isAllFacesKilled()&&rewards[faceRow]!=null){
             Reward recievedReward=rewards[faceRow];
             rewardClaimed(faceRow);
-             return recievedReward;
+              outputRewards.add(recievedReward);
         }  
         if(isAllWingsKilled()&&rewards[wingsRow]!=null){
             Reward recievedReward=rewards[wingsRow];
             rewardClaimed(wingsRow);
-             return recievedReward;
+            outputRewards.add(recievedReward);
         }  
         if(isAllTailsKilled()&&rewards[tailRow]!=null){
             Reward recievedReward=rewards[tailRow];
             rewardClaimed(tailRow);
-             return recievedReward;
+            outputRewards.add(recievedReward);;
         }  
         if(isAllHeartsKilled()&&rewards[heartRow]!=null){
             Reward recievedReward=rewards[heartRow];
             rewardClaimed(heartRow);
-             return recievedReward;
+            outputRewards.add(recievedReward);
         }  
-        if(!isRealmAccessible()&&rewards[allDeadRow]!=null){//NOTE THIS INDICATES U CHECK OUTSIDE AFTER ATTACK OR AFTER CLOSE
-            Reward recievedReward=rewards[allDeadRow];
-            rewardClaimed(allDeadRow);
-             return recievedReward;
+        if(dragon1.isFaceKilled()&&dragon2.isWingsKilled()&&dragon3.isTailKilled()&&dragon4.isHeartKilled()){
+            Reward recievedReward=rewards[diagonalRow];
+            rewardClaimed(diagonalRow);
+            outputRewards.add(recievedReward);
         }
-        return null;  
+        Reward[] rewardsOutput=new Reward[outputRewards.size()];
+        for(int i=0;i<rewardsOutput.length;i++)
+            rewardsOutput[i]=outputRewards.get(i);
+        return rewardsOutput;  
     }
     
      @Override
@@ -195,7 +199,7 @@ public class RedRealm extends Realms{//TODO: CHECK OTHER TODOS IN OTHER REALM
             return true;     
         if(isAllHeartsKilled()&&rewards[heartRow]!=null)  
             return true; 
-        if(!isRealmAccessible()&&rewards[allDeadRow]!=null)
+        if(dragon1.isFaceKilled()&&dragon2.isWingsKilled()&&dragon3.isTailKilled()&&dragon4.isHeartKilled()&&rewards[diagonalRow]!=null)
             return true;    
         return false;    
     }
@@ -285,7 +289,7 @@ public class RedRealm extends Realms{//TODO: CHECK OTHER TODOS IN OTHER REALM
             drawRew[2]="X    ";   
         if(rewards[heartRow]==null)
             drawRew[3]="X    ";
-        if(rewards[allDeadRow]==null)
+        if(rewards[diagonalRow]==null)
             drawRew[4]="X    ";
 
 

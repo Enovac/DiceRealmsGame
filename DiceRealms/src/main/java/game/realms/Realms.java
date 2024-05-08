@@ -64,7 +64,7 @@ public abstract void initializePreviousAttacks(String[] previousAttacks);
     public String[] getPreviousAttacks(){
         return previousAttacks;
     }
-    public abstract Reward getReward();
+    public abstract Reward[] getReward();
     public abstract void setRealmRewards(Reward[] realmRewards);
     public abstract Creature getCreatureByRealm(Dice dice);
     

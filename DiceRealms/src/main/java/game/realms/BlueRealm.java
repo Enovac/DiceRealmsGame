@@ -76,11 +76,11 @@ public class BlueRealm extends Realms{
     }
 //=======================================Get&Set=======================================
     @Override
-    public Reward getReward() {//TODO: Make it Return Reward[]
+    public Reward[] getReward() {//TODO: Make it Return Reward[]
         Reward[] rewards=getRealmRewards();
         Reward recievedReward=rewards[getTotalNumberOfAttacks()-1];
         rewardClaimed(getTotalNumberOfAttacks()-1);
-        return recievedReward;
+        return new Reward[]{recievedReward};
     }
     @Override
     public void setRealmRewards(Reward[] realmRewards) {

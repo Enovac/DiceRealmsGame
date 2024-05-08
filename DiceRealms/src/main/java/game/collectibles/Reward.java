@@ -1,6 +1,5 @@
 package main.java.game.collectibles;
-
-public abstract class Reward { //TODO IMPLEMENT COMPARABLE
+public abstract class Reward implements Comparable<Reward>{
     private final RewardType rewardType;
 //=======================================Constructor===================================
     public Reward(RewardType rewardType){
@@ -10,4 +9,12 @@ public abstract class Reward { //TODO IMPLEMENT COMPARABLE
     public RewardType getRewardType(){
         return rewardType;
     }
+    
+
+
+
+
+
+
+
 }

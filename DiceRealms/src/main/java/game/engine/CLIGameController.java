@@ -28,6 +28,7 @@ public class CLIGameController extends GameController{
             System.out.println(activePlayer.getPlayerName()+"'s Turn!!!");
             createDelay();
             displayPlayerGrimore(activePlayer);
+            checkRoundReward(activePlayer);
             //Turn Loop
             while(getGameStatus().getTurn()<=3){
                 System.out.println("Turn: "+getGameStatus().getTurn());
@@ -76,6 +77,21 @@ public class CLIGameController extends GameController{
         catch(Exception ex){
             System.out.println("Error in Thread Sleep");
             ex.printStackTrace();}
+    }
+    public void checkRoundReward(Player player){
+        switch(getGameStatus().getGameRound()){
+            case 1:
+            System.out.println("You earned a TimeWarp power");
+            player.addTimeWarp(new TimeWarp());break;
+            case 2:
+            System.out.println("You earned an ArcaneBoost power");  
+            player.addArcaneBoost(new ArcaneBoost());
+            case 3:
+            System.out.println("You earned a TimeWarp power");
+                player.addTimeWarp(new TimeWarp());
+            case 4:
+            displaySelectEssenceBonusColorPromt(player,new EssenceBonus());
+        }
     }
     public void selectPlayerName(Player player,int playerNumber){
         String playerName="";
@@ -299,33 +315,35 @@ public class CLIGameController extends GameController{
         }
         if(!checkInRealm.isRewardAvailable())
             return;
-        //TODO: fix implementation for arrays   
-        Reward earnedReward=checkInRealm.getReward();
-        switch(earnedReward.getRewardType()){
-            case CREST:
-            System.out.println("You earned an ElementalCrest!!");
-            player.addElementalCrest((ElementalCrest)earnedReward);
-            break;
-            case POWER:
-            if(earnedReward instanceof TimeWarp){
-                System.out.println("You earned a TimeWarp power");
-                player.addTimeWarp((TimeWarp)earnedReward);
+        Reward[]allRewards=checkInRealm.getReward();
+        for(int i=0;i<allRewards.length;i++){//Reward array for multiple cases of rewards
+            Reward earnedReward=allRewards[i];
+            switch(earnedReward.getRewardType()){
+                case CREST:
+                System.out.println("You earned an ElementalCrest!!");
+                player.addElementalCrest((ElementalCrest)earnedReward);
+                break;
+                case POWER:
+                if(earnedReward instanceof TimeWarp){
+                    System.out.println("You earned a TimeWarp power");
+                    player.addTimeWarp((TimeWarp)earnedReward);
+                }
+                else if(earnedReward instanceof ArcaneBoost){
+                    System.out.println("You earned an ArcaneBoost power");  
+                    player.addArcaneBoost((ArcaneBoost)earnedReward);
+                }
+                else
+                    System.out.println("An error has occured in Power Rewards?");
+                
+                break;
+                case BONUS:
+                if(earnedReward instanceof EssenceBonus)
+                    displaySelectEssenceBonusColorPromt(player,(EssenceBonus)earnedReward);
+                else if(earnedReward instanceof Bonus)
+                    useColorBonusPrompt(player,(Bonus)earnedReward);    
+                else
+                    System.out.println("An error has occured in Bonus Rewards?");
             }
-            else if(earnedReward instanceof ArcaneBoost){
-                System.out.println("You earned an ArcaneBoost power");  
-                player.addArcaneBoost((ArcaneBoost)earnedReward);
-            }
-            else
-                System.out.println("An error has occured in Power Rewards?");
-            
-            break;
-            case BONUS:
-            if(earnedReward instanceof EssenceBonus)
-                displaySelectEssenceBonusColorPromt(player,(EssenceBonus)earnedReward);
-            else if(earnedReward instanceof Bonus)
-                useColorBonusPrompt(player,(Bonus)earnedReward);    
-            else
-                System.out.println("An error has occured in Bonus Rewards?");
         }  
     }
     public void displaySelectEssenceBonusColorPromt(Player player,EssenceBonus bonus){
@@ -342,7 +360,10 @@ public class CLIGameController extends GameController{
                     case 'Y':bonus.setEssenceBonusColor(RealmColor.YELLOW);break;
                     default:System.out.println("Please Enter A valid Color");
                 }
+                if(bonus.getBonusColor()!=RealmColor.WHITE){
                 useColorBonusPrompt(player, bonus);
+                break;
+                }
             }
             else System.out.println("Choice cannot be blank");   
         }

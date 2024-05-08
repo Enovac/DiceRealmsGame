@@ -1,4 +1,6 @@
 package main.java.game.realms;
+import java.util.ArrayList;
+
 import main.java.game.collectibles.*;
 import main.java.game.creatures.*;
 import main.java.game.dice.*;
@@ -124,48 +126,52 @@ public class GreenRealm extends Realms{
     }
 
     @Override
-    public Reward getReward() {//TODO: make return Reward[] and try to make simpler
+    public Reward[] getReward() {//TODO: make return Reward[] and try to make simpler
         boolean[] gurdiansHealth=gaiaGurdian.getGurdiansHealth();
         Reward[] rewards=getRealmRewards();
+        ArrayList<Reward> outputRewards=new ArrayList<Reward>();
 
         if(!(gurdiansHealth[5]||gurdiansHealth[9])&&rewards[rewardColumn1]!=null){
             Reward recievedReward=rewards[rewardColumn1];
             rewardClaimed(rewardColumn1);
-            return recievedReward;
+            outputRewards.add(recievedReward);
         }
         else if(!(gurdiansHealth[2]||gurdiansHealth[6]||gurdiansHealth[10])&&rewards[rewardColumn2]!=null){
             Reward recievedReward=rewards[rewardColumn2];
             rewardClaimed(rewardColumn2);
-            return recievedReward;
+            outputRewards.add(recievedReward);
         } 
         else if(!(gurdiansHealth[3]||gurdiansHealth[7]||gurdiansHealth[11])&&rewards[rewardColumn3]!=null){
             Reward recievedReward=rewards[rewardColumn3];
             rewardClaimed(rewardColumn3);
-            return recievedReward;
+            outputRewards.add(recievedReward);
         }
             
         else if(!(gurdiansHealth[4]||gurdiansHealth[8]||gurdiansHealth[12])&&rewards[rewardColumn4]!=null){
             Reward recievedReward=rewards[rewardColumn4];
             rewardClaimed(rewardColumn4);
-            return recievedReward;
+            outputRewards.add(recievedReward);
         }       
         else if(!(gurdiansHealth[2]||gurdiansHealth[3]||gurdiansHealth[4])&&rewards[rewardRow1]!=null){
             Reward recievedReward=rewards[rewardRow1];
             rewardClaimed(rewardRow1);
-            return recievedReward;
+            outputRewards.add(recievedReward);
         }    
         else if(!(gurdiansHealth[5]||gurdiansHealth[6]||gurdiansHealth[7]||gurdiansHealth[8])&&rewards[rewardRow2]!=null){
             Reward recievedReward=rewards[rewardRow2];
             rewardClaimed(rewardRow2);
-            return recievedReward;
+            outputRewards.add(recievedReward);
 
         }  
         else if(!(gurdiansHealth[9]||gurdiansHealth[10]||gurdiansHealth[11]||gurdiansHealth[12])&&rewards[rewardRow3]!=null){
             Reward recievedReward=rewards[rewardRow3];
             rewardClaimed(rewardRow3);
-            return recievedReward;
+            outputRewards.add(recievedReward);
         }
-        return null;
+        Reward[] rewardsOutput=new Reward[outputRewards.size()];
+        for(int i=0;i<rewardsOutput.length;i++)
+            rewardsOutput[i]=outputRewards.get(i);
+        return rewardsOutput;  
     }
     @Override
     public void setRealmRewards(Reward[] realmRewards) {

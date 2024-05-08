@@ -63,11 +63,11 @@ public YellowRealm(){
 
 //=======================================Get&Set=======================================
     @Override
-    public Reward getReward() {
+    public Reward[] getReward() {
         Reward[] rewards=getRealmRewards();
         Reward recievedReward=rewards[getTotalNumberOfAttacks()-1];
         rewardClaimed(getTotalNumberOfAttacks()-1);
-        return recievedReward;
+        return new Reward[]{recievedReward};
     }
     @Override
     public void setRealmRewards(Reward[] realmRewards) {

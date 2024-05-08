@@ -68,6 +68,7 @@ public abstract void initializePreviousAttacks(String[] previousAttacks);
     public abstract void setRealmRewards(Reward[] realmRewards);
     public abstract Creature getCreatureByRealm(Dice dice);
     
-//=======================================Display=======================================    @Override
+//=======================================Display=======================================    
+    @Override
     public abstract String toString();
 }

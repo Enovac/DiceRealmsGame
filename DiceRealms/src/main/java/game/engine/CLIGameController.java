@@ -85,12 +85,12 @@ public class CLIGameController extends GameController{
             player.addTimeWarp(new TimeWarp());break;
             case 2:
             System.out.println("You earned an ArcaneBoost power");  
-            player.addArcaneBoost(new ArcaneBoost());
+            player.addArcaneBoost(new ArcaneBoost());break;
             case 3:
             System.out.println("You earned a TimeWarp power");
-                player.addTimeWarp(new TimeWarp());
+                player.addTimeWarp(new TimeWarp());break;
             case 4:
-            displaySelectEssenceBonusColorPromt(player,new EssenceBonus());
+            displaySelectEssenceBonusColorPromt(player,new EssenceBonus());break;
         }
     }
     public void selectPlayerName(Player player,int playerNumber){
@@ -169,10 +169,15 @@ public class CLIGameController extends GameController{
          return selectedDice;
     }
     public void attackSequence(Player player,Dice selectedDice){
+        //White
+        RealmColor selectedDiceColor=selectedDice.getDiceColor();    
+         if(selectedDiceColor==RealmColor.WHITE)
+             selectedDiceColor=((ArcanePrism)selectedDice).getChosenColor(); 
+         
         //Select Creature
         Creature selectedCreature=null;//to initialize
         if(selectedDice.getDiceStatus()==DiceStatus.POWER_SELECTED
-        &&selectedDice.getDiceColor()==RealmColor.RED
+        &&selectedDiceColor==RealmColor.RED
         &&((RedDice)selectedDice).getselectsDragon()!=-1){//-1 To prevent ArcaneBoost from entering
             RedRealm redRealm=player.getRedRealm();
             RedDice bonusDice=(RedDice)selectedDice;
@@ -180,15 +185,15 @@ public class CLIGameController extends GameController{
             System.out.println("Attacking Dragon"+dragonNumber+".....");
             createDelay();
             switch(dragonNumber){
-                case 1:selectedCreature= redRealm.getDragon1();
-                case 2:selectedCreature= redRealm.getDragon2();
-                case 3:selectedCreature= redRealm.getDragon3();
-                case 4:selectedCreature= redRealm.getDragon4();
+                case 1:selectedCreature= redRealm.getDragon1();break;
+                case 2:selectedCreature= redRealm.getDragon2();break;
+                case 3:selectedCreature= redRealm.getDragon3();break;
+                case 4:selectedCreature= redRealm.getDragon4();break;
                 default:System.out.println("An error occured in dragon selection");
             }
         }
         else
-        selectedCreature=selectCreatureToAttack(player, selectedDice.getDiceColor());
+        selectedCreature=selectCreatureToAttack(player, selectedDiceColor);
         //Make a move
         boolean isMoveSuccessful=makeMove(player,new Move(selectedDice, selectedCreature));
         if(isMoveSuccessful)
@@ -196,7 +201,7 @@ public class CLIGameController extends GameController{
         else
             System.out.println("Attack failed!!");
         //Check and get Possible Rewards
-        checkForPossibleRewards(player,selectedDice.getDiceColor());    
+        checkForPossibleRewards(player,selectedDiceColor);    
     }
     public int displaySelectDicePromt(Player player){
         Dice[]availableDice;

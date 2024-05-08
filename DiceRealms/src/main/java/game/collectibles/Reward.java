@@ -9,12 +9,4 @@ public abstract class Reward implements Comparable<Reward>{
     public RewardType getRewardType(){
         return rewardType;
     }
-    
-
-
-
-
-
-
-
 }

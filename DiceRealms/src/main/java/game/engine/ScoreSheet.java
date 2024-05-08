@@ -3,6 +3,7 @@ package main.java.game.engine;
 import main.java.game.realms.*;
 import main.java.game.creatures.*;
 import main.java.game.dice.Dice;
+
 public class ScoreSheet {
     private final BlueRealm BLUE_REALM;
     private final RedRealm RED_REALM;
@@ -49,3 +50,4 @@ public class ScoreSheet {
         return "\n\nScoreSheet\n\n"+RED_REALM+"\n"+GREEN_REALM+"\n"+BLUE_REALM+"\n"+MAGENTA_REALM+"\n"+YELLOW_REALM;
     }
 }
+

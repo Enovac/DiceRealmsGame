@@ -30,7 +30,7 @@ public class GreenRealm extends Realms{
     }
 //=======================================Methods=======================================
     @Override
-    public boolean attack(int diceValue, Creature creature) {//TODO: remove Parameter Creature creature
+    public boolean attack(int diceValue, Creature creature) {
         if(gaiaGurdian.checkPossibleAttack(diceValue)){
             gaiaGurdian.killGaiaGurdian(diceValue);
             incrementTotalNumberOfAttacks();
@@ -186,7 +186,8 @@ public class GreenRealm extends Realms{
     }public Gaia getGaia(){
         return gaiaGurdian;
     }
-//=======================================Display=======================================    @Override
+//=======================================Display=======================================    
+    @Override
     public String toString() {
         String[] prevAt=getPreviousAttacks();//previousAttacks
         String[] drawRew=new String[]{"TW   ","BB   ","MB   ","AB   ","YB   ","RB   ","EC   "};//drawReward

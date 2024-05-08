@@ -18,19 +18,8 @@ public  void startGame(){
 
     while(!getGameStatus().isGameFinished()){
         
-        while(getGameStatus().getTurn()<=3){
-        //Three Turns
-
-            
-           
-            System.out.println(getScoreSheet(currentPlayer));
-            getGameStatus().incrementTurn();
-        } 
+       
         
-        getGameStatus().incrementRound();
-        switchPlayer();
-        System.out.println("Passive player choose dice from forgotten realm later..");
-        resetDiceStatus();
     }
     if(getGameScore(getActivePlayer()).getTotalGameScore()>getGameScore(getPassivePlayer()).getTotalGameScore())
         System.out.println(getActivePlayer().getPlayerType()+" Wins!!!");
@@ -70,10 +59,23 @@ public  void startGame(){
                 displayTimeWarpPrompt(activePlayer);
                 //Selecting dice
                 Dice selectedDice=selectDiceSequence(activePlayer);
+                //Send Remaning Dice to forgotten Realm
+                selectDice(selectedDice, activePlayer);
+                System.out.println("Sending remaining Dice to forgoten realm.....");
+                createDelay();
+                displayForgottenRealmDice();
                 //attacking
                 attackSequence(activePlayer,selectedDice);
-
-            }     
+                //ArcaneBoost
+                displayArcaneBoostPrompt(activePlayer);
+                //Display Score Sheet after each turn
+                System.out.println(getScoreSheet(activePlayer));
+                createDelay();
+                getGameStatus().incrementTurn();
+            }
+            switchPlayer();
+            System.out.println("Passive player choose dice from forgotten realm later..");
+            resetDiceStatus();     
         }
 
 
@@ -147,11 +149,6 @@ public  void startGame(){
          //First select dice
          int selectedDiceIndex=displaySelectDicePromt(player)-1;//-1 Because Prompt starts from 1
          Dice selectedDice=getAvailableDice()[selectedDiceIndex];
-         //Send Dice to forgotten Realm
-         selectDice(selectedDice, player);
-         System.out.println("Sending remaining Dice to forgoten realm.....");
-         createDelay();
-         displayForgottenRealmDice();
          //Prompt Player to choose Arcane Dice color if chosen
          RealmColor selectedDiceColor=selectedDice.getDiceColor();    
          if(selectedDiceColor==RealmColor.WHITE){
@@ -162,7 +159,25 @@ public  void startGame(){
     }
     public void attackSequence(Player player,Dice selectedDice){
         //Select Creature
-        Creature selectedCreature=selectCreatureToAttack(player, selectedDice.getDiceColor());
+        Creature selectedCreature;
+        if(selectedDice.getDiceStatus()==DiceStatus.POWER_SELECTED
+        &&selectedDice.getDiceColor()==RealmColor.RED
+        &&((RedDice)selectedDice).getselectsDragon()!=-1){//-1 To prevent ArcaneBoost from entering
+            RedRealm redRealm=player.getRedRealm();
+            RedDice bonusDice=(RedDice)selectedDice;
+            int dragonNumber=bonusDice.getselectsDragon();
+            System.out.println("Attacking Dragon"+dragonNumber+".....");
+            createDelay();
+            switch(dragonNumber){
+                case 1:selectedCreature= redRealm.getDragon1();
+                case 2:selectedCreature= redRealm.getDragon2();
+                case 3:selectedCreature= redRealm.getDragon3();
+                case 4:selectedCreature= redRealm.getDragon4();
+                default:System.out.println("An error occured in dragon selection");
+            }
+        }
+        else
+        selectedCreature=selectCreatureToAttack(player, selectedDice.getDiceColor());
         //Make a move
         boolean isMoveSuccessful=makeMove(player,new Move(selectedDice, selectedCreature));
         if(isMoveSuccessful)
@@ -171,8 +186,6 @@ public  void startGame(){
             System.out.println("Attack failed!!");
         //Check and get Possible Rewards
         checkForPossibleRewards(player,selectedDice.getDiceColor());    
-        //Arcane Boost Prompt
-
     }
     public int displaySelectDicePromt(Player player){
         Dice[]availableDice=getAvailableDice();
@@ -337,8 +350,8 @@ public  void startGame(){
             System.out.println("You earned a "+bonus.getBonusColor()+" Color Bonus!!");
         Dice diceToBeUsed;
         switch(bonus.getBonusColor()){
-            case RED:
-            case GREEN:
+            case RED:diceToBeUsed=selectRedColorBonusDragon(player);break;
+            case GREEN:diceToBeUsed=selectGreenColorBonusGaia(player);break;
             case BLUE:
             BlueDice blueDice=new BlueDice(6);
             blueDice.setDiceStatus(DiceStatus.POWER_SELECTED);
@@ -356,6 +369,7 @@ public  void startGame(){
         attackSequence(player, diceToBeUsed);
     }
     public Dice selectRedColorBonusDragon(Player player){//TODO: only attack avaiable dragon and dragon parts
+        //Choosing which dragon
         int choice=0;
         System.out.println("Please choose which dragon to attack:");
         for(int i=1;i<=4;i++)
@@ -381,6 +395,7 @@ public  void startGame(){
             case 4:dragon=redRealm.getDragon4();break;
             default:System.out.println("An error occured in dragon selection");
         }
+        //choosing which part
         System.out.println("Please Choose which part to attack");
         if(!dragon.isFaceKilled())
             System.out.print("Face  ");
@@ -402,25 +417,29 @@ public  void startGame(){
                         else
                             System.out.println("Not a valid Selection");break;  
                    case 'W':
-                        if(!dragon.isFaceKilled())
-                            diceValue=dragon.getFace();
+                        if(!dragon.isWingsKilled())
+                            diceValue=dragon.getWings();
                         else
                             System.out.println("Not a valid Selection");break;
                    case 'T':
-                         if(!dragon.isFaceKilled())
-                            diceValue=dragon.getFace();
+                         if(!dragon.isTailKilled())
+                            diceValue=dragon.getTail();
                          else
                             System.out.println("Not a valid Selection");break;
                    case 'H':
-                        if(!dragon.isFaceKilled())
-                            diceValue=dragon.getFace();
+                        if(!dragon.isHeartKilled())
+                            diceValue=dragon.getHeart();
                         else
                             System.out.println("Not a valid Selection");break;
                 }
+                if(diceValue!=-1)
+                break;
             }else System.out.println("Choice cant be blank");
-
-
-        }            
+        }     
+        RedDice bonusDice=new RedDice(diceValue);    
+        bonusDice.setDiceStatus(DiceStatus.POWER_SELECTED);
+        bonusDice.selectsDragon(choice);
+        return bonusDice; 
     }
     public Dice selectGreenColorBonusGaia(Player player){
         System.out.println("Please Choose Which Gaia Gurdian To Attack");
@@ -444,7 +463,50 @@ public  void startGame(){
         }    
         GreenDice bonusDice=new GreenDice(choiceNum);
         bonusDice.setDiceStatus(DiceStatus.POWER_SELECTED);
-        attackSequence(player, bonusDice);
+        return bonusDice;
+    }
+    public void displayArcaneBoostPrompt(Player player){
+        //No available dice or arcaneboosts
+        if(player.getArcaneBoosts().size()==0
+        ||getAvailableDice().length==0)
+            return;
+
+        while(player.getArcaneBoosts().size()>0&&getAvailableDice().length>0){  
+        System.out.println("Would you like to use an ArcaneBoost?"); 
+        System.out.println("You have x"+player.getArcaneBoosts().size()+" ArcaneBoosts remaining");
+        System.out.println("Enter YES or NO");
+        System.out.print("Choice: ");
+        String choice=""+sc.next().trim().toUpperCase().charAt(0);
+        if(choice.equals("Y"))
+            useArcaneBoost(player);
+        else if(choice.equals("N"))
+            return;
+        else
+             System.out.println("Invalid input please enter YES or No!!");        
+        }
+        //If player used all ArcaneBoost or All Dice
+        if(player.getArcaneBoosts().size()==0){
+            System.out.println("No more ArcaneBoosts Avaialble"); 
+            createDelay();
+        }
+        else if(getAvailableDice().length==0){
+            System.out.println("No more Dice Available"); 
+            createDelay();
+        }
+
+    }
+    public void useArcaneBoost(Player player){
+        Dice boostDice=selectDiceSequence(player);
+        boostDice.setDiceStatus(DiceStatus.POWER_SELECTED);
+        if(boostDice.getDiceColor()==RealmColor.RED)
+            ((RedDice)boostDice).selectsDragon(-1);
+        attackSequence(player, boostDice);    
+    }
+    public void passivePlayerSequence(Player player){
+        System.out.println("Passive Player Choose from forgotten Realm");
+
+
+
     }
 //============================================================================================================    
     public void resetDiceStatus(){
@@ -452,13 +514,11 @@ public  void startGame(){
        for(Dice x:allDice)
             x.setDiceStatus(DiceStatus.AVAILABLE);
     }
-    
-   
-FFFFFF
-FFFFFFFFFF
-FFFFFFF
-FFFFFFFFFF
-FFFFFFFFFFFF
+fqwfqwfqwfqw
+    ffffa
+   fqwfqwfqwfqw 
+   qwfqwfqwfqwfqw
+fqwfqwfqwfqwfqwfqw
 //=======================================Methods=======================================
     public  boolean switchPlayer(){
         Player activePlayer=getActivePlayer();

@@ -8,13 +8,20 @@ import main.java.game.creatures.*;
 public class CLIGameController extends GameController{
     private GameBoard gameBoard;
     private Scanner sc;
+    private static final String ANSI_RED="\u001B[31m";
+    private static final String ANSI_GREEN="\u001B[32m";
+    private static final String ANSI_BLUE="\u001B[34m";
+    private static final String ANSI_YELLOW="\u001B[33m";
+    private static final String ANSI_MAGENTA="\u001B[35m";
+    private static final String ANSI_CROSS="\u001B[9m";
+    private static final String ANSI_RESET="\u001B[0m";
 //=======================================Constructor===================================    
     public CLIGameController(){
         gameBoard=new GameBoard();
         sc=new Scanner(System.in);
     }
 //=======================================GameFlow======================================
-    public void startGame(){//TODO: Colors for Dice and only allow selection of dice that can be used
+    public void startGame(){
         //Delay to Show Game Name
         createDelay();
         createDelay();
@@ -78,11 +85,23 @@ public class CLIGameController extends GameController{
             System.out.println("Error in Thread Sleep");
             ex.printStackTrace();}
     }
+    public void printWithColor(RealmColor color,String text,boolean cross){
+        if(cross){
+            System.out.print(ANSI_CROSS+text+ANSI_RESET);return;}
+        switch (color) {
+            case RED: System.out.print(ANSI_RED+text+ANSI_RESET);break;
+            case GREEN:System.out.print(ANSI_GREEN+text+ANSI_RESET);break;
+            case BLUE:System.out.print(ANSI_BLUE+text+ANSI_RESET);break;
+            case MAGENTA:System.out.print(ANSI_MAGENTA+text+ANSI_RESET);break;
+            case YELLOW:System.out.print(ANSI_YELLOW+text+ANSI_RESET);break;
+            case WHITE:System.out.print(text);break;
+        }
+    }
     public void checkRoundReward(Player player){
         switch(getGameStatus().getGameRound()){
             case 1:
             System.out.println("You earned a TimeWarp power");
-            player.addTimeWarp(new TimeWarp());break;
+            player.addTimeWarp(new TimeWarp());break;           
             case 2:
             System.out.println("You earned an ArcaneBoost power");  
             player.addArcaneBoost(new ArcaneBoost());break;
@@ -117,8 +136,11 @@ public class CLIGameController extends GameController{
     }
     public void displayAvailableDice(){
         Dice[]availableDice=getAvailableDice();
-        for(int i=1;i<=availableDice.length;i++)
-            System.out.print("("+i+") "+availableDice[i-1]+"  ");
+        for(int i=1;i<=availableDice.length;i++){
+            String text="("+i+") "+availableDice[i-1]+"  ";
+            printWithColor(availableDice[i-1].getDiceColor(), text,
+            getPossibleMovesForADie(getActivePlayer(),availableDice[i-1]).length==0);
+        }
         System.out.println();
     }
     public void displayTimeWarpPrompt(Player player){
@@ -126,8 +148,8 @@ public class CLIGameController extends GameController{
         if(player.getTimeWarps().size()==0)
             return;
         while(player.getTimeWarps().size()>0){  
-        System.out.println("Would you like to use a TimeWarp?"); 
         System.out.println("You have x"+player.getTimeWarps().size()+" TimeWarps remaining");
+        System.out.println("Would you like to use a TimeWarp?"); 
         System.out.println("Enter YES or NO");
         System.out.print("Choice: ");
         String choice=""+sc.next().trim().toUpperCase().charAt(0);
@@ -178,7 +200,7 @@ public class CLIGameController extends GameController{
         Creature selectedCreature=null;//to initialize
         if(selectedDice.getDiceStatus()==DiceStatus.POWER_SELECTED
         &&selectedDiceColor==RealmColor.RED
-        &&((RedDice)selectedDice).getselectsDragon()!=-1){//-1 To prevent ArcaneBoost from entering
+        &&selectedDice.getselectsDragon()!=-1){//-1 To prevent ArcaneBoost from entering
             RedRealm redRealm=player.getRedRealm();
             RedDice bonusDice=(RedDice)selectedDice;
             int dragonNumber=bonusDice.getselectsDragon();
@@ -193,7 +215,8 @@ public class CLIGameController extends GameController{
             }
         }
         else
-        selectedCreature=selectCreatureToAttack(player, selectedDiceColor);
+        selectedCreature=selectCreatureToAttack(player, selectedDiceColor,selectedDice.getValue());
+        selectedDice.selectsDragon(0);//reset 
         //Make a move
         boolean isMoveSuccessful=makeMove(player,new Move(selectedDice, selectedCreature));
         if(isMoveSuccessful)
@@ -209,13 +232,31 @@ public class CLIGameController extends GameController{
             availableDice=getAvailableDice();
         else
             availableDice=getForgottenRealmDice();
+        //if all dice have no moves bypass and choose random
+        boolean bypass=false;
+        for(int i=0;i<availableDice.length;i++)
+            if(getPossibleMovesForADie(player, availableDice[i]).length>0)break;
+            else if(i==availableDice.length-1)bypass=true;
+        if(bypass)
+            System.out.println("All dice have no possible moves choose any");
         while(true){
-            System.out.println("Choose a number between 1 and "+(availableDice.length)+" to select a dice");
+            System.out.println("Choose a number to select a dice");
             System.out.print("Choice: ");
             try{
                 int choice=Integer.parseInt(sc.next().trim());
-                if(1<=choice&&choice<=availableDice.length)
-                    return choice;
+                if(1<=choice&&choice<=availableDice.length){
+                    Dice selectedDice;
+                    if(player.getPlayerStatus()==PlayerStatus.ACTIVE){//Active
+                        selectedDice=getAvailableDice()[choice-1];
+                    }
+                    else{//Passive
+                       selectedDice=getForgottenRealmDice()[choice-1];
+                    }
+                    if(getPossibleMovesForADie(player, selectedDice).length==0&&!bypass)
+                        System.out.println("No Possible attacks for this die please choose another");
+                    else    
+                        return choice;
+                }
                 else
                     System.out.println("Please choose a number between 1 and "+(availableDice.length)+"!!");    
 
@@ -224,40 +265,77 @@ public class CLIGameController extends GameController{
             }
         }
     }
-    public void displayForgottenRealmDice(){//TODO make gray
+    public void displayForgottenRealmDice(){
         System.out.println("Forgotten Realm Dice:");
         Dice[]forgottenDice=getForgottenRealmDice();
         if(forgottenDice.length==0){
             System.out.println("No dice in Forgotten Realm");
             return;
         }
-        for(int i=1;i<=forgottenDice.length;i++)
-            System.out.print("("+i+") "+forgottenDice[i-1]+"  ");
+        for(int i=1;i<=forgottenDice.length;i++){
+        String text="("+i+") "+forgottenDice[i-1]+"  ";
+        printWithColor(forgottenDice[i-1].getDiceColor(), text,false);}
         System.out.println();
     }
-    public void displayChooseArcaneDiceColorPrompt(){//TODO: cant selected if realm closed
+    public void displayChooseArcaneDiceColorPrompt(){
         ArcanePrism whiteDice=gameBoard.getArcanePrism();
+        boolean red=getActivePlayer().getRedRealm().isRealmAccessible();
+        boolean blue=getActivePlayer().getRedRealm().isRealmAccessible();
+        boolean green=getActivePlayer().getRedRealm().isRealmAccessible();
+        boolean magenta=getActivePlayer().getRedRealm().isRealmAccessible();
+        boolean yellow=getActivePlayer().getRedRealm().isRealmAccessible();
+        boolean bypass=false;
+        if(!red&&!green&&!blue&&!magenta&&!yellow){
+            bypass=true;
+            System.out.println("Chose any color all colors have no moves");
+        }
+
         System.out.println("Choose ArcanePrism color: ");
-        System.out.println("Red Green Blue Magenta Yellow");
+        printWithColor(RealmColor.RED, "Red ", !red);
+        printWithColor(RealmColor.GREEN,"Green ", !green);
+        printWithColor(RealmColor.BLUE,"Blue ", !blue);
+        printWithColor(RealmColor.MAGENTA,"Magenta ", !magenta);
+        printWithColor(RealmColor.YELLOW,"Yellow ",!yellow);
+       System.out.println();
         while(true){
             System.out.print("Choice: ");
             String choice=sc.next().trim().toUpperCase();
             if(!choice.isEmpty()){
                 switch (choice.charAt(0)) {
-                    case 'R':whiteDice.setChosenColor(RealmColor.RED);return;
-                    case 'G':whiteDice.setChosenColor(RealmColor.GREEN);return;
-                    case 'B':whiteDice.setChosenColor(RealmColor.BLUE);return;
-                    case 'M':whiteDice.setChosenColor(RealmColor.MAGENTA);return;
-                    case 'Y':whiteDice.setChosenColor(RealmColor.YELLOW);return;
+                    case 'R':
+                    if(bypass||red){
+                    whiteDice.setChosenColor(RealmColor.RED);return;}
+                    else
+                    System.out.println("The Dragons have been defeated");
+                    case 'G':
+                    if(bypass||green){
+                    whiteDice.setChosenColor(RealmColor.GREEN);return;}
+                    else
+                    System.out.println("The Gurdians have been defeated");
+                    case 'B':
+                    if(bypass||blue){
+                    whiteDice.setChosenColor(RealmColor.BLUE);return;}
+                    else
+                    System.out.println("The Hydra has been defeated");
+                    case 'M':
+                    if(bypass||magenta){
+                    whiteDice.setChosenColor(RealmColor.MAGENTA);return;}
+                    else
+                    System.out.println("The Phoenix has been defeated");
+                    case 'Y':
+                    if(bypass||yellow){
+                    whiteDice.setChosenColor(RealmColor.YELLOW);return;}
+                    else
+                    System.out.println("The Lion has been defeated");
                     default:System.out.println("Please Enter A valid Color");
                 }
             }
             else System.out.println("Choice cannot be blank");   
         }
     }
-    public Creature selectCreatureToAttack(Player player,RealmColor color){
+    public Creature selectCreatureToAttack(Player player,RealmColor color,int diceValue){
         switch (color) {
-            case RED:return displaySelectDragonPrompt(player);
+            case RED:return displaySelectDragonPrompt(player,diceValue);
             case GREEN:
             System.out.println("Attacking Gaia Gurdian....");
             createDelay();
@@ -278,24 +356,73 @@ public class CLIGameController extends GameController{
         }
         return null;//error occured
     }
-    public Creature displaySelectDragonPrompt(Player player){//TODO: make sure possible attack and not dead
+    public Creature displaySelectDragonPrompt(Player player,int diceValue){
+        RedRealm redRealm=player.getRedRealm();
+        Dragon dragon1=redRealm.getDragon1();
+        Dragon dragon2=redRealm.getDragon2();
+        Dragon dragon3=redRealm.getDragon3();
+        Dragon dragon4=redRealm.getDragon4();
+
         int choice=0;
+        int possibleSelections=1;
         System.out.println("Please choose which dragon to attack:");
-        for(int i=1;i<=4;i++)
-            System.out.print("("+i+") Dragon"+i+" ");
+        boolean bypass=false;
+        if(dragon1.checkPossibleAttack(diceValue))
+            printWithColor(RealmColor.RED,"("+(possibleSelections++)+") Dragon1 ", false);
+        if(dragon2.checkPossibleAttack(diceValue))
+            printWithColor(RealmColor.RED,"("+(possibleSelections++)+") Dragon2 ", false);
+        if(dragon3.checkPossibleAttack(diceValue))
+            printWithColor(RealmColor.RED,"("+(possibleSelections++)+") Dragon3 ", false);    
+        if(dragon4.checkPossibleAttack(diceValue))
+            printWithColor(RealmColor.RED,"("+(possibleSelections++)+") Dragon4 ", false);
+
+        if(!dragon1.checkPossibleAttack(diceValue)&&!dragon2.checkPossibleAttack(diceValue)
+        &&!dragon2.checkPossibleAttack(diceValue)&&!dragon4.checkPossibleAttack(diceValue)) {
+            bypass=true;
+            System.out.println("Choose any dragon all cant be attacked by dice");
+        }   
         System.out.println();
         while(true){
             try{
             System.out.print("Choice: ");
             choice=Integer.parseInt(sc.next().trim());
-            if(choice>=1&&choice<=4)
+            if(choice>=1&&choice<=possibleSelections-1)
                 break;
-            System.out.println("Please choose a number between 1 and 4");    
+            System.out.println("Please choose a number within the range");    
             }catch(Exception ex){
                 System.out.println("Please enter a valid number");
             }
         }
-        RedRealm redRealm=player.getRedRealm();
+        if(bypass)
+            return redRealm.getDragon1();
+
+        int indexSoFar=1;
+        boolean found=false;
+        if(dragon1.checkPossibleAttack(diceValue)){
+            if(indexSoFar++==choice&&!found){
+                choice=1;  
+                found=true;
+            }
+        }
+        if(dragon2.checkPossibleAttack(diceValue)){
+            if(indexSoFar++==choice&&!found){
+                choice=2;  
+                found=true;
+            }
+        }
+        if(dragon3.checkPossibleAttack(diceValue)){
+            if(indexSoFar++==choice&&!found){
+                choice=3;  
+                found=true;
+            }
+        }
+        if(dragon4.checkPossibleAttack(diceValue)){
+            if(indexSoFar++==choice&&!found){
+                found=true;
+                choice=4;  
+            }
+        }
+
         gameBoard.getRedDice().selectsDragon(choice);
         System.out.println("Attacking Dragon"+choice+".....");
         createDelay();
@@ -348,21 +475,57 @@ public class CLIGameController extends GameController{
                     useColorBonusPrompt(player,(Bonus)earnedReward);    
                 else
                     System.out.println("An error has occured in Bonus Rewards?");
-            }
+            }createDelay();
         }  
     }
     public void displaySelectEssenceBonusColorPromt(Player player,EssenceBonus bonus){
-        System.out.println("You earned an EssenceBonus Choose which realm to attack ");//TODO: only attack available realms
+        System.out.println("You earned an EssenceBonus Choose which realm to attack: ");
+        boolean red=player.getRedRealm().isRealmAccessible();
+        boolean blue=player.getRedRealm().isRealmAccessible();
+        boolean green=player.getRedRealm().isRealmAccessible();
+        boolean magenta=player.getRedRealm().isRealmAccessible();
+        boolean yellow=player.getRedRealm().isRealmAccessible();
+        boolean bypass=false;
+        if(!red&&!green&&!blue&&!magenta&&!yellow){
+            bypass=true;
+            System.out.println("Chose any color all colors have no moves");
+        }
+        printWithColor(RealmColor.RED, "Red ", red);
+        printWithColor(RealmColor.GREEN,"Green ", green);
+        printWithColor(RealmColor.BLUE,"Blue ", blue);
+        printWithColor(RealmColor.MAGENTA,"Magenta ", magenta);
+        printWithColor(RealmColor.YELLOW,"Yellow ", yellow);
+        System.out.println();
          while(true){
             System.out.print("Choice: ");
             String choice=sc.next().trim().toUpperCase();
             if(!choice.isEmpty()){
                 switch (choice.charAt(0)) {
-                    case 'R':bonus.setEssenceBonusColor(RealmColor.RED);break;
-                    case 'G':bonus.setEssenceBonusColor(RealmColor.GREEN);break;
-                    case 'B':bonus.setEssenceBonusColor(RealmColor.BLUE);break;
-                    case 'M':bonus.setEssenceBonusColor(RealmColor.MAGENTA);break;
-                    case 'Y':bonus.setEssenceBonusColor(RealmColor.YELLOW);break;
+                    case 'R':
+                    if(red||bypass){
+                    bonus.setEssenceBonusColor(RealmColor.RED);break;}
+                    else
+                    System.out.println("The Dragons have been defeated");
+                    case 'G':
+                    if(green||bypass){
+                    bonus.setEssenceBonusColor(RealmColor.GREEN);break;}
+                    else
+                    System.out.println("The Gurdians have been defeated");
+                    case 'B':
+                    if(blue||bypass){
+                    bonus.setEssenceBonusColor(RealmColor.BLUE);break;}
+                    else
+                    System.out.println("The Hydra has been defeated");
+                    case 'M':
+                    if(magenta||bypass){
+                    bonus.setEssenceBonusColor(RealmColor.MAGENTA);break;}
+                    else
+                    System.out.println("The Phoenix has been defeated");
+                    case 'Y':
+                    if(yellow||bypass){
+                    bonus.setEssenceBonusColor(RealmColor.YELLOW);break;}
+                    else
+                    System.out.println("The Lion have has defeated");
                     default:System.out.println("Please Enter A valid Color");
                 }
                 if(bonus.getBonusColor()!=RealmColor.WHITE){
@@ -373,7 +536,7 @@ public class CLIGameController extends GameController{
             else System.out.println("Choice cannot be blank");   
         }
     }
-    public void useColorBonusPrompt(Player player,Bonus bonus){//TODO: CAN I USE COLOR BONUS IF DICE NOT AVAIABLE
+    public void useColorBonusPrompt(Player player,Bonus bonus){
         if(!(bonus instanceof EssenceBonus))
             System.out.println("You earned a "+bonus.getBonusColor()+" Color Bonus!!");
         Dice diceToBeUsed=null;
@@ -396,33 +559,78 @@ public class CLIGameController extends GameController{
         }
         attackSequence(player, diceToBeUsed);
     }
-    public Dice selectRedColorBonusDragon(Player player){//TODO: only attack avaiable dragon and dragon parts
+    public Dice selectRedColorBonusDragon(Player player){
+        RedRealm redRealm=player.getRedRealm();
+        Dragon dragon1=redRealm.getDragon1();
+        Dragon dragon2=redRealm.getDragon2();
+        Dragon dragon3=redRealm.getDragon3();
+        Dragon dragon4=redRealm.getDragon4();
         //Choosing which dragon
         int choice=0;
+        int possibleSelections=1;
         System.out.println("Please choose which dragon to attack:");
-        for(int i=1;i<=4;i++)
-            System.out.print("("+i+") Dragon"+i+" ");
+       
+        if(!dragon1.isDeadDragon())
+            printWithColor(RealmColor.RED,"("+(possibleSelections++)+") Dragon1 ", false);
+        if(!dragon2.isDeadDragon())
+            printWithColor(RealmColor.RED,"("+(possibleSelections++)+") Dragon2 ", false);
+        if(!dragon3.isDeadDragon())
+            printWithColor(RealmColor.RED,"("+(possibleSelections++)+") Dragon3 ", false);    
+        if(dragon4.isDeadDragon())
+            printWithColor(RealmColor.RED,"("+(possibleSelections++)+") Dragon4 ", false);
         System.out.println();
+        if(dragon1.isDeadDragon()&&dragon2.isDeadDragon()&&dragon3.isDeadDragon()&&dragon4.isDeadDragon()){
+            System.out.println("All dragons are dead attacking anything");
+            RedDice bonusDice=new RedDice(1);    
+            bonusDice.setDiceStatus(DiceStatus.POWER_SELECTED);
+            bonusDice.selectsDragon(1);
+            return bonusDice; 
+        }
         while(true){
             try{
             System.out.print("Choice: ");
             choice=Integer.parseInt(sc.next().trim());
-            if(choice>=1&&choice<=4)
+            if(choice>=1&&choice<=possibleSelections-1)
                 break;
-            System.out.println("Please choose a number between 1 and 4");    
+            System.out.println("Please choose a number in the range");    
             }catch(Exception ex){
                 System.out.println("Please enter a valid number");
             }
-        }
-        RedRealm redRealm=player.getRedRealm();
+        }        
         Dragon dragon=null;
-        switch(choice){
-            case 1:dragon=redRealm.getDragon1();break;
-            case 2:dragon=redRealm.getDragon2();break;
-            case 3:dragon=redRealm.getDragon3();break;
-            case 4:dragon=redRealm.getDragon4();break;
-            default:System.out.println("An error occured in dragon selection");
+        int indexSoFar=1;
+        boolean found=false;
+        if(!dragon1.isDeadDragon()){
+            if(indexSoFar++==choice&&!found){
+                choice=1;  
+                found=true;
+            }
         }
+        if(!dragon1.isDeadDragon()){
+            if(indexSoFar++==choice&&!found){
+                choice=2;  
+                found=true;
+            }
+        }
+        if(!dragon1.isDeadDragon()){
+            if(indexSoFar++==choice&&!found){
+                choice=3;  
+                found=true;
+            }
+        }
+        if(!dragon1.isDeadDragon()){
+            if(indexSoFar++==choice&&!found){
+                choice=4;  
+                found=true;
+            }
+        }
+        switch (choice) {
+            case 1:dragon=dragon1;break;
+            case 2:dragon=dragon2;break;
+            case 3:dragon=dragon3;break;
+            case 4:dragon=dragon4;break;
+            default:System.out.println("An error occured in dragon selection");
+        }    
         //choosing which part
         System.out.println("Please Choose which part to attack");
         if(!dragon.isFaceKilled())
@@ -470,6 +678,12 @@ public class CLIGameController extends GameController{
         return bonusDice; 
     }
     public Dice selectGreenColorBonusGaia(Player player){
+        if(!player.getGreenRealm().isRealmAccessible()){
+            System.out.println("Gaia realm has been defeated");
+            GreenDice bonusDice=new GreenDice(2);
+            bonusDice.setDiceStatus(DiceStatus.POWER_SELECTED);
+            return bonusDice;
+        }
         System.out.println("Please Choose Which Gaia Gurdian To Attack");
         Gaia gaia=player.getGreenRealm().getGaia();
         boolean[] gaiaHealth=gaia.getGurdiansHealth();
@@ -494,14 +708,24 @@ public class CLIGameController extends GameController{
         return bonusDice;
     }
     public void displayArcaneBoostPrompt(Player player){
+        int size=getAvailableDice().length+getForgottenRealmDice().length;
+        Dice[]availableDice=new Dice[size];
+         int index=0;
+         Dice[] ad=getAvailableDice();
+       Dice[] fg=getForgottenRealmDice();
+       for(Dice x:ad)
+        availableDice[index++]=x;
+       for(Dice x:fg)
+        availableDice[index++]=x;
+       
         //No available dice or arcaneboosts
         if(player.getArcaneBoosts().size()==0
-        ||getAvailableDice().length==0)
+        ||availableDice.length==0)
             return;
 
-        while(player.getArcaneBoosts().size()>0&&getAvailableDice().length>0){  
-        System.out.println("Would you like to use an ArcaneBoost?"); 
+        while(player.getArcaneBoosts().size()>0&&availableDice.length>0){  
         System.out.println("You have x"+player.getArcaneBoosts().size()+" ArcaneBoosts remaining");
+        System.out.println("Would you like to use an ArcaneBoost?"); 
         System.out.println("Enter YES or NO");
         System.out.print("Choice: ");
         String choice=""+sc.next().trim().toUpperCase().charAt(0);
@@ -510,27 +734,104 @@ public class CLIGameController extends GameController{
         else if(choice.equals("N"))
             return;
         else
-             System.out.println("Invalid input please enter YES or No!!");        
+             System.out.println("Invalid input please enter YES or No!!"); 
+             
+             
+             size=getAvailableDice().length+getForgottenRealmDice().length;
+             availableDice=new Dice[size];
+               index=0;
+               ad=getAvailableDice();
+             fg=getForgottenRealmDice();
+            for(Dice x:ad)
+             availableDice[index++]=x;
+            for(Dice x:fg)
+             availableDice[index++]=x;    
         }
         //If player used all ArcaneBoost or All Dice
         if(player.getArcaneBoosts().size()==0){
             System.out.println("No more ArcaneBoosts Avaialble"); 
             createDelay();
         }
-        else if(getAvailableDice().length==0){
+        else if(availableDice.length==0){
             System.out.println("No more Dice Available"); 
             createDelay();
         }
-
     }
     public void useArcaneBoost(Player player){
-        Dice boostDice=selectDiceSequence(player);
+        player.removeArcaneBoost();
+        Dice boostDice=selectArcaneDice(player);
         boostDice.setDiceStatus(DiceStatus.POWER_SELECTED);
         if(boostDice.getDiceColor()==RealmColor.RED)
             ((RedDice)boostDice).selectsDragon(-1);
         attackSequence(player, boostDice);    
     }
-    public void passivePlayerSequence(Player player){
+    public Dice selectArcaneDice(Player player){
+        //First select dice
+        Dice selectedDice;
+        int selectedDiceIndex= displaySelectArcaneDice(player)-1;//-1 Because Prompt starts from 1
+        int size=getAvailableDice().length+getForgottenRealmDice().length;
+       Dice[]availableDice=new Dice[size];
+       int index=0;
+       Dice[] ad=getAvailableDice();
+       Dice[] fg=getForgottenRealmDice();
+       for(Dice x:ad)
+        availableDice[index++]=x;
+       for(Dice x:fg)
+        availableDice[index++]=x;
+        selectedDice=availableDice[selectedDiceIndex];
+        //Prompt Player to choose Arcane Dice color if chosen
+        RealmColor selectedDiceColor=selectedDice.getDiceColor();    
+        if(selectedDiceColor==RealmColor.WHITE){
+            displayChooseArcaneDiceColorPrompt();
+            selectedDiceColor=((ArcanePrism)selectedDice).getChosenColor();
+            selectedDice.selectsDragon(-1);
+
+        }
+        return selectedDice;
+    }
+    public int displaySelectArcaneDice(Player player){
+       int size=getAvailableDice().length+getForgottenRealmDice().length;
+       Dice[]availableDice=new Dice[size];
+       int index=0;
+       Dice[] ad=getAvailableDice();
+       Dice[] fg=getForgottenRealmDice();
+       for(Dice x:ad)
+        availableDice[index++]=x;
+       for(Dice x:fg)
+        availableDice[index++]=x;
+        for(int i=1;i<=availableDice.length;i++){
+            printWithColor(availableDice[i-1].getDiceColor(),"("+i+")"+availableDice[i-1]+" "
+            ,getPossibleMovesForADie(player,availableDice[i-1]).length==0);
+        }
+        System.out.println();
+        boolean bypass=false;
+        for(int i=0;i<availableDice.length;i++)
+            if(getPossibleMovesForADie(player, availableDice[i]).length>0)break;
+            else if(i==availableDice.length-1)bypass=true;
+        if(bypass)
+            System.out.println("All dice have no possible moves choose any");
+        while(true){
+            System.out.println("Choose a number to select a dice");
+            System.out.print("Choice: ");
+            try{
+                int choice=Integer.parseInt(sc.next().trim());
+                if(1<=choice&&choice<=availableDice.length){
+                    Dice selectedDice=availableDice[choice-1];
+                if(getPossibleMovesForADie(player, selectedDice).length==0&&!bypass)
+                        System.out.println("No Possible attacks for this die please choose another");
+                    else    
+                        return choice;
+                }
+                else
+                    System.out.println("Please choose a number between 1 and "+(availableDice.length)+"!!");    
+
+            }catch(Exception ex){
+                System.out.println("Please enter a valid number");
+            }
+        }
+    }
+    
+    public void passivePlayerSequence(Player player){//TODO: MAKE HAS AVAIALBEL MOVES assumed no error
         System.out.println("Passive Player Choose from forgotten Realm");
         createDelay();
         createDelay();
@@ -794,7 +1095,7 @@ public class CLIGameController extends GameController{
         return arcaneBoostOutput;    
     }
 
-    public  boolean selectDice(Dice dice, Player player){//TODO  dont make set forgtten until after dice found
+    public  boolean selectDice(Dice dice, Player player){
        Dice[] availableDice=getAvailableDice();
        boolean foundDice=false;
        for(Dice x:availableDice){

@@ -4,7 +4,6 @@ public abstract class Dice {
     private DiceStatus diceStatus;
     private int diceValue;
     private final RealmColor DICE_COLOR;
-    private int selectsDragon;
 //=======================================Constructor===================================
     public Dice(RealmColor diceColor,int diceValue){
         DICE_COLOR=diceColor;
@@ -34,12 +33,6 @@ public abstract class Dice {
     }
     public void setValue(int value){
         diceValue=value;//TODO: makesure 1<=value<=6
-    }
-    public int getselectsDragon(){
-        return selectsDragon;
-    } 
-    public void selectsDragon(int x){//Doesn't follow naming convention to meet test case
-    selectsDragon=x;//TODO: make sure selects 1<=x<=4
     }
 //=======================================Display=======================================    
     @Override

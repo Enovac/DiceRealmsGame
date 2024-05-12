@@ -543,12 +543,85 @@ public class CLIGameController extends GameController{
 
     }
     public void useArcaneBoost(Player player){
-        Dice boostDice=selectDiceSequence(player);
+        player.removeArcaneBoost();
+        Dice boostDice=selectDiceSequenceArcane(player);
         boostDice.setDiceStatus(DiceStatus.POWER_SELECTED);
         if(boostDice.getDiceColor()==RealmColor.RED)
             ((RedDice)boostDice).selectsDragon(-1);
         attackSequence(player, boostDice);    
     }
+    public Dice selectDiceSequenceArcane(Player player){
+        //First select dice
+        displayForgottenAndAvailableDice();
+        int selectedDiceIndex=displaySelectArcaneDicePromt(player)-1;//-1 Because Prompt starts from 1
+        Dice selectedDice=getForgottenAndAvailableDice()[selectedDiceIndex];
+        //Prompt Player to choose Arcane Dice color if chosen
+        RealmColor selectedDiceColor=selectedDice.getDiceColor();    
+        if(selectedDiceColor==RealmColor.WHITE){
+            displayChooseArcaneDiceColorPrompt();
+            selectedDiceColor=((ArcanePrism)selectedDice).getChosenColor(); 
+        }
+        return selectedDice;
+    }
+    
+    public int displaySelectArcaneDicePromt(Player player){
+        Dice[]totalDice=getForgottenAndAvailableDice();
+        while(true){
+            System.out.println("Choose a number between 1 and "+(totalDice.length)+" to select a dice");
+            System.out.print("Choice: ");
+            try{
+                int choice=Integer.parseInt(sc.next().trim());
+                if(1<=choice&&choice<=totalDice.length)
+                    return choice;
+                else
+                    System.out.println("Please choose a number between 1 and "+(totalDice.length)+"!!");    
+
+            }catch(Exception ex){
+                System.out.println("Please enter a valid number");
+            }
+        }
+    }
+    public Dice[] getForgottenAndAvailableDice(){
+        int size=getAvailableDice().length+getForgottenRealmDice().length;
+        Dice[]totalDice=new Dice[size];
+        int index=0;
+        Dice[] availableDice=getAvailableDice();
+        Dice[] forgottenDice=getForgottenRealmDice();
+        for(Dice x:availableDice)
+            totalDice[index++]=x;
+        for(Dice x:forgottenDice)
+            totalDice[index++]=x;
+        return totalDice;    
+    }
+    public void displayForgottenAndAvailableDice(){
+        int index=1;
+        //displaying available dice
+        Dice[]availableDice=getAvailableDice();
+        System.out.println("Available dice:");    
+        if(availableDice.length==0){
+            System.out.println("No available dice");
+        }else{
+            for(int i=0;i<=availableDice.length;i++)
+                System.out.print("("+(index++)+") "+availableDice[i]+"  ");
+            System.out.println();
+        }    
+        //displaying forgotten realm dice
+        System.out.println("Forgotten Realm Dice:");
+        Dice[]forgottenDice=getForgottenRealmDice();
+        if(forgottenDice.length==0){
+            System.out.println("No dice in Forgotten Realm");
+            return;
+        }
+        for(int i=0;i<=forgottenDice.length;i++)
+            System.out.print("("+(index++)+") "+forgottenDice[i]+"  ");
+        System.out.println();
+    }
+
+
+
+
+
+
     public void passivePlayerSequence(Player player){
         System.out.println("Passive Player Choose from forgotten Realm");
         createDelay();

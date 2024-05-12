@@ -1,7 +1,6 @@
 package main.java.game.engine;
 import main.java.game.creatures.*;
 import main.java.game.dice.*;
-import main.java.game.realms.RealmColor;
 public class Move implements Comparable<Move>{//TODO: fix comparable
     private Dice dice;
     private Creature creature;

@@ -8,6 +8,13 @@ import main.java.game.creatures.*;
 public class CLIGameController extends GameController{
     private GameBoard gameBoard;
     private Scanner sc;
+    private static final String ANSI_RED="\u001B[31m";
+    private static final String ANSI_GREEN="\u001B[32m";
+    private static final String ANSI_BLUE="\u001B[34m";
+    private static final String ANSI_YELLOW="\u001B[33m";
+    private static final String ANSI_MAGENTA="\u001B[35m";
+    private static final String ANSI_CROSS="\u001B[9m";
+    private static final String ANSI_RESET="\u001B[0m";
 //=======================================Constructor===================================    
     public CLIGameController(){
         gameBoard=new GameBoard();
@@ -69,6 +76,18 @@ public class CLIGameController extends GameController{
         System.out.println(getActivePlayer().getPlayerName()+" Wins!!!");
         else
         System.out.println(getPassivePlayer().getPlayerName()+" Wins!!!");     
+    }
+    public void printWithColor(RealmColor color,String text,boolean cross){
+        if(cross){
+            System.out.print(ANSI_CROSS+text+ANSI_RESET);return;}
+        switch (color) {
+            case RED: System.out.print(ANSI_RED+text+ANSI_RESET);break;
+            case GREEN:System.out.print(ANSI_GREEN+text+ANSI_RESET);break;
+            case BLUE:System.out.print(ANSI_BLUE+text+ANSI_RESET);break;
+            case MAGENTA:System.out.print(ANSI_MAGENTA+text+ANSI_RESET);break;
+            case YELLOW:System.out.print(ANSI_YELLOW+text+ANSI_RESET);break;
+            case WHITE:System.out.print(text);break;
+        }
     }
     public void createDelay(){
         try{

@@ -136,8 +136,11 @@ public class CLIGameController extends GameController{
     }
     public void displayAvailableDice(){
         Dice[]availableDice=getAvailableDice();
-        for(int i=1;i<=availableDice.length;i++)
-            System.out.print("("+i+") "+availableDice[i-1]+"  ");
+        for(int i=1;i<=availableDice.length;i++){
+            String text="("+i+") "+availableDice[i-1]+"  ";
+            printWithColor(availableDice[i-1].getDiceColor(), text,
+            getPossibleMovesForADie(getActivePlayer(),availableDice[i-1]).length==0);
+        }
         System.out.println();
     }
     public void displayTimeWarpPrompt(Player player){
@@ -195,7 +198,7 @@ public class CLIGameController extends GameController{
          if(selectedDiceColor==RealmColor.WHITE)
              selectedDiceColor=((ArcanePrism)selectedDice).getChosenColor(); 
          
-        //Select Creature
+        //Select Creature  //TODO HEERE ERORR
         Creature selectedCreature=null;//to initialize
         if(selectedDice.getDiceStatus()==DiceStatus.POWER_SELECTED
         &&selectedDiceColor==RealmColor.RED
@@ -203,7 +206,10 @@ public class CLIGameController extends GameController{
             RedRealm redRealm=player.getRedRealm();
             RedDice bonusDice=(RedDice)selectedDice;
             int dragonNumber=bonusDice.getselectsDragon();
-            System.out.println("Attacking Dragon"+dragonNumber+".....");
+            System.out.print("Attacking ");
+            printWithColor(RealmColor.RED, "Dragon"+dragonNumber, false);
+            System.out.print(".....");
+            System.out.println();
             createDelay();
             switch(dragonNumber){
                 case 1:selectedCreature= redRealm.getDragon1();break;
@@ -275,8 +281,11 @@ public class CLIGameController extends GameController{
             System.out.println("No dice in Forgotten Realm");
             return;
         }
-        for(int i=1;i<=forgottenDice.length;i++)
-            System.out.print("("+i+") "+forgottenDice[i-1]+"  ");
+        for(int i=1;i<=forgottenDice.length;i++){
+            String text="("+i+") "+forgottenDice[i-1]+"  ";
+            printWithColor(forgottenDice[i-1].getDiceColor(), text,
+            getPossibleMovesForADie(getPassivePlayer(),forgottenDice[i-1]).length==0);
+        }
         System.out.println();
     }
     public void displayChooseArcaneDiceColorPrompt(){
@@ -294,8 +303,14 @@ public class CLIGameController extends GameController{
             bypass=true;
             System.out.println("Choose any color all colors have no moves");
         }
+        //Printing dice with color and crossed if not avaialble
+        printWithColor(RealmColor.RED, "Red ", !red);
+        printWithColor(RealmColor.GREEN,"Green ", !green);
+        printWithColor(RealmColor.BLUE,"Blue ", !blue);
+        printWithColor(RealmColor.MAGENTA,"Magenta ", !magenta);
+        printWithColor(RealmColor.YELLOW,"Yellow ",!yellow);
+        System.out.println();
 
-        System.out.println("Red Green Blue Magenta Yellow");
         while(true){
             System.out.print("Choice: ");
             String choice=sc.next().trim().toUpperCase();
@@ -484,8 +499,13 @@ public class CLIGameController extends GameController{
             System.out.println("All Realms have no moves bonus lost");
             return;
         }
-        //TODO DOESNT PRINT the colors
-
+        //Printing the realms with color and crossed if not avaiable 
+        printWithColor(RealmColor.RED, "Red ", !red);
+        printWithColor(RealmColor.GREEN,"Green ", !green);
+        printWithColor(RealmColor.BLUE,"Blue ", !blue);
+        printWithColor(RealmColor.MAGENTA,"Magenta ", !magenta);
+        printWithColor(RealmColor.YELLOW,"Yellow ", !yellow);
+        System.out.println();
         //Selecting Color that only is avaialbe
          while(true){
             System.out.print("Choice: ");
@@ -589,7 +609,6 @@ public class CLIGameController extends GameController{
             bonusDice.selectsDragon(1);
             return bonusDice; 
         }
-
 
         while(true){
             try{
@@ -756,7 +775,7 @@ public class CLIGameController extends GameController{
     }
     public Dice selectDiceSequenceArcane(Player player){
         //First select dice
-        displayForgottenAndAvailableDice();
+        displayForgottenAndAvailableDice(player);
         int selectedDiceIndex=displaySelectArcaneDicePromt(player)-1;//-1 Because Prompt starts from 1
         Dice selectedDice=getForgottenAndAvailableDice()[selectedDiceIndex];
         //Prompt Player to choose Arcane Dice color if chosen
@@ -811,7 +830,7 @@ public class CLIGameController extends GameController{
             totalDice[index++]=x;
         return totalDice;    
     }
-    public void displayForgottenAndAvailableDice(){
+    public void displayForgottenAndAvailableDice(Player player){
         int index=1;
         //displaying available dice
         Dice[]availableDice=getAvailableDice();
@@ -819,8 +838,11 @@ public class CLIGameController extends GameController{
         if(availableDice.length==0){
             System.out.println("No available dice");
         }else{
-            for(int i=0;i<=availableDice.length;i++)
-                System.out.print("("+(index++)+") "+availableDice[i]+"  ");
+            for(int i=0;i<=availableDice.length;i++){
+                String text="("+(index++)+") "+availableDice[i]+"  ";
+                printWithColor(availableDice[i].getDiceColor(), text,
+                getPossibleMovesForADie(getPassivePlayer(),availableDice[i]).length==0);
+            }
             System.out.println();
         }    
         //displaying forgotten realm dice
@@ -830,15 +852,13 @@ public class CLIGameController extends GameController{
             System.out.println("No dice in Forgotten Realm");
             return;
         }
-        for(int i=0;i<=forgottenDice.length;i++)
-            System.out.print("("+(index++)+") "+forgottenDice[i]+"  ");
+        for(int i=0;i<=forgottenDice.length;i++){
+            String text="("+(index++)+") "+forgottenDice[i]+"  ";
+            printWithColor(forgottenDice[i].getDiceColor(), text,
+            getPossibleMovesForADie(getPassivePlayer(),forgottenDice[i]).length==0);
+        }
         System.out.println();
     }
-
-
-
-
-
 
     public void passivePlayerSequence(Player player){
         System.out.println("Passive Player Choose from forgotten Realm");

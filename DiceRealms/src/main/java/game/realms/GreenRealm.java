@@ -1,5 +1,6 @@
 package main.java.game.realms;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import main.java.game.collectibles.*;
 import main.java.game.creatures.*;
@@ -171,6 +172,7 @@ public class GreenRealm extends Realms{
         Reward[] rewardsOutput=new Reward[outputRewards.size()];
         for(int i=0;i<rewardsOutput.length;i++)
             rewardsOutput[i]=outputRewards.get(i);
+        Arrays.sort(rewardsOutput);
         return rewardsOutput;  
     }
     @Override

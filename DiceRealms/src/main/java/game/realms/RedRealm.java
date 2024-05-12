@@ -185,6 +185,8 @@ public class RedRealm extends Realms{//TODO: CHECK OTHER TODOS IN OTHER REALM
         Reward[] rewardsOutput=new Reward[outputRewards.size()];
         for(int i=0;i<rewardsOutput.length;i++)
             rewardsOutput[i]=outputRewards.get(i);
+            
+        Arrays.sort(rewardsOutput);
         return rewardsOutput;  
     }
     

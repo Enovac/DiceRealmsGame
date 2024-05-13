@@ -200,7 +200,8 @@ public class CLIGameController extends GameController{
         Creature selectedCreature=null;//to initialize
         if(selectedDice.getDiceStatus()==DiceStatus.POWER_SELECTED
         &&selectedDiceColor==RealmColor.RED
-        &&((RedDice)selectedDice).getselectsDragon()!=-1){//-1 To prevent ArcaneBoost from entering
+        &&(((selectedDice instanceof RedDice)&&(((RedDice)selectedDice).getselectsDragon()!=-1))))
+        {//-1 To prevent ArcaneBoost from entering the bonus as dragon selection is different user chooses in bonus
             RedRealm redRealm=player.getRedRealm();
             RedDice bonusDice=(RedDice)selectedDice;
             int dragonNumber=bonusDice.getselectsDragon();

@@ -61,8 +61,6 @@ public class CLIGameController extends GameController{
                 displayForgottenRealmDice();
                 //attacking
                 attackSequence(activePlayer,selectedDice);
-                //ArcaneBoost
-                displayArcaneBoostPrompt(activePlayer);
                 //Display Score Sheet after each turn
                 displayPlayerGrimore(activePlayer);
                 getGameStatus().incrementTurn();
@@ -101,7 +99,7 @@ public class CLIGameController extends GameController{
         switch(getGameStatus().getGameRound()){
             case 1:
             System.out.println("You earned a TimeWarp power");
-            player.addTimeWarp(new TimeWarp());break;
+            player.addArcaneBoost(new ArcaneBoost());break;
             case 2:
             System.out.println("You earned an ArcaneBoost power");  
             player.addArcaneBoost(new ArcaneBoost());break;
@@ -742,7 +740,7 @@ public class CLIGameController extends GameController{
             return;
 
         while(player.getArcaneBoosts().size()>0&&getAvailableDice().length>0){  
-        System.out.println("Would you like to use an ArcaneBoost?"); 
+        System.out.println(player.getPlayerName()+" would you like to use an ArcaneBoost?"); 
         System.out.println("You have x"+player.getArcaneBoosts().size()+" ArcaneBoosts remaining");
         System.out.println("Enter YES or NO");
         System.out.print("Choice: ");
@@ -838,7 +836,7 @@ public class CLIGameController extends GameController{
         if(availableDice.length==0){
             System.out.println("No available dice");
         }else{
-            for(int i=0;i<=availableDice.length;i++){
+            for(int i=0;i<availableDice.length;i++){
                 String text="("+(index++)+") "+availableDice[i]+"  ";
                 printWithColor(availableDice[i].getDiceColor(), text,
                 getPossibleMovesForADie(getPassivePlayer(),availableDice[i]).length==0);
@@ -852,7 +850,7 @@ public class CLIGameController extends GameController{
             System.out.println("No dice in Forgotten Realm");
             return;
         }
-        for(int i=0;i<=forgottenDice.length;i++){
+        for(int i=0;i<forgottenDice.length;i++){
             String text="("+(index++)+") "+forgottenDice[i]+"  ";
             printWithColor(forgottenDice[i].getDiceColor(), text,
             getPossibleMovesForADie(getPassivePlayer(),forgottenDice[i]).length==0);
@@ -873,6 +871,9 @@ public class CLIGameController extends GameController{
         Dice selectedDice=selectDiceSequence(player);
         selectedDice.setDiceStatus(DiceStatus.AVAILABLE);
         attackSequence(player, selectedDice);
+        //ArcaneBoost For active player
+        displayArcaneBoostPrompt(getActivePlayer());
+        //ArcaneBoost For passive player
         displayArcaneBoostPrompt(player);
     }
     public void resetDiceStatus(){

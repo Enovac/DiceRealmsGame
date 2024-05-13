@@ -80,7 +80,7 @@ public MagentaRealm(){
     @Override
     public boolean isRewardAvailable() {
         Reward[] rewards=getRealmRewards();
-        return rewards[getTotalNumberOfAttacks()]!=null;
+        return rewards[getTotalNumberOfAttacks()-1]!=null;
     }public Phoenix getPhoenix(){
         return phoenix;
     }

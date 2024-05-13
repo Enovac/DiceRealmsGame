@@ -598,7 +598,7 @@ public class CLIGameController extends GameController{
             printWithColor(RealmColor.RED,"("+(possibleSelections++)+") Dragon2 ", false);
         if(!dragon3.isDeadDragon())
             printWithColor(RealmColor.RED,"("+(possibleSelections++)+") Dragon3 ", false);    
-        if(dragon4.isDeadDragon())
+        if(!dragon4.isDeadDragon())
             printWithColor(RealmColor.RED,"("+(possibleSelections++)+") Dragon4 ", false);
         System.out.println();
         if(dragon1.isDeadDragon()&&dragon2.isDeadDragon()&&dragon3.isDeadDragon()&&dragon4.isDeadDragon()){

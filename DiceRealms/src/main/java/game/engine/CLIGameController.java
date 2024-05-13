@@ -185,7 +185,7 @@ public class CLIGameController extends GameController{
          //Prompt Player to choose Arcane Dice color if chosen
          RealmColor selectedDiceColor=selectedDice.getDiceColor();    
          if(selectedDiceColor==RealmColor.WHITE){
-             displayChooseArcaneDiceColorPrompt();
+             displayChooseArcaneDiceColorPrompt(selectedDice);
              selectedDiceColor=((ArcanePrism)selectedDice).getChosenColor(); 
          }
          return selectedDice;
@@ -286,14 +286,14 @@ public class CLIGameController extends GameController{
         }
         System.out.println();
     }
-    public void displayChooseArcaneDiceColorPrompt(){
+    public void displayChooseArcaneDiceColorPrompt(Dice dice){
         ArcanePrism whiteDice=gameBoard.getArcanePrism();
         //To check realm is accessible before attacking
-        boolean red=getActivePlayer().getRedRealm().isRealmAccessible();
-        boolean blue=getActivePlayer().getRedRealm().isRealmAccessible();
-        boolean green=getActivePlayer().getRedRealm().isRealmAccessible();
-        boolean magenta=getActivePlayer().getRedRealm().isRealmAccessible();
-        boolean yellow=getActivePlayer().getRedRealm().isRealmAccessible();
+        boolean red=getActivePlayer().getRedRealm().getPossibleMovesForADie(dice.getValue(),RealmColor.RED).length>0;
+        boolean blue=getActivePlayer().getBlueRealm().getPossibleMovesForADie(dice.getValue(),RealmColor.BLUE).length>0;
+        boolean green=getActivePlayer().getGreenRealm().getPossibleMovesForADie(dice.getValue(),RealmColor.GREEN).length>0;
+        boolean magenta=getActivePlayer().getMagentaRealm().getPossibleMovesForADie(dice.getValue(),RealmColor.MAGENTA).length>0;
+        boolean yellow=getActivePlayer().getYellowRealm().getPossibleMovesForADie(dice.getValue(),RealmColor.YELLOW).length>0;
         boolean bypass=false;
        
         System.out.println("Choose ArcanePrism color: ");
@@ -488,10 +488,10 @@ public class CLIGameController extends GameController{
     public void displaySelectEssenceBonusColorPromt(Player player,EssenceBonus bonus){
         System.out.println("You earned an EssenceBonus Choose which realm to attack ");
         boolean red=player.getRedRealm().isRealmAccessible();
-        boolean blue=player.getRedRealm().isRealmAccessible();
-        boolean green=player.getRedRealm().isRealmAccessible();
-        boolean magenta=player.getRedRealm().isRealmAccessible();
-        boolean yellow=player.getRedRealm().isRealmAccessible();
+        boolean blue=player.getBlueRealm().isRealmAccessible();
+        boolean green=player.getGreenRealm().isRealmAccessible();
+        boolean magenta=player.getMagentaRealm().isRealmAccessible();
+        boolean yellow=player.getYellowRealm().isRealmAccessible();
         
         if(!red&&!green&&!blue&&!magenta&&!yellow){
             System.out.println("All Realms have no moves bonus lost");
@@ -779,7 +779,7 @@ public class CLIGameController extends GameController{
         //Prompt Player to choose Arcane Dice color if chosen
         RealmColor selectedDiceColor=selectedDice.getDiceColor();    
         if(selectedDiceColor==RealmColor.WHITE){
-            displayChooseArcaneDiceColorPrompt();
+            displayChooseArcaneDiceColorPrompt(selectedDice);
             selectedDiceColor=((ArcanePrism)selectedDice).getChosenColor(); 
         }
         return selectedDice;

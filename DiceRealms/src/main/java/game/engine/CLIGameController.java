@@ -390,7 +390,7 @@ public class CLIGameController extends GameController{
             printWithColor(RealmColor.RED,"("+(possibleSelections++)+") Dragon4 ", false);
         //No dragon can be attacked
         if(!dragon1.checkPossibleAttack(diceValue)&&!dragon2.checkPossibleAttack(diceValue)
-        &&!dragon2.checkPossibleAttack(diceValue)&&!dragon4.checkPossibleAttack(diceValue)) {
+        &&!dragon3.checkPossibleAttack(diceValue)&&!dragon4.checkPossibleAttack(diceValue)) {
             bypass=true;
             System.out.println("all dragons cant be attacked by dice selecting random dragon");
             return dragon1;

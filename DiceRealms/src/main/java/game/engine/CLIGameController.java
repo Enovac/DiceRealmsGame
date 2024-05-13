@@ -860,6 +860,7 @@ public class CLIGameController extends GameController{
     // }
 
     public void passivePlayerSequence(Player player){
+        displayPlayerGrimore(player);
         System.out.println("Passive Player Choose from forgotten Realm");
         createDelay();
         createDelay();

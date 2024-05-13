@@ -320,26 +320,31 @@ public class CLIGameController extends GameController{
                     whiteDice.setChosenColor(RealmColor.RED);return;}
                     else
                     System.out.println("The Dragons have been defeated");
+                    break;
                     case 'G':
                     if(bypass||green){
                     whiteDice.setChosenColor(RealmColor.GREEN);return;}
                     else
                     System.out.println("The Gurdians have been defeated");
+                    break;
                     case 'B':
                     if(bypass||blue){
                     whiteDice.setChosenColor(RealmColor.BLUE);return;}
                     else
                     System.out.println("The Hydra has been defeated");
+                    break;
                     case 'M':
                     if(bypass||magenta){
                     whiteDice.setChosenColor(RealmColor.MAGENTA);return;}
                     else
                     System.out.println("The Phoenix has been defeated");
+                    break;
                     case 'Y':
                     if(bypass||yellow){
                     whiteDice.setChosenColor(RealmColor.YELLOW);return;}
                     else
                     System.out.println("The Lion has been defeated");
+                    break;
                     default:System.out.println("Please Enter A valid Color");
                 }
             }
@@ -516,26 +521,31 @@ public class CLIGameController extends GameController{
                     bonus.setEssenceBonusColor(RealmColor.RED);break;}
                     else
                     System.out.println("The Dragons have been defeated");
+                    break;
                     case 'G':
                     if(green){
                     bonus.setEssenceBonusColor(RealmColor.GREEN);break;}
                     else
                     System.out.println("The Gurdians have been defeated");
+                    break;
                     case 'B':
                     if(blue){
                     bonus.setEssenceBonusColor(RealmColor.BLUE);break;}
                     else
                     System.out.println("The Hydra has been defeated");
+                    break;
                     case 'M':
                     if(magenta){
                     bonus.setEssenceBonusColor(RealmColor.MAGENTA);break;}
                     else
                     System.out.println("The Phoenix has been defeated");
+                    break;
                     case 'Y':
                     if(yellow){
                     bonus.setEssenceBonusColor(RealmColor.YELLOW);break;}
                     else
                     System.out.println("The Lion have has defeated");
+                    break;
                     default:System.out.println("Please Enter A valid Color");
                 }
                 if(bonus.getBonusColor()!=RealmColor.WHITE){
